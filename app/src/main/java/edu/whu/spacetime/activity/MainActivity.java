@@ -1,4 +1,4 @@
-package edu.whu.spacetime;
+package edu.whu.spacetime.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +13,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
+
+import edu.whu.spacetime.R;
 
 public class MainActivity extends AppCompatActivity {
 
