@@ -1,8 +1,10 @@
-package edu.whu.spacetime;
+package edu.whu.spacetime.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import edu.whu.spacetime.R;
 
 public class MainActivity extends AppCompatActivity {
 
