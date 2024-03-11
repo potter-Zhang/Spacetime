@@ -3,5 +3,9 @@
     <color name="main_theme">#FFA5D63F</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="light_gray">#DDDFE5</color>
+    <!--按下时的背景色-->
+    <color name="pressed_gray">#88DDDFE5</color>
     <color name="theme_color">#A5D63F</color>
 </resources>

@@ -1,6 +1,7 @@
 package edu.whu.spacetime.domain;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
@@ -26,6 +27,7 @@ public class Note {
     @TypeConverters(MyTypeConverter.class)
     private LocalDateTime createTime;
 
+    @Ignore
     public Note() {}
 
     public Note(String title, int userId, int notebookId, String content, LocalDateTime createTime) {
@@ -36,6 +38,7 @@ public class Note {
         this.createTime = createTime;
     }
 
+    @Ignore
     public Note(int id, String title, int userId, int notebookId, String content, LocalDateTime createTime) {
         this.id = id;
         this.title = title;

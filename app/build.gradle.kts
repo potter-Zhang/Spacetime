@@ -1,6 +1,5 @@
 plugins {
     id("com.android.application")
-
 }
 
 android {
@@ -21,7 +20,6 @@ android {
             }
         }
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false

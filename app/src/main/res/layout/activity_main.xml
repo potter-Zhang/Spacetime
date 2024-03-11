@@ -13,6 +13,13 @@
         android:orientation="vertical"
         tools:context=".MainActivity">
 
+<!--        <fragment-->
+<!--            android:id="@+id/frag_note"-->
+<!--            android:name="edu.whu.spacetime.fragment.NoteBrowserFragment"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"/>-->
+
+
         <androidx.viewpager2.widget.ViewPager2
             android:layout_width="match_parent"
             android:layout_height="0dp"
