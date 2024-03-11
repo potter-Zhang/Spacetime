@@ -27,7 +27,7 @@
                 android:layout_height="48dp"
                 android:scaleType="fitCenter"
                 android:layout_marginEnd="15dp"
-                android:src="@drawable/hamburger_btn"/>
+                android:src="@drawable/icon_hamburger"/>
             <LinearLayout
                 android:layout_column="1"
                 android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
                 android:layout_height="40dp"
                 android:scaleType="fitCenter"
                 android:layout_marginEnd="10dp"
-                android:src="@drawable/search_btn"
+                android:src="@drawable/icon_search"
                 tools:ignore="RtlHardcoded"/>
         </GridLayout>
 

@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/navigation_item1"
-        android:icon="@drawable/home_selector"
+        android:icon="@drawable/selector_home"
         android:enabled="true"
         android:title="@string/index"
         app:showAsAction="always"/>
     <item
         android:id="@+id/navigation_item2"
-        android:icon="@drawable/import_selector"
+        android:icon="@drawable/selector_import"
         android:title="@string/include" />
     <item
         android:id="@+id/navigation_item3"
-        android:icon="@drawable/user_selector"
+        android:icon="@drawable/selector_user"
         android:title="@string/me"/>
 </menu>
