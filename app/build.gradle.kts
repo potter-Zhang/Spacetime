@@ -55,4 +55,12 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
 
+    // 悬浮球
+    implementation ("com.getbase:floatingactionbutton:1.10.1")
+
+    // 弹出菜单
+    implementation ("com.github.li-xiaojun:XPopup:2.10.0")
+    implementation ("androidx.appcompat:appcompat:1.3.1")
+    implementation ("com.google.android.material:material:1.4.0")
+    implementation ("androidx.recyclerview:recyclerview:1.2.1")
 }

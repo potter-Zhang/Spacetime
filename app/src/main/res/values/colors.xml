@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="main_theme">#FFA5D63F</color>
+    <color name="main_theme_dark">#FF8AAD3E</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
@@ -8,4 +9,7 @@
     <!--按下时的背景色-->
     <color name="pressed_gray">#88DDDFE5</color>
     <color name="theme_color">#A5D63F</color>
+
+    <!--笔记本侧边栏颜色配置-->
+    <color name="notebook_name_color">#FF000000</color>
 </resources>
