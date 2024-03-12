@@ -9,4 +9,9 @@
     <!--弹出菜单选项-->
     <string name="rename">重命名</string>
     <string name="delete">删除</string>
+
+    <!--确认对话框-->
+    <string name="delete_warn">确定要删除吗？</string>
+    <string name="delete_confirm">删除</string>
+    <string name="cancel">取消</string>
 </resources>

@@ -44,7 +44,11 @@ public class NoteBookListAdapter extends ArrayAdapter<NoteBook> {
         // 弹出菜单
         View btnMore = view.findViewById(R.id.btn_more);
         final XPopup.Builder builder = new XPopup.Builder(getContext()).watchView(btnMore);
-        NoteBookPopupMenu popup = new NoteBookPopupMenu(getContext(), this, noteBook);
+        NoteBookPopupMenu popup = new NoteBookPopupMenu(getContext());
+        popup.setDeleteListener(() -> {
+            notebookList.remove(noteBook);
+            notifyDataSetChanged();
+        });
         btnMore.setOnClickListener(v -> builder.asCustom(popup).show());
         return view;
     }
