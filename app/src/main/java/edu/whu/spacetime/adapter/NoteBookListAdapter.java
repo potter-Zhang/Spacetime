@@ -6,22 +6,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.lxj.xpopup.XPopup;
+
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.domain.NoteBook;
+import edu.whu.spacetime.widget.NoteBookPopupMenu;
 
 public class NoteBookListAdapter extends ArrayAdapter<NoteBook> {
     private int resourceId;
 
+    private List<NoteBook> notebookList;
+
     public NoteBookListAdapter(@NonNull Context context, int resource, @NonNull List<NoteBook> objects) {
         super(context, resource, objects);
         this.resourceId = resource;
+        this.notebookList = objects;
     }
 
     @NonNull
@@ -32,6 +40,12 @@ public class NoteBookListAdapter extends ArrayAdapter<NoteBook> {
 
         TextView tv_notebookName = view.findViewById(R.id.tv_notebookName);
         tv_notebookName.setText(noteBook.getName());
+
+        // 弹出菜单
+        View btnMore = view.findViewById(R.id.btn_more);
+        final XPopup.Builder builder = new XPopup.Builder(getContext()).watchView(btnMore);
+        NoteBookPopupMenu popup = new NoteBookPopupMenu(getContext(), this, noteBook);
+        btnMore.setOnClickListener(v -> builder.asCustom(popup).show());
         return view;
     }
 }
