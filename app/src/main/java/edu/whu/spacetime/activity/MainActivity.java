@@ -31,64 +31,64 @@ public class MainActivity extends AppCompatActivity {
         // initViewPager();
     }
 
-    private void initViewPager() {
-        viewpager = findViewById(R.id.id_viewpager);
-        ArrayList<Fragment> fragments = new ArrayList<>();
-        // 在这里添加fragment
-        fragments.add(UserFragment.newInstance());
-        fragments.add(UserFragment.newInstance());
-        fragments.add(UserFragment.newInstance());
-        MyFragmentPagerAdapter myFragmentPagerAdapter = new MyFragmentPagerAdapter(
-                getSupportFragmentManager(), getLifecycle(), fragments);
-        viewpager.setAdapter(myFragmentPagerAdapter);
-
-        viewpager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                switch (position)
-                {
-                    case 0:
-                        nav.setSelectedItemId(R.id.navigation_item1);
-                        break;
-                    case 1:
-                        nav.setSelectedItemId(R.id.navigation_item2);
-                        break;
-                    case 2:
-                        nav.setSelectedItemId(R.id.navigation_item3);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-        });
-    }
-
-    // 初始化navigationview，把每个item绑定到一个fragment上
-    private void initNavigation() {
-        nav = findViewById(R.id.nav_view);
-        nav.setItemIconTintList(null);
-        // navigation绑定到viewpager上
-        nav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                if(id == R.id.navigation_item1){
-                    viewpager.setCurrentItem(0);
-                    return true;
-                }
-                else if(id == R.id.navigation_item2){
-                    viewpager.setCurrentItem(1);
-                    return true;
-                }
-                else if(id == R.id.navigation_item3){
-                    viewpager.setCurrentItem(2);
-                    return true;
-                }
-                return false;
-            }
-        });
-    }
+//    private void initViewPager() {
+//        viewpager = findViewById(R.id.id_viewpager);
+//        ArrayList<Fragment> fragments = new ArrayList<>();
+//        // 在这里添加fragment
+//        fragments.add(UserFragment.newInstance());
+//        fragments.add(UserFragment.newInstance());
+//        fragments.add(UserFragment.newInstance());
+//        MyFragmentPagerAdapter myFragmentPagerAdapter = new MyFragmentPagerAdapter(
+//                getSupportFragmentManager(), getLifecycle(), fragments);
+//        viewpager.setAdapter(myFragmentPagerAdapter);
+//
+//        viewpager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                super.onPageSelected(position);
+//                switch (position)
+//                {
+//                    case 0:
+//                        nav.setSelectedItemId(R.id.navigation_item1);
+//                        break;
+//                    case 1:
+//                        nav.setSelectedItemId(R.id.navigation_item2);
+//                        break;
+//                    case 2:
+//                        nav.setSelectedItemId(R.id.navigation_item3);
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//
+//        });
+//    }
+//
+//    // 初始化navigationview，把每个item绑定到一个fragment上
+//    private void initNavigation() {
+//        nav = findViewById(R.id.nav_view);
+//        nav.setItemIconTintList(null);
+//        // navigation绑定到viewpager上
+//        nav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                int id = item.getItemId();
+//                if(id == R.id.navigation_item1){
+//                    viewpager.setCurrentItem(0);
+//                    return true;
+//                }
+//                else if(id == R.id.navigation_item2){
+//                    viewpager.setCurrentItem(1);
+//                    return true;
+//                }
+//                else if(id == R.id.navigation_item3){
+//                    viewpager.setCurrentItem(2);
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+//    }
 }
