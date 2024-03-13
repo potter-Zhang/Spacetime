@@ -1,18 +1,13 @@
 package edu.whu.spacetime.widget;
 
 import android.content.Context;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.AttachPopupView;
-import com.lxj.xpopup.interfaces.OnConfirmListener;
-import com.lxj.xpopup.interfaces.OnInputConfirmListener;
 
 import edu.whu.spacetime.R;
-import edu.whu.spacetime.adapter.NoteBookListAdapter;
-import edu.whu.spacetime.domain.NoteBook;
 
 public class NoteBookPopupMenu extends AttachPopupView  {
 

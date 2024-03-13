@@ -5,7 +5,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class NoteBook {
+public class Notebook {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -14,10 +14,10 @@ public class NoteBook {
     private int userId;
 
     @Ignore
-    public NoteBook() {
+    public Notebook() {
     }
 
-    public NoteBook(String name, int userId) {
+    public Notebook(String name, int userId) {
         this.name = name;
         this.userId = userId;
     }

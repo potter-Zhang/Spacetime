@@ -12,6 +12,8 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:text="笔记本名称"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="@color/notebook_name_color"
         android:textSize="20sp"
         />

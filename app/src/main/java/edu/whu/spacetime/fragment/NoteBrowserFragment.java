@@ -19,7 +19,7 @@ import edu.whu.spacetime.R;
 import edu.whu.spacetime.adapter.NoteBookListAdapter;
 import edu.whu.spacetime.adapter.NoteListAdapter;
 import edu.whu.spacetime.domain.Note;
-import edu.whu.spacetime.domain.NoteBook;
+import edu.whu.spacetime.domain.Notebook;
 
 public class NoteBrowserFragment extends Fragment implements View.OnClickListener {
     private static final String ARG_NOTEBOOK = "notebookId";
@@ -58,8 +58,6 @@ public class NoteBrowserFragment extends Fragment implements View.OnClickListene
 
         // 设置笔记列表显示内容
         this.setNoteList(fragmentView);
-        // 设置笔记本列表显示内容
-        setNotebookList(fragmentView);
 
         // 设置监听
         ImageButton btnDrawerOpen = fragmentView.findViewById(R.id.btn_drawer_open);
@@ -78,10 +76,10 @@ public class NoteBrowserFragment extends Fragment implements View.OnClickListene
 
     private void setNotebookList(View fragmentView) {
         ListView noteBookListView = fragmentView.findViewById(R.id.list_notebook);
-        List<NoteBook> noteBookList = new ArrayList<>();
-        noteBookList.add(new NoteBook("测试1", 0));
-        noteBookList.add(new NoteBook("测试2", 0));
-        NoteBookListAdapter adapter = new NoteBookListAdapter(getContext(), R.layout.item_notebook_list, noteBookList);
+        List<Notebook> notebookList = new ArrayList<>();
+        notebookList.add(new Notebook("测试1", 0));
+        notebookList.add(new Notebook("测试2", 0));
+        NoteBookListAdapter adapter = new NoteBookListAdapter(getContext(), R.layout.item_notebook_list, notebookList);
         noteBookListView.setAdapter(adapter);
     }
 
