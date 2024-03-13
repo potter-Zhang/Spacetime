@@ -13,5 +13,7 @@
     <!--确认对话框-->
     <string name="delete_warn">确定要删除吗？</string>
     <string name="delete_confirm">删除</string>
+
     <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
 </resources>

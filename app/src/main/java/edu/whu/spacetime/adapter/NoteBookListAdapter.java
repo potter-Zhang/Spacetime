@@ -49,6 +49,10 @@ public class NoteBookListAdapter extends ArrayAdapter<NoteBook> {
             notebookList.remove(noteBook);
             notifyDataSetChanged();
         });
+        popup.setRenameListener(t -> {
+            noteBook.setName(t);
+            notifyDataSetChanged();
+        });
         btnMore.setOnClickListener(v -> builder.asCustom(popup).show());
         return view;
     }

@@ -12,4 +12,6 @@
 
     <!--笔记本侧边栏颜色配置-->
     <color name="notebook_name_color">#FF000000</color>
+
+    <color name="dark_yellow">#FFCCB416</color>
 </resources>
