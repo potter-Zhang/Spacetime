@@ -5,5 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.Spacetime" parent="Base.Theme.Spacetime" />
+    <style name="Theme.Spacetime" parent="XUITheme.Phone">
+        <item name="xui_actionbar_color">@color/main_theme</item>
+    </style>
 </resources>

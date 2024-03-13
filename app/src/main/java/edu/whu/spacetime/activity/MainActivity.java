@@ -27,13 +27,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initNavigation();
-        initViewPager();
+        // initNavigation();
+        // initViewPager();
     }
 
     private void initViewPager() {
         viewpager = findViewById(R.id.id_viewpager);
         ArrayList<Fragment> fragments = new ArrayList<>();
+        // 在这里添加fragment
         fragments.add(UserFragment.newInstance());
         fragments.add(UserFragment.newInstance());
         fragments.add(UserFragment.newInstance());
