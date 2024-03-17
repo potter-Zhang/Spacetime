@@ -1,4 +1,4 @@
-package edu.whu.spacetime;
+package edu.whu.spacetime.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

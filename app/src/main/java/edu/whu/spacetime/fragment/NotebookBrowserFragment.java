@@ -19,10 +19,17 @@ import edu.whu.spacetime.R;
 import edu.whu.spacetime.adapter.NoteBookListAdapter;
 import edu.whu.spacetime.domain.Notebook;
 
-public class NotebookBrowserFragment extends Fragment {
+public class NotebookBrowserFragment extends Fragment implements View.OnClickListener {
 
-    // 自定义切换笔记本监听器
-    private interface OnNotebookChangedListener {
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btn_create_notebook) {
+            // 新建笔记本
+        }
+    }
+
+    // 自定义笔记本切换事件监听器
+    public interface OnNotebookChangedListener {
         void OnNotebookChanged(Notebook newNotebook);
     }
 
@@ -47,6 +54,9 @@ public class NotebookBrowserFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_notebook_browser, container, false);
         setNotebookList(fragmentView);
+
+        // 设置监听
+        fragmentView.findViewById(R.id.btn_create_notebook).setOnClickListener(this);
         return fragmentView;
     }
 

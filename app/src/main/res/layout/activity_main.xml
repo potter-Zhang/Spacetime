@@ -13,9 +13,14 @@
         android:orientation="vertical"
         tools:context=".MainActivity">
 
+<!--        <fragment-->
+<!--            android:id="@+id/frag_note"-->
+<!--            android:name="edu.whu.spacetime.fragment.UserFragment"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"/>-->
         <fragment
             android:id="@+id/frag_note"
-            android:name="edu.whu.spacetime.fragment.UserFragment"
+            android:name="edu.whu.spacetime.fragment.NoteBrowserFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

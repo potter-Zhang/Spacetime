@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,9 +61,17 @@ public class NoteBrowserFragment extends Fragment implements View.OnClickListene
         // 设置笔记列表显示内容
         this.setNoteList(fragmentView);
 
+        NotebookBrowserFragment notebookFragment = registerNotebookFragment();
+
         // 设置监听
         ImageButton btnDrawerOpen = fragmentView.findViewById(R.id.btn_drawer_open);
         btnDrawerOpen.setOnClickListener(this);
+
+        notebookFragment.setOnNotebookChangedListener(newNotebook -> {
+            // 显示该笔记本中的笔记
+            drawer.close();
+        });
+
         return fragmentView;
     }
 
@@ -74,13 +84,14 @@ public class NoteBrowserFragment extends Fragment implements View.OnClickListene
         noteListView.setAdapter(listAdapter);
     }
 
-    private void setNotebookList(View fragmentView) {
-        ListView noteBookListView = fragmentView.findViewById(R.id.list_notebook);
-        List<Notebook> notebookList = new ArrayList<>();
-        notebookList.add(new Notebook("测试1", 0));
-        notebookList.add(new Notebook("测试2", 0));
-        NoteBookListAdapter adapter = new NoteBookListAdapter(getContext(), R.layout.item_notebook_list, notebookList);
-        noteBookListView.setAdapter(adapter);
+    // 动态注册笔记本侧边栏
+    private NotebookBrowserFragment registerNotebookFragment() {
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fs = fragmentManager.beginTransaction();
+        NotebookBrowserFragment notebookFragment = new NotebookBrowserFragment();
+        fs.add(R.id.container_notebook, notebookFragment);
+        fs.commit();
+        return notebookFragment;
     }
 
     @Override
