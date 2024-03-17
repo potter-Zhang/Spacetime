@@ -9,6 +9,7 @@ import com.lxj.xpopup.core.AttachPopupView;
 
 import edu.whu.spacetime.R;
 
+// 在NoteBookListAdapter中使用
 public class NoteBookPopupMenu extends AttachPopupView  {
 
     // 自定义删除事件

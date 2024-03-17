@@ -1,5 +1,6 @@
 package edu.whu.spacetime.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -10,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -18,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.activity.EditorActivity;
+import edu.whu.spacetime.activity.UserSettingActivity;
 import edu.whu.spacetime.adapter.NoteBookListAdapter;
 import edu.whu.spacetime.adapter.NoteListAdapter;
 import edu.whu.spacetime.domain.Note;
@@ -82,6 +86,15 @@ public class NoteBrowserFragment extends Fragment implements View.OnClickListene
         noteList.add(new Note("测试2", 0, 0, "测试内容", LocalDateTime.now()));
         NoteListAdapter listAdapter = new NoteListAdapter(getContext(), R.layout.item_note_list, noteList);
         noteListView.setAdapter(listAdapter);
+
+        noteListView.setOnItemClickListener((parent, view, position, id) -> {
+            Note note = (Note)parent.getItemAtPosition(position);
+            Intent intent = new Intent(getActivity(), EditorActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("note", note);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        });
     }
 
     // 动态注册笔记本侧边栏
