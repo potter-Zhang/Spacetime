@@ -1,22 +1,13 @@
 package edu.whu.spacetime.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
-import java.util.ArrayList;
-
-import edu.whu.spacetime.MyFragmentPagerAdapter;
 import edu.whu.spacetime.R;
-import edu.whu.spacetime.fragment.UserFragment;
 
 public class MainActivity extends AppCompatActivity {
 

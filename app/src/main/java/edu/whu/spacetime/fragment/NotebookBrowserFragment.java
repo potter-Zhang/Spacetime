@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.interfaces.OnInputConfirmListener;
 import com.xuexiang.xui.widget.toast.XToast;
 
 import java.util.ArrayList;
@@ -18,11 +20,14 @@ import java.util.List;
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.adapter.NoteBookListAdapter;
 import edu.whu.spacetime.domain.Notebook;
+import edu.whu.spacetime.widget.InputDialog;
 
 public class NotebookBrowserFragment extends Fragment {
 
-    // 自定义切换笔记本监听器
-    private interface OnNotebookChangedListener {
+    private NoteBookListAdapter adapter;
+
+    // 自定义笔记本切换事件监听器
+    public interface OnNotebookChangedListener {
         void OnNotebookChanged(Notebook newNotebook);
     }
 
@@ -47,6 +52,12 @@ public class NotebookBrowserFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_notebook_browser, container, false);
         setNotebookList(fragmentView);
+
+        // 设置监听
+        fragmentView.findViewById(R.id.btn_create_notebook).setOnClickListener(v -> {
+            // 新建
+            this.openInputDialog();
+        });
         return fragmentView;
     }
 
@@ -56,7 +67,7 @@ public class NotebookBrowserFragment extends Fragment {
         List<Notebook> notebookList = new ArrayList<>();
         notebookList.add(new Notebook("测试1", 0));
         notebookList.add(new Notebook("测试2", 0));
-        NoteBookListAdapter adapter = new NoteBookListAdapter(getContext(), R.layout.item_notebook_list, notebookList);
+        adapter = new NoteBookListAdapter(getContext(), R.layout.item_notebook_list, notebookList);
         notebookListView.setAdapter(adapter);
 
         notebookListView.setOnItemClickListener((parent, view, position, id) -> {
@@ -66,5 +77,19 @@ public class NotebookBrowserFragment extends Fragment {
                 notebookChangedListener.OnNotebookChanged(notebook);
             }
         });
+    }
+
+    private void openInputDialog() {
+        InputDialog inputDialog = new InputDialog(getContext(), true);
+        inputDialog.setOnInputConfirmListener(text -> {
+            Notebook newNotebook = new Notebook();
+            newNotebook.setName(text);
+            adapter.add(newNotebook);
+            adapter.notifyDataSetChanged();
+        });
+        new XPopup.Builder(getContext())
+                .isDestroyOnDismiss(true)
+                .asCustom(inputDialog)
+                .show();
     }
 }

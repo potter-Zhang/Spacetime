@@ -8,6 +8,7 @@
     android:gravity="center"
     android:padding="25dp">
     <TextView
+        android:id="@+id/tv_input_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
@@ -15,7 +16,7 @@
         android:layout_marginBottom="20dp"
         android:text="@string/rename"/>
     <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
-        android:id="@+id/edit_rename_input"
+        android:id="@+id/edit_input"
         android:layout_width="200dp"
         android:layout_height="40dp"
         android:layout_marginBottom="20dp"
@@ -23,7 +24,7 @@
         app:met_clearButton="true"
         app:met_underlineColor="@color/dark_yellow" />
     <TextView
-        android:id="@+id/btn_confirm_rename"
+        android:id="@+id/btn_confirm_input"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -34,7 +35,7 @@
         android:textColor="@color/dark_yellow"
         android:background="@drawable/shape_yellow_border"/>
     <TextView
-        android:id="@+id/btn_cancel_rename"
+        android:id="@+id/btn_cancel_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/cancel"
