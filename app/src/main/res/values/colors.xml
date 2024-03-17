@@ -6,6 +6,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="light_gray">#DDDFE5</color>
+    <!--pdf红-->
+    <color name="pdf_red">#E80013</color>
+    <!--ppt红-->
+    <color name="ppt_red">#B74729</color>
+    <!--音频蓝-->
+    <color name="audio_blue">#00A9ff</color>
     <!--按下时的背景色-->
     <color name="pressed_gray">#88DDDFE5</color>
     <color name="theme_color">#A5D63F</color>

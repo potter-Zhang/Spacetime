@@ -1,26 +1,55 @@
 package edu.whu.spacetime.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.xuexiang.xui.widget.imageview.IconImageView;
+
+import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.activity.UserAccountActivity;
+import edu.whu.spacetime.activity.UserSettingActivity;
+import edu.whu.spacetime.util.PickUtils;
+import edu.whu.spacetime.util.ResultContract;
+import edu.whu.spacetime.widget.ImportDialog;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link UserFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserFragment extends Fragment implements View.OnClickListener{
-
+public class UserFragment extends Fragment implements View.OnClickListener {
+    public static final String PPT = "application/vnd.ms-powerpoint";
+    public static final String PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    public static final String PDF = "application/pdf";
+    public static final String AUDIO = "";
     private View rootView;
-    private RelativeLayout account_btn;
+    private CircleImageView user_profile;
+    private RelativeLayout account_btn, user_setting_btn, user_collection_btn, user_update_btn;
+    private IconImageView setting_button;
+    private AlertDialog import_popUp;
+    private View importWindow;
+    private Uri uri;
+
 
     public UserFragment() {
         // Required empty public constructor
@@ -59,16 +88,71 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     }
 
     private void initView() {
+        user_profile = rootView.findViewById(R.id.user_profile);
         account_btn = rootView.findViewById(R.id.user_account_btn);
+        setting_button = rootView.findViewById(R.id.user_setting);
+        user_setting_btn = rootView.findViewById(R.id.user_setting_btn);
+        user_collection_btn = rootView.findViewById(R.id.user_collection_btn);
+        user_update_btn = rootView.findViewById(R.id.user_checkUpdate_btn);
 
+        user_profile.setOnClickListener(this);
         account_btn.setOnClickListener(this);
+        setting_button.setOnClickListener(this);
+        user_setting_btn.setOnClickListener(this);
+        user_collection_btn.setOnClickListener(this);
+        user_update_btn.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         int vId = v.getId();
-        if (vId == R.id.user_account_btn) {
+        if (vId == R.id.user_account_btn || vId == R.id.user_profile) {
+            Intent intent2 = new Intent(getContext(), UserAccountActivity.class);
+            startActivity(intent2);
+        }
+        else if (vId == R.id.user_setting || vId == R.id.user_setting_btn) {
+            Intent intent2 = new Intent(getContext(), UserSettingActivity.class);
+            startActivity(intent2);
+        }
+        else if (vId == R.id.user_collection_btn){
+            ImportDialog dialogView = new ImportDialog(getActivity(), this);
+            dialogView.setCanceledOnTouchOutside(true);
+            dialogView.setOnChooseFileListener(type -> {
+                openFolder(type);
+            });
+            dialogView.show();
+        }
+        else if (vId == R.id.user_checkUpdate_btn) {
+            Toast.makeText(getContext() ,"您已经是最新版本", Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    void openFolder(String str) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        if (str.equals("pdf")) {
+            intent.setType(PDF);
+        }
+        else if (str.equals("ppt")) {
+            intent.setType(PPT);
+        }
+        else if (str.equals("audio")) {
+            intent.setType("*/*");
+        }
+
+        startActivityForResult(intent, 0);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
+            // The document selected by the user won't be returned in the intent.
+            // Instead, a URI to that document will be contained in the return intent
+            // provided to this method as a parameter.
+            // Pull that URI using resultData.getData().
+            if (resultData != null) {
+                uri = resultData.getData();
+            }
         }
     }
 }
