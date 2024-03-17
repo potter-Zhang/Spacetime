@@ -45,34 +45,43 @@ public class NoteBookPopupMenu extends AttachPopupView  {
     @Override
     protected void onCreate() {
         super.onCreate();
+
         // 重命名
         findViewById(R.id.tv_rename).setOnClickListener(v -> {
-            RenameDialog renameDialog = new RenameDialog(getContext());
-            renameDialog.setOnInputConfirmListener(t -> {
-                // 确认后触发重命名事件
-                if (this.renameListener != null)
-                    renameListener.OnRename(t);
-            });
-            new XPopup.Builder(getContext())
-                    .isDestroyOnDismiss(true)
-                    .asCustom(renameDialog)
-                    .show();
-            dismiss();
+            openRenameDialog();
         });
 
         // 删除
         findViewById(R.id.tv_delete).setOnClickListener(v -> {
-            ConfirmDeleteDialog deleteDialog = new ConfirmDeleteDialog(getContext());
-            deleteDialog.setOnConfirmListener(() -> {
-                // 确认后触发OnDelete事件
-                if (deleteListener != null)
-                    deleteListener.OnDelete();
-            });
-            new XPopup.Builder(getContext())
-                    .isDestroyOnDismiss(true)
-                    .asCustom(deleteDialog)
-                    .show();
-            dismiss();
+            openDeleteDialog();
         });
+    }
+
+    private void openRenameDialog() {
+        InputDialog inputDialog = new InputDialog(getContext(), false);
+        inputDialog.setOnInputConfirmListener(t -> {
+            // 确认后触发重命名事件
+            if (this.renameListener != null)
+                renameListener.OnRename(t);
+        });
+        new XPopup.Builder(getContext())
+                .isDestroyOnDismiss(true)
+                .asCustom(inputDialog)
+                .show();
+        dismiss();
+    }
+
+    private void openDeleteDialog() {
+        ConfirmDeleteDialog deleteDialog = new ConfirmDeleteDialog(getContext());
+        deleteDialog.setOnConfirmListener(() -> {
+            // 确认后触发OnDelete事件
+            if (deleteListener != null)
+                deleteListener.OnDelete();
+        });
+        new XPopup.Builder(getContext())
+                .isDestroyOnDismiss(true)
+                .asCustom(deleteDialog)
+                .show();
+        dismiss();
     }
 }
