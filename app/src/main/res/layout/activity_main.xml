@@ -13,33 +13,28 @@
         android:orientation="vertical"
         tools:context=".MainActivity">
 
-        <fragment
-            android:id="@+id/frag_note"
-            android:name="edu.whu.spacetime.fragment.UserFragment"
+
+
+        <androidx.viewpager2.widget.ViewPager2
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/id_viewpager"/>
 
 
-<!--        <androidx.viewpager2.widget.ViewPager2-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:layout_weight="1"-->
-<!--            android:id="@+id/id_viewpager"/>-->
-
-
-<!--        <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--            android:id="@+id/nav_view"-->
-<!--            android:layout_gravity="bottom"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            app:itemIconSize="28dp"-->
-<!--            android:textSize="20sp"-->
-<!--            app:labelVisibilityMode="labeled"-->
-<!--            android:background="?android:attr/windowBackground"-->
-<!--            app:itemTextAppearanceInactive="@color/design_default_color_background"-->
-<!--            app:menu="@menu/bottom_nav_menu"/>-->
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/nav_view"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            app:itemIconSize="28dp"
+            android:textSize="20sp"
+            app:labelVisibilityMode="labeled"
+            android:background="?android:attr/windowBackground"
+            app:itemTextAppearanceInactive="@color/design_default_color_background"
+            app:menu="@menu/bottom_nav_menu"/>
 
     </LinearLayout>
 </layout>
