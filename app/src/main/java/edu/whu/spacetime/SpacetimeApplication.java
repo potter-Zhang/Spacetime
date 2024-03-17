@@ -6,9 +6,13 @@ import android.provider.DocumentsContract;
 import androidx.room.Room;
 
 import edu.whu.spacetime.database.NoteDatabase;
+import edu.whu.spacetime.database.NotebookDatabase;
 
 public class SpacetimeApplication  extends Application {
     private static SpacetimeApplication app;
+
+    // 笔记本数据库对象
+    private NotebookDatabase notebookDatabase;
 
     // 笔记数据库对象
     private NoteDatabase noteDatabase;
@@ -27,6 +31,7 @@ public class SpacetimeApplication  extends Application {
         app = this;
 
         // 构建数据库实例
+        notebookDatabase = Room.databaseBuilder(this, NotebookDatabase.class, "notebook").build();
         noteDatabase = Room.databaseBuilder(this, NoteDatabase.class, "note").build();
     }
 }

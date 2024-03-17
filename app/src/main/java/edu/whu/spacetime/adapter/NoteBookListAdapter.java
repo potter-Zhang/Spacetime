@@ -43,6 +43,8 @@ public class NoteBookListAdapter extends ArrayAdapter<Notebook> {
         View btnMore = view.findViewById(R.id.btn_more);
         final XPopup.Builder builder = new XPopup.Builder(getContext()).watchView(btnMore);
         NoteBookPopupMenu popup = new NoteBookPopupMenu(getContext());
+
+        // 设置弹出菜单按钮的点击事件
         popup.setDeleteListener(() -> {
             notebookList.remove(noteBook);
             notifyDataSetChanged();

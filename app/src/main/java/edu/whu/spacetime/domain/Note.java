@@ -3,7 +3,6 @@ package edu.whu.spacetime.domain;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 
 import java.time.LocalDateTime;
@@ -13,7 +12,7 @@ import edu.whu.spacetime.domain.typeConverter.MyTypeConverter;
 @Entity
 public class Note {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private int noteId;
 
     private String title;
 
@@ -40,7 +39,7 @@ public class Note {
 
     @Ignore
     public Note(int id, String title, int userId, int notebookId, String content, LocalDateTime createTime) {
-        this.id = id;
+        this.noteId = id;
         this.title = title;
         this.userId = userId;
         this.notebookId = notebookId;
@@ -48,12 +47,12 @@ public class Note {
         this.createTime = createTime;
     }
 
-    public int getId() {
-        return id;
+    public int getNoteId() {
+        return noteId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setNoteId(int noteId) {
+        this.noteId = noteId;
     }
 
     public String getTitle() {

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.TodoBrowserFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--头部action bar-->
+        <GridLayout
+            android:id="@+id/browse_action_bar"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@color/main_theme"
+            android:columnCount="4"
+            android:rowCount="1"
+            android:padding="7dp"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_gravity="center|left"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="fitCenter"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/icon_list"
+                tools:ignore="RtlHardcoded"/>
+            <LinearLayout
+                android:layout_gravity="center|left"
+                android:layout_column="1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="待办"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="28sp"/>
+                <TextView
+                    android:id="@+id/tv_todo_numOfTodo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="17sp"
+                    android:text="x条待办" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_column="1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <ImageButton
+                    android:layout_column="3"
+                    android:layout_gravity="center|right"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="fitCenter"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/icon_search"
+                    tools:ignore="RtlHardcoded"/>
+                <ImageButton
+                    android:layout_column="3"
+                    android:layout_gravity="center|right"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="fitCenter"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/icon_add"
+                    tools:ignore="RtlHardcoded"/>
+            </LinearLayout>
+        </GridLayout>
+        <ListView
+            android:id="@+id/list_todo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="1dp"
+            android:divider="@color/light_gray"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="--已完成--"
+            android:gravity="center_horizontal"
+            />
+
+        <ListView
+            android:id="@+id/list_todo_ok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="1dp"
+            android:divider="@color/light_gray"/>
+
+
+    </LinearLayout>
+</FrameLayout>

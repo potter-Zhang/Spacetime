@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 @Entity
 public class Notebook {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private int notebookId;
 
     private String name;
 
@@ -22,12 +22,12 @@ public class Notebook {
         this.userId = userId;
     }
 
-    public int getId() {
-        return id;
+    public int getNotebookId() {
+        return notebookId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setNotebookId(int notebookId) {
+        this.notebookId = notebookId;
     }
 
     public String getName() {

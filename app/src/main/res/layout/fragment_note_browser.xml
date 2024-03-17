@@ -113,10 +113,16 @@
     </RelativeLayout>
 
     <!--侧滑页面-->
-    <fragment
-        android:name="edu.whu.spacetime.fragment.NotebookBrowserFragment"
+    <FrameLayout
+        android:id="@+id/container_notebook"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="start" />
+        android:layout_gravity="start"/>
+<!--    <fragment-->
+<!--        android:id="@+id/fragment_notebook"-->
+<!--        android:name="edu.whu.spacetime.fragment.NotebookBrowserFragment"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_gravity="start" />-->
 
 </androidx.drawerlayout.widget.DrawerLayout>
