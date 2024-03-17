@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_popup_menu"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="25dp">
+
+    <TextView
+        android:id="@+id/tv_input_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="待办"
+        android:textColor="@color/black"
+        android:textSize="25sp" />
+
+    <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
+        android:id="@+id/edit_todo_title"
+        android:layout_width="270dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="20dp"
+        app:met_baseColor="@color/dark_yellow"
+        app:met_clearButton="true"
+        app:met_underlineColor="@color/dark_yellow"
+        android:hint="请输入事件名"/>
+    <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
+        android:id="@+id/edit_todo_addr"
+        android:layout_width="270dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="20dp"
+        app:met_baseColor="@color/dark_yellow"
+        app:met_clearButton="true"
+        app:met_underlineColor="@color/dark_yellow"
+        android:hint="请输入地点"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:id="@+id/btn_todo_set_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:background="@drawable/shape_yellow_border"
+            android:gravity="center_horizontal"
+            android:padding="10dp"
+            android:text="@string/confirm"
+            android:textColor="@color/dark_yellow"
+            android:textSize="20sp"
+            tools:ignore="RtlHardcoded"
+            android:layout_weight="1"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/btn_todo_set_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:textSize="20sp"
+            android:background="@drawable/shape_red_border"
+            android:layout_marginBottom="0dp"
+            android:padding="10dp"
+            android:textColor="@color/xui_config_color_red"
+            android:gravity="center_horizontal"
+            android:layout_weight="1"
+            android:textAlignment="center"/>
+    </LinearLayout>
+</LinearLayout>

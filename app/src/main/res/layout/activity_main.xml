@@ -15,7 +15,7 @@
 
         <fragment
             android:id="@+id/frag_note"
-            android:name="edu.whu.spacetime.fragment.UserFragment"
+            android:name="edu.whu.spacetime.fragment.TodoBrowserFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

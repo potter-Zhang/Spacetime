@@ -22,12 +22,13 @@ import edu.whu.spacetime.R;
 import edu.whu.spacetime.domain.Todo;
 import edu.whu.spacetime.fragment.TodoBrowserFragment;
 import edu.whu.spacetime.widget.NoteBookPopupMenu;
+import edu.whu.spacetime.widget.TodoSetPopup;
 
 public class TodoListAdapter extends ArrayAdapter<Todo> {
     private int resourceId;
 
     private List<Todo> todoList;
-    private List<Todo> todoList_ano;
+
     private TodoBrowserFragment Todo_view;
 
     boolean type_ok;
@@ -62,6 +63,15 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Todo_view.moveToAno(todo,type_ok);
+            }
+        });
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new XPopup.Builder(getContext())
+                        .asCustom(new TodoSetPopup(getContext()))
+                        .show();
             }
         });
         return view;
