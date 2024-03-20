@@ -1,5 +1,6 @@
 package edu.whu.spacetime.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -23,8 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.activity.EditorActivity;
 import edu.whu.spacetime.adapter.NoteListAdapter;
+import edu.whu.spacetime.dao.NoteDao;
 import edu.whu.spacetime.domain.Note;
 
 import edu.whu.spacetime.widget.ImportDialog;
@@ -38,6 +41,8 @@ public class NoteBrowserFragment extends Fragment {
     public static final String AUDIO = "";
 
     private View fragmentView;
+
+    private NoteDao noteDao;
 
     // 抽屉
     private DrawerLayout drawer;
@@ -54,6 +59,7 @@ public class NoteBrowserFragment extends Fragment {
         // Required empty public constructor
     }
 
+    // 由MainActivity负责将默认笔记本传入
     public static NoteBrowserFragment newInstance(Notebook notebook) {
         NoteBrowserFragment fragment = new NoteBrowserFragment();
         Bundle args = new Bundle();
@@ -68,6 +74,7 @@ public class NoteBrowserFragment extends Fragment {
         if (getArguments() != null) {
             currentNotebook = (Notebook) getArguments().getSerializable(ARG_NOTEBOOK);
         }
+        this.noteDao = SpacetimeApplication.getInstance().getDatabase().getNoteDao();
     }
 
     @Override
@@ -85,7 +92,7 @@ public class NoteBrowserFragment extends Fragment {
         this.notebookBrowserFragment = registerNotebookFragment();
 
         // 设置笔记列表显示内容
-        this.setNoteList(fragmentView);
+        this.setNoteList();
 
         // 设置监听
         ImageButton btnDrawerOpen = fragmentView.findViewById(R.id.btn_drawer_open);
@@ -113,14 +120,16 @@ public class NoteBrowserFragment extends Fragment {
     }
 
     // 设置要展示的笔记
-    private void setNoteList(View fragmentView) {
+    private void setNoteList() {
         ListView noteListView = fragmentView.findViewById(R.id.list_note);
         List<Note> noteList = new ArrayList<>();
         noteList.add(new Note("测试1", 0, 0, "测试内容", LocalDateTime.now()));
         noteList.add(new Note("测试2", 0, 0, "测试内容", LocalDateTime.now()));
+        // List<Note> noteList = noteDao.queryAllInNotebook(currentNotebook.getNotebookId());
         NoteListAdapter listAdapter = new NoteListAdapter(getContext(), R.layout.item_note_list, noteList);
         noteListView.setAdapter(listAdapter);
-
+        TextView tvNotebookNumber = fragmentView.findViewById(R.id.tv_notebookNumber);
+        tvNotebookNumber.setText(String.format("共%d篇笔记", noteList.size()));
         noteListView.setOnItemClickListener((parent, view, position, id) -> {
             Note note = (Note)parent.getItemAtPosition(position);
             jump2Editor(note);
@@ -146,6 +155,7 @@ public class NoteBrowserFragment extends Fragment {
             // 显示该笔记本中的笔记
             this.currentNotebook = newNotebook;
             tvNotebookName.setText(newNotebook.getName());
+            this.setNoteList();
             drawer.close();
         });
         return notebookFragment;

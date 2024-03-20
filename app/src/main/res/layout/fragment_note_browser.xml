@@ -57,6 +57,7 @@
                         android:layout_height="5dp"
                         android:background="@color/black"/>
                     <TextView
+                        android:id="@+id/tv_notebookNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="共7篇笔记" />
