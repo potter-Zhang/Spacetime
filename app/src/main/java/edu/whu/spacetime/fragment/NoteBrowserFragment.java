@@ -3,12 +3,15 @@ package edu.whu.spacetime.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,6 +34,8 @@ public class NoteBrowserFragment extends Fragment implements View.OnClickListene
     private static final String ARG_NOTEBOOK = "notebookId";
 
     private DrawerLayout drawer;
+
+    private NotebookBrowserFragment notebookBrowserFragment;
 
     private String mParam1;
     private String mParam2;
@@ -65,18 +70,24 @@ public class NoteBrowserFragment extends Fragment implements View.OnClickListene
         // 设置笔记列表显示内容
         this.setNoteList(fragmentView);
 
-        NotebookBrowserFragment notebookFragment = registerNotebookFragment();
+        this.notebookBrowserFragment = registerNotebookFragment();
 
         // 设置监听
         ImageButton btnDrawerOpen = fragmentView.findViewById(R.id.btn_drawer_open);
         btnDrawerOpen.setOnClickListener(this);
 
-        notebookFragment.setOnNotebookChangedListener(newNotebook -> {
+        this.notebookBrowserFragment.setOnNotebookChangedListener(newNotebook -> {
             // 显示该笔记本中的笔记
             drawer.close();
         });
 
         return fragmentView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.notebookBrowserFragment = registerNotebookFragment();
     }
 
     private void setNoteList(View fragmentView) {

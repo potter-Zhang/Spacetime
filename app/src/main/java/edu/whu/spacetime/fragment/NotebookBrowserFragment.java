@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +56,7 @@ public class NotebookBrowserFragment extends Fragment {
 
         // 设置监听
         fragmentView.findViewById(R.id.btn_create_notebook).setOnClickListener(v -> {
-            // 新建
+            // 弹出新建对话框
             this.openInputDialog();
         });
         return fragmentView;
