@@ -24,24 +24,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.SpacetimeApplication;
+import edu.whu.spacetime.dao.TodoDao;
 import edu.whu.spacetime.domain.Todo;
 import edu.whu.spacetime.fragment.TodoBrowserFragment;
 
 public class TodoSetPopup extends CenterPopupView {
-    private TodoBrowserFragment todoBrowserFragment;
-    private boolean type;
+    private final TodoBrowserFragment todoBrowserFragment;
     private Todo todo = null;
+    private final TodoDao todoDao = SpacetimeApplication.getInstance().getDatabase().getTodoDao();
     DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd   HH:mm");
     //注意：自定义弹窗本质是一个自定义View，但是只需重写一个参数的构造，其他的不要重写，所有的自定义弹窗都是这样。
-    public TodoSetPopup(@NonNull Context context, TodoBrowserFragment todoBrowserFragment , boolean type) {
+    public TodoSetPopup(@NonNull Context context, TodoBrowserFragment todoBrowserFragment ) {
         super(context);
         this.todoBrowserFragment = todoBrowserFragment;
-        this.type = type;
     }
-    public TodoSetPopup(@NonNull Context context, TodoBrowserFragment todoBrowserFragment , boolean type,Todo todo) {
+    public TodoSetPopup(@NonNull Context context, TodoBrowserFragment todoBrowserFragment ,Todo todo) {
         super(context);
         this.todoBrowserFragment = todoBrowserFragment;
-        this.type = type;
         this.todo = todo;
     }
     // 返回自定义弹窗的布局
@@ -88,7 +88,6 @@ public class TodoSetPopup extends CenterPopupView {
                                 TextView tv = findViewById(R.id.tv_todo_set_time);
                                 tv.setText(localDateTime.format(df));
                             }
-
                             @Override
                             public void onCancel() {
 
@@ -96,8 +95,8 @@ public class TodoSetPopup extends CenterPopupView {
                         });
                 popup.setMode(TimePickerPopup.Mode.YMDHM);
                 popup.dividerColor=R.color.light_gray;
+                popup.setShowLabel(true);
                 popup.setItemTextSize(20);
-
                 new XPopup.Builder(getContext())
                         .asCustom(popup)
                         .show();
@@ -111,10 +110,18 @@ public class TodoSetPopup extends CenterPopupView {
                 EditText edt_addr = findViewById(R.id.edit_todo_addr);
                 TextView tv_time = findViewById(R.id.tv_todo_set_time);
                 if(edt_title.getText().toString().isEmpty()){
-                    Toast.makeText(getContext(),"请输入事件名",Toast.LENGTH_SHORT);
+                    Toast.makeText(getContext(),"请输入事件名",Toast.LENGTH_SHORT).show();
                 }else{
-                    Todo todo = new Todo(0001,0001,edt_title.getText().toString(),edt_addr.getText().toString(),LocalDateTime.parse(tv_time.getText().toString(),df));
-                    todoBrowserFragment.addTodoItem(todo,type);
+                    Todo todo_t = new Todo(SpacetimeApplication.getInstance().getCurrentUser().getUserId(),edt_title.getText().toString(),edt_addr.getText().toString(),LocalDateTime.parse(tv_time.getText().toString(),df),false);
+                    if(todo!=null){
+                        todo_t.setTodoId(todo.getTodoId());
+                        todo_t.setChecked(todo.getChecked());
+                        todoDao.updateTodo(todo_t);
+                    }
+                    else{
+                        todoDao.insertTodo(todo_t);
+                    }
+                    todoBrowserFragment.refresh();
                     dismiss();
                 }
             }

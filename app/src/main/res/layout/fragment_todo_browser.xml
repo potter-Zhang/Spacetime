@@ -8,7 +8,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
 
         <!--头部action bar-->
         <GridLayout
@@ -21,7 +22,7 @@
             android:padding="7dp"
             android:orientation="vertical">
             <ImageView
-                android:layout_gravity="center|left"
+                android:layout_gravity="center_vertical|left"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:scaleType="fitCenter"
@@ -29,25 +30,29 @@
                 android:src="@drawable/icon_list"
                 tools:ignore="RtlHardcoded"/>
             <LinearLayout
-                android:layout_gravity="center|left"
                 android:layout_column="1"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:layout_gravity="left|center_vertical"
+                tools:ignore="RtlHardcoded">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="待办"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="28sp"/>
+                    android:textSize="28sp"
+                    android:layout_gravity="left"
+                    tools:ignore="RtlHardcoded" />
                 <TextView
                     android:id="@+id/tv_todo_numOfTodo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="17sp"
-                    android:text="x条待办" />
+                    android:text="x条待办"
+                    android:layout_gravity="left"
+                    tools:ignore="RtlHardcoded" />
             </LinearLayout>
 
             <LinearLayout
@@ -55,9 +60,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:layout_gravity="right"
+                android:gravity="center_vertical"
+                tools:ignore="RtlHardcoded">
                 <ImageButton
-                    android:layout_column="3"
                     android:layout_gravity="center|right"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
@@ -88,6 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="--已完成--"
+            android:textSize="20dp"
             android:gravity="center_horizontal"
             />
 

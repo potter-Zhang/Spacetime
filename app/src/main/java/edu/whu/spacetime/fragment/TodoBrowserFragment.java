@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.adapter.NoteBookListAdapter;
 import edu.whu.spacetime.adapter.NoteListAdapter;
 import edu.whu.spacetime.adapter.TodoListAdapter;
@@ -29,62 +30,60 @@ import edu.whu.spacetime.domain.Todo;
 import edu.whu.spacetime.widget.TodoSetPopup;
 
 public class TodoBrowserFragment extends Fragment {
-    private TodoListAdapter todoListAdapter;
-    private TodoListAdapter todoListAdapter_ok;
+    private TodoListAdapter todoListAdapter_unChecked;
+    private TodoListAdapter todoListAdapter_Checked;
+    private List<Todo> todoList_unChecked;
+    private List<Todo> todoList_Checked;
+    private View fragView;
+
     public TodoBrowserFragment(){
     }
-    public void moveToAno(Todo todo,boolean type){
-        if(type){
-            todoListAdapter.remove(todo);
-            todoListAdapter_ok.add(todo);
-        }else{
-            todoListAdapter_ok.remove(todo);
-            todoListAdapter.add(todo);
-        }
-    }
-    public void addTodoItem(Todo todo,boolean type){
-        if(type){
-            todoListAdapter.add(todo);
-        }else{
-            todoListAdapter_ok.add(todo);
-        }
-    }
+
     @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View fragView = inflater.inflate(R.layout.fragment_todo_browser,container,false);
-        setAddItemListener(fragView);
-        setTodoList(fragView);
+        fragView = inflater.inflate(R.layout.fragment_todo_browser,container,false);
+        setAddItemListener();
+        setTodoList();
         return fragView;
     }
-    private void setAddItemListener(View fragView){
+    private void setAddItemListener(){
         TodoBrowserFragment view = this;
         //add按钮
         fragView.findViewById(R.id.btn_todo_addItem).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new XPopup.Builder(getContext())
-                        .asCustom(new TodoSetPopup(getContext(),view,true))
+                        .asCustom(new TodoSetPopup(getContext(),view))
                         .show();
             }
         });
     }
-    private void setTodoList(View fragmentView) {
-        ListView todoListView = fragmentView.findViewById(R.id.list_todo);
-        ListView todoListView_ok = fragmentView.findViewById(R.id.list_todo_ok);
-        List<Todo> todoList = new ArrayList<>();
-        List<Todo> todoList_ok = new ArrayList<>();
-        todoList.add(new Todo(0,0,"测试1","didian", LocalDateTime.now()));
-        todoList.add(new Todo(0,0,"测试2","didian", LocalDateTime.now()));
+    private void setTodoList() {
+        ListView todoListView = fragView.findViewById(R.id.list_todo);
+        ListView todoListView_ok = fragView.findViewById(R.id.list_todo_ok);
+        int userId = SpacetimeApplication.getInstance().getCurrentUser().getUserId();
+        todoList_unChecked = SpacetimeApplication.getInstance().getDatabase().getTodoDao().getUnCheckedTodo(userId);
+        todoList_Checked = SpacetimeApplication.getInstance().getDatabase().getTodoDao().getCheckedTodo(userId);
 
-        todoList_ok.add(new Todo(0,0,"已完成","didian", LocalDateTime.now()));
-        TextView tv_numOfTodo = fragmentView.findViewById(R.id.tv_todo_numOfTodo);
-        tv_numOfTodo.setText(todoList.size() +" 条待办");
+        TextView tv_numOfTodo = fragView.findViewById(R.id.tv_todo_numOfTodo);
+        tv_numOfTodo.setText(String.valueOf(todoList_unChecked.size()).concat(" 条待办，").concat(String.valueOf(todoList_Checked.size())).concat(" 条已完成"));
 
-        todoListAdapter= new TodoListAdapter(getContext(), R.layout.item_todo_list, todoList, true,this);
-        todoListAdapter_ok= new TodoListAdapter(getContext(), R.layout.item_todo_list, todoList_ok, false,this);
-        todoListView.setAdapter(todoListAdapter);
-        todoListView_ok.setAdapter(todoListAdapter_ok);
+        todoListAdapter_unChecked= new TodoListAdapter(getContext(), R.layout.item_todo_list, todoList_unChecked, this);
+        todoListAdapter_Checked= new TodoListAdapter(getContext(), R.layout.item_todo_list, todoList_Checked, this);
+        todoListView.setAdapter(todoListAdapter_unChecked);
+        todoListView_ok.setAdapter(todoListAdapter_Checked);
+    }
+    public void refresh(){
+        int userId = SpacetimeApplication.getInstance().getCurrentUser().getUserId();
+        todoList_unChecked = SpacetimeApplication.getInstance().getDatabase().getTodoDao().getUnCheckedTodo(userId);
+        todoList_Checked = SpacetimeApplication.getInstance().getDatabase().getTodoDao().getCheckedTodo(userId);
+        TextView tv_numOfTodo = fragView.findViewById(R.id.tv_todo_numOfTodo);
+        tv_numOfTodo.setText(String.valueOf(todoList_unChecked.size()).concat(" 条待办，").concat(String.valueOf(todoList_Checked.size())).concat(" 条已完成"));
+        todoListAdapter_unChecked.clear();
+        todoListAdapter_unChecked.addAll(todoList_unChecked);
+        todoListAdapter_Checked.clear();
+        todoListAdapter_Checked.addAll(todoList_Checked);
     }
 }
