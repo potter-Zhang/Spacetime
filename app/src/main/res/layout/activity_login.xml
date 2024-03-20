@@ -54,12 +54,12 @@
     </LinearLayout>
     <Button
         android:id="@+id/btn_enter"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
-        android:text="直接进入"
+        android:text="直接进入\n仅调试时使用\n需要已注册一个用户"
         android:textSize="24sp"
         android:background="@drawable/selector_main_theme_btn"/>
 </LinearLayout>

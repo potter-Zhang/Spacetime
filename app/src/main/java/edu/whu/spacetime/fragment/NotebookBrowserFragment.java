@@ -72,9 +72,6 @@ public class NotebookBrowserFragment extends Fragment {
         ListView notebookListView = fragmentView.findViewById(R.id.list_notebook);
         List<Notebook> notebookList = notebookDao.getNotebooksByUserId(SpacetimeApplication
                 .getInstance().getCurrentUser().getUserId());
-//        List<Notebook> notebookList = new ArrayList<>();
-//        notebookList.add(new Notebook("测试1", 0));
-//        notebookList.add(new Notebook("测试2", 0));
         adapter = new NoteBookListAdapter(getContext(), R.layout.item_notebook_list, notebookList);
         notebookListView.setAdapter(adapter);
 

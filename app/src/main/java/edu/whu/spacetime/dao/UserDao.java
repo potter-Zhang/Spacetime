@@ -24,4 +24,8 @@ public interface UserDao {
 
     @Query("SELECT * FROM user WHERE username=:username")
     User getUserByName(String username);
+
+    // 用于直接进入app(仅调试时使用！)
+    @Query("SELECT * FROM user LIMIT 1")
+    User getSingleUser();
 }

@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         // 注册按钮
         findViewById(R.id.btn_register).setOnClickListener(v -> register());
         // 直接进入按钮
-        findViewById(R.id.btn_enter).setOnClickListener(v -> jump2Main());
+        findViewById(R.id.btn_enter).setOnClickListener(v -> direct());
     }
 
     private void login() {
@@ -73,6 +73,13 @@ public class LoginActivity extends AppCompatActivity {
         NotebookDao notebookDao = SpacetimeApplication.getInstance().getDatabase().getNotebookDao();
         Notebook defaultNotebook = new Notebook("全部笔记", newUser.getUserId());
         notebookDao.insertNotebook(defaultNotebook);
+        jump2Main();
+    }
+
+    private void direct() {
+        User user = userDao.getSingleUser();
+        if (user == null) return;
+        SpacetimeApplication.getInstance().setCurrentUser(user);
         jump2Main();
     }
 
