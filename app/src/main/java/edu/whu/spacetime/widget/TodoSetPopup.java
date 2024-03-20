@@ -1,18 +1,48 @@
 package edu.whu.spacetime.widget;
 
 import android.content.Context;
+import android.icu.util.Calendar;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.animator.PopupAnimator;
 import com.lxj.xpopup.core.CenterPopupView;
+import com.lxj.xpopupext.listener.TimePickerListener;
+import com.lxj.xpopupext.popup.TimePickerPopup;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.domain.Todo;
+import edu.whu.spacetime.fragment.TodoBrowserFragment;
 
 public class TodoSetPopup extends CenterPopupView {
+    private TodoBrowserFragment todoBrowserFragment;
+    private boolean type;
+    private Todo todo = null;
+    DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd   HH:mm");
     //注意：自定义弹窗本质是一个自定义View，但是只需重写一个参数的构造，其他的不要重写，所有的自定义弹窗都是这样。
-    public TodoSetPopup(@NonNull Context context) {
+    public TodoSetPopup(@NonNull Context context, TodoBrowserFragment todoBrowserFragment , boolean type) {
         super(context);
+        this.todoBrowserFragment = todoBrowserFragment;
+        this.type = type;
+    }
+    public TodoSetPopup(@NonNull Context context, TodoBrowserFragment todoBrowserFragment , boolean type,Todo todo) {
+        super(context);
+        this.todoBrowserFragment = todoBrowserFragment;
+        this.type = type;
+        this.todo = todo;
     }
     // 返回自定义弹窗的布局
     @Override
@@ -23,10 +53,70 @@ public class TodoSetPopup extends CenterPopupView {
     @Override
     protected void onCreate() {
         super.onCreate();
-        findViewById(R.id.btn_todo_set_cancle).setOnClickListener(new OnClickListener() {
+        TextView tv_time = findViewById(R.id.tv_todo_set_time);
+        if(todo == null){
+            tv_time.setText(LocalDateTime.now().format(df));
+        }
+        else{
+            EditText edt_title = findViewById(R.id.edit_todo_title);
+            EditText edt_addr = findViewById(R.id.edit_todo_addr);
+            edt_title.setText(todo.getTitle());
+            edt_addr.setText(todo.getAddr());
+            tv_time.setText(todo.getCreateTime().format(df));
+        }
+        findViewById(R.id.btn_todo_time).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss(); // 关闭弹窗
+                TimePickerPopup popup = new TimePickerPopup(getContext())
+                        .setTimePickerListener(new TimePickerListener() {
+                            @Override
+                            public void onTimeChanged(Date date) {
+                                //时间改变
+                                Instant instant = date.toInstant();
+                                ZoneId zoneId = ZoneId.systemDefault();
+
+                                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+                                Toast.makeText(getContext(), "选择的时间："+localDateTime.format(df), Toast.LENGTH_SHORT).show();
+                            }
+                            @Override
+                            public void onTimeConfirm(Date date, View view) {
+                                //点击确认时间
+                                Instant instant = date.toInstant();
+                                ZoneId zoneId = ZoneId.systemDefault();
+
+                                LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+                                TextView tv = findViewById(R.id.tv_todo_set_time);
+                                tv.setText(localDateTime.format(df));
+                            }
+
+                            @Override
+                            public void onCancel() {
+
+                            }
+                        });
+                popup.setMode(TimePickerPopup.Mode.YMDHM);
+                popup.dividerColor=R.color.light_gray;
+                popup.setItemTextSize(20);
+
+                new XPopup.Builder(getContext())
+                        .asCustom(popup)
+                        .show();
+            }
+        });
+        findViewById(R.id.btn_todo_set_confirm).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismissOrHideSoftInput();
+                EditText edt_title = findViewById(R.id.edit_todo_title);
+                EditText edt_addr = findViewById(R.id.edit_todo_addr);
+                TextView tv_time = findViewById(R.id.tv_todo_set_time);
+                if(edt_title.getText().toString().isEmpty()){
+                    Toast.makeText(getContext(),"请输入事件名",Toast.LENGTH_SHORT);
+                }else{
+                    Todo todo = new Todo(0001,0001,edt_title.getText().toString(),edt_addr.getText().toString(),LocalDateTime.parse(tv_time.getText().toString(),df));
+                    todoBrowserFragment.addTodoItem(todo,type);
+                    dismiss();
+                }
             }
         });
     }

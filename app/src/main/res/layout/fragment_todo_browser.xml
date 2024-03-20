@@ -66,6 +66,7 @@
                     android:src="@drawable/icon_search"
                     tools:ignore="RtlHardcoded"/>
                 <ImageButton
+                    android:id="@+id/btn_todo_addItem"
                     android:layout_column="3"
                     android:layout_gravity="center|right"
                     android:layout_width="40dp"

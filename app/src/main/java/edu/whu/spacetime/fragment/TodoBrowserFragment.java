@@ -1,5 +1,6 @@
 package edu.whu.spacetime.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.lxj.xpopup.XPopup;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,7 @@ import edu.whu.spacetime.adapter.TodoListAdapter;
 import edu.whu.spacetime.domain.Note;
 import edu.whu.spacetime.domain.Notebook;
 import edu.whu.spacetime.domain.Todo;
+import edu.whu.spacetime.widget.TodoSetPopup;
 
 public class TodoBrowserFragment extends Fragment {
     private TodoListAdapter todoListAdapter;
@@ -38,14 +42,34 @@ public class TodoBrowserFragment extends Fragment {
             todoListAdapter.add(todo);
         }
     }
+    public void addTodoItem(Todo todo,boolean type){
+        if(type){
+            todoListAdapter.add(todo);
+        }else{
+            todoListAdapter_ok.add(todo);
+        }
+    }
+    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View fragView = inflater.inflate(R.layout.fragment_todo_browser,container,false);
+        setAddItemListener(fragView);
         setTodoList(fragView);
         return fragView;
     }
-
+    private void setAddItemListener(View fragView){
+        TodoBrowserFragment view = this;
+        //add按钮
+        fragView.findViewById(R.id.btn_todo_addItem).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new XPopup.Builder(getContext())
+                        .asCustom(new TodoSetPopup(getContext(),view,true))
+                        .show();
+            }
+        });
+    }
     private void setTodoList(View fragmentView) {
         ListView todoListView = fragmentView.findViewById(R.id.list_todo);
         ListView todoListView_ok = fragmentView.findViewById(R.id.list_todo_ok);

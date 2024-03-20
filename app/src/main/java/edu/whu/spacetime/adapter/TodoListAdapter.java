@@ -59,6 +59,7 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
         tvTime.setText(todo.getCreateTime().toLocalDate().toString());
 
         CheckBox checkBox = view.findViewById(R.id.ckBox_todo_ok);
+        //勾选改变位置
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -66,11 +67,12 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
             }
         });
 
+        //添加点击事件，打开编辑弹窗
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new XPopup.Builder(getContext())
-                        .asCustom(new TodoSetPopup(getContext()))
+                        .asCustom(new TodoSetPopup(getContext(),Todo_view,type_ok,todo))
                         .show();
             }
         });
