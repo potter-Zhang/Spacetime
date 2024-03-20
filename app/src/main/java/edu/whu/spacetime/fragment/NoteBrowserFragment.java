@@ -2,21 +2,16 @@ package edu.whu.spacetime.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ListView;
 
-import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageButton;
-import android.widget.ListView;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,11 +19,8 @@ import java.util.List;
 
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.activity.EditorActivity;
-import edu.whu.spacetime.activity.UserSettingActivity;
-import edu.whu.spacetime.adapter.NoteBookListAdapter;
 import edu.whu.spacetime.adapter.NoteListAdapter;
 import edu.whu.spacetime.domain.Note;
-import edu.whu.spacetime.domain.Notebook;
 
 public class NoteBrowserFragment extends Fragment implements View.OnClickListener {
     private static final String ARG_NOTEBOOK = "notebookId";
