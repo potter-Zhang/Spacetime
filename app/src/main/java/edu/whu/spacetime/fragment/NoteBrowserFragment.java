@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -25,10 +26,12 @@ import edu.whu.spacetime.R;
 import edu.whu.spacetime.activity.EditorActivity;
 import edu.whu.spacetime.adapter.NoteListAdapter;
 import edu.whu.spacetime.domain.Note;
+
 import edu.whu.spacetime.widget.ImportDialog;
+import edu.whu.spacetime.domain.Notebook;
 
 public class NoteBrowserFragment extends Fragment {
-    private static final String ARG_NOTEBOOK = "notebookId";
+    private static final String ARG_NOTEBOOK = "notebook";
     public static final String PPT = "application/vnd.ms-powerpoint";
     public static final String PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
     public static final String PDF = "application/pdf";
@@ -40,17 +43,16 @@ public class NoteBrowserFragment extends Fragment {
 
     private NotebookBrowserFragment notebookBrowserFragment;
 
-    private String mParam1;
-    private String mParam2;
+    private Notebook currentNotebook;
 
     public NoteBrowserFragment() {
         // Required empty public constructor
     }
 
-    public static NoteBrowserFragment newInstance(int param1) {
+    public static NoteBrowserFragment newInstance(Notebook notebook) {
         NoteBrowserFragment fragment = new NoteBrowserFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_NOTEBOOK, param1);
+        args.putSerializable(ARG_NOTEBOOK, notebook);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,7 +61,7 @@ public class NoteBrowserFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_NOTEBOOK);
+            currentNotebook = (Notebook) getArguments().getSerializable(ARG_NOTEBOOK);
         }
     }
 
@@ -71,10 +73,13 @@ public class NoteBrowserFragment extends Fragment {
         this.drawer = fragmentView.findViewById(R.id.drawer);
         this.btn_import_file = fragmentView.findViewById(R.id.btn_import_file);
 
-        // 设置笔记列表显示内容
-        this.setNoteList(fragmentView);
+        TextView tvNotebookName = fragmentView.findViewById(R.id.tv_notebookName);
+        tvNotebookName.setText(currentNotebook.getName());
 
         this.notebookBrowserFragment = registerNotebookFragment();
+
+        // 设置笔记列表显示内容
+        this.setNoteList(fragmentView);
 
         // 设置监听
         ImageButton btnDrawerOpen = fragmentView.findViewById(R.id.btn_drawer_open);
@@ -82,6 +87,8 @@ public class NoteBrowserFragment extends Fragment {
 
         this.notebookBrowserFragment.setOnNotebookChangedListener(newNotebook -> {
             // 显示该笔记本中的笔记
+            this.currentNotebook = newNotebook;
+            tvNotebookName.setText(newNotebook.getName());
             drawer.close();
         });
 
@@ -105,7 +112,7 @@ public class NoteBrowserFragment extends Fragment {
     public void onResume() {
         super.onResume();
         // 切换fragment回来后要重新动态注册notebookFragment
-        this.notebookBrowserFragment = registerNotebookFragment();
+        // this.notebookBrowserFragment = registerNotebookFragment();
     }
 
     private void setNoteList(View fragmentView) {

@@ -6,9 +6,11 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 @Entity(foreignKeys = @ForeignKey(entity = User.class, parentColumns = "userId", childColumns = "userId"),
         indices = {@Index("notebookId"), @Index("userId")})
-public class Notebook {
+public class Notebook implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int notebookId;
 
