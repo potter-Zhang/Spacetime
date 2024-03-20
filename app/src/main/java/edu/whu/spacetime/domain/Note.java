@@ -5,12 +5,13 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import edu.whu.spacetime.domain.typeConverter.MyTypeConverter;
 
 @Entity
-public class Note {
+public class Note implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int noteId;
 

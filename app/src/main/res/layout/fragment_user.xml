@@ -342,7 +342,7 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/icon_user_collection"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"/>
+                        android:layout_marginStart="20dp"/>
 
                     <TextView
                         android:layout_width="80dp"

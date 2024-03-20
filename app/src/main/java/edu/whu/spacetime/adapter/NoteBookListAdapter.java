@@ -44,6 +44,12 @@ public class NoteBookListAdapter extends ArrayAdapter<Notebook> {
         final XPopup.Builder builder = new XPopup.Builder(getContext()).watchView(btnMore);
         NoteBookPopupMenu popup = new NoteBookPopupMenu(getContext());
 
+        // 默认笔记本不允许重命名和删除
+        if (noteBook.getName().equals("全部笔记")) {
+            btnMore.setVisibility(View.INVISIBLE);
+            return view;
+        }
+
         // 设置弹出菜单按钮的点击事件
         popup.setDeleteListener(() -> {
             notebookList.remove(noteBook);
