@@ -11,7 +11,7 @@ import edu.whu.spacetime.domain.User;
 @Dao
 public interface UserDao {
     @Insert
-    void InsertUser(User... users);
+    void insertUser(User... users);
 
     @Delete
     void deleteUser(User... users);
@@ -21,4 +21,7 @@ public interface UserDao {
 
     @Query("SELECT * FROM user WHERE userId=:userId LIMIT 1")
     User getUserById(int userId);
+
+    @Query("SELECT * FROM user WHERE username=:username")
+    User getUserByName(String username);
 }

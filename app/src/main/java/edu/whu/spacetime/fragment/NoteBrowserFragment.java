@@ -22,7 +22,7 @@ import edu.whu.spacetime.activity.EditorActivity;
 import edu.whu.spacetime.adapter.NoteListAdapter;
 import edu.whu.spacetime.domain.Note;
 
-public class NoteBrowserFragment extends Fragment implements View.OnClickListener {
+public class NoteBrowserFragment extends Fragment {
     private static final String ARG_NOTEBOOK = "notebookId";
 
     private DrawerLayout drawer;
@@ -66,7 +66,7 @@ public class NoteBrowserFragment extends Fragment implements View.OnClickListene
 
         // 设置监听
         ImageButton btnDrawerOpen = fragmentView.findViewById(R.id.btn_drawer_open);
-        btnDrawerOpen.setOnClickListener(this);
+        btnDrawerOpen.setOnClickListener(v -> openDrawer());
 
         this.notebookBrowserFragment.setOnNotebookChangedListener(newNotebook -> {
             // 显示该笔记本中的笔记
@@ -79,6 +79,7 @@ public class NoteBrowserFragment extends Fragment implements View.OnClickListene
     @Override
     public void onResume() {
         super.onResume();
+        // 切换fragment回来后要重新动态注册notebookFragment
         this.notebookBrowserFragment = registerNotebookFragment();
     }
 
@@ -92,12 +93,14 @@ public class NoteBrowserFragment extends Fragment implements View.OnClickListene
 
         noteListView.setOnItemClickListener((parent, view, position, id) -> {
             Note note = (Note)parent.getItemAtPosition(position);
-            Intent intent = new Intent(getActivity(), EditorActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("note", note);
-            intent.putExtras(bundle);
-            startActivity(intent);
+            jump2Editor(note);
         });
+    }
+
+    public void openDrawer() {
+        if (this.drawer != null) {
+            this.drawer.open();
+        }
     }
 
     // 动态注册笔记本侧边栏
@@ -110,10 +113,12 @@ public class NoteBrowserFragment extends Fragment implements View.OnClickListene
         return notebookFragment;
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.btn_drawer_open) {
-            this.drawer.open();
-        }
+    // 跳转到编辑器
+    private void jump2Editor(Note note) {
+        Intent intent = new Intent(getActivity(), EditorActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("note", note);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }
