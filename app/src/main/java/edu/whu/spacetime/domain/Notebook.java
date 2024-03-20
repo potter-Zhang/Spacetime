@@ -1,17 +1,20 @@
 package edu.whu.spacetime.domain;
 
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(foreignKeys = @ForeignKey(entity = User.class, parentColumns = "userId", childColumns = "userId"),
+        indices = {@Index("notebookId"), @Index("userId")})
 public class Notebook {
     @PrimaryKey(autoGenerate = true)
     private int notebookId;
 
-    private String name;
-
     private int userId;
+
+    private String name;
 
     @Ignore
     public Notebook() {
