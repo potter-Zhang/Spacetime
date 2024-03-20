@@ -1,6 +1,8 @@
 package edu.whu.spacetime.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +25,18 @@ import edu.whu.spacetime.R;
 import edu.whu.spacetime.activity.EditorActivity;
 import edu.whu.spacetime.adapter.NoteListAdapter;
 import edu.whu.spacetime.domain.Note;
+import edu.whu.spacetime.widget.ImportDialog;
 
 public class NoteBrowserFragment extends Fragment {
     private static final String ARG_NOTEBOOK = "notebookId";
+    public static final String PPT = "application/vnd.ms-powerpoint";
+    public static final String PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    public static final String PDF = "application/pdf";
+    public static final String AUDIO = "";
 
     private DrawerLayout drawer;
+    private FloatingActionButton btn_import_file;
+    private Uri import_file_uri;
 
     private NotebookBrowserFragment notebookBrowserFragment;
 
@@ -58,6 +69,7 @@ public class NoteBrowserFragment extends Fragment {
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_note_browser, container, false);
         this.drawer = fragmentView.findViewById(R.id.drawer);
+        this.btn_import_file = fragmentView.findViewById(R.id.btn_import_file);
 
         // 设置笔记列表显示内容
         this.setNoteList(fragmentView);
@@ -71,6 +83,19 @@ public class NoteBrowserFragment extends Fragment {
         this.notebookBrowserFragment.setOnNotebookChangedListener(newNotebook -> {
             // 显示该笔记本中的笔记
             drawer.close();
+        });
+
+        // 设置弹出导入文件
+        this.btn_import_file.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImportDialog dialogView = new ImportDialog(getActivity());
+                dialogView.setCanceledOnTouchOutside(true);
+                dialogView.setOnChooseFileListener(type -> {
+                    openFolder(type);
+                });
+                dialogView.show();
+            }
         });
 
         return fragmentView;
@@ -120,5 +145,34 @@ public class NoteBrowserFragment extends Fragment {
         bundle.putSerializable("note", note);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    void openFolder(String str) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        if (str.equals("pdf")) {
+            intent.setType(PDF);
+        }
+        else if (str.equals("ppt")) {
+            intent.setType(PPT);
+        }
+        else if (str.equals("audio")) {
+            intent.setType("*/*");
+        }
+
+        startActivityForResult(intent, 0);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
+            // The document selected by the user won't be returned in the intent.
+            // Instead, a URI to that document will be contained in the return intent
+            // provided to this method as a parameter.
+            // Pull that URI using resultData.getData().
+            if (resultData != null) {
+                import_file_uri = resultData.getData();
+            }
+        }
     }
 }

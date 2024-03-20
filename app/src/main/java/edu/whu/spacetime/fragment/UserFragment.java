@@ -109,50 +109,13 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         if (vId == R.id.user_account_btn || vId == R.id.user_profile) {
             Intent intent2 = new Intent(getContext(), UserAccountActivity.class);
             startActivity(intent2);
-        }
-        else if (vId == R.id.user_setting || vId == R.id.user_setting_btn) {
+        } else if (vId == R.id.user_setting || vId == R.id.user_setting_btn) {
             Intent intent2 = new Intent(getContext(), UserSettingActivity.class);
             startActivity(intent2);
-        }
-        else if (vId == R.id.user_collection_btn){
-            ImportDialog dialogView = new ImportDialog(getActivity(), this);
-            dialogView.setCanceledOnTouchOutside(true);
-            dialogView.setOnChooseFileListener(type -> {
-                openFolder(type);
-            });
-            dialogView.show();
-        }
-        else if (vId == R.id.user_checkUpdate_btn) {
-            Toast.makeText(getContext() ,"您已经是最新版本", Toast.LENGTH_SHORT).show();
-        }
-    }
+        } else if (vId == R.id.user_collection_btn) {
 
-    void openFolder(String str) {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        if (str.equals("pdf")) {
-            intent.setType(PDF);
-        }
-        else if (str.equals("ppt")) {
-            intent.setType(PPT);
-        }
-        else if (str.equals("audio")) {
-            intent.setType("*/*");
-        }
-
-        startActivityForResult(intent, 0);
-    }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
-            // The document selected by the user won't be returned in the intent.
-            // Instead, a URI to that document will be contained in the return intent
-            // provided to this method as a parameter.
-            // Pull that URI using resultData.getData().
-            if (resultData != null) {
-                uri = resultData.getData();
-            }
+        } else if (vId == R.id.user_checkUpdate_btn) {
+            Toast.makeText(getContext(), "您已经是最新版本", Toast.LENGTH_SHORT).show();
         }
     }
 }

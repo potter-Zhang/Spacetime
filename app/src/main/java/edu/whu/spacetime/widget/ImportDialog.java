@@ -23,7 +23,6 @@ public class ImportDialog extends Dialog implements View.OnClickListener {
     private View view;
     private Handler handler;
     public ImageButton import_pdf, import_ppt, import_audio;
-    private Fragment fragment;
 
     public interface IOnChooseFileListener{
         public void OnChooseFileListener(String type);
@@ -33,7 +32,7 @@ public class ImportDialog extends Dialog implements View.OnClickListener {
     public void setOnChooseFileListener(IOnChooseFileListener listener) {
         this.onChooseFileListener = listener;
     }
-    public ImportDialog(@NonNull Context context, Fragment fragment) {
+    public ImportDialog(@NonNull Context context) {
         super(context);
         view = View.inflate(context, R.layout.import_dialog_layout, null);
         this.setContentView(view);
@@ -41,7 +40,6 @@ public class ImportDialog extends Dialog implements View.OnClickListener {
         Window window=this.getWindow();
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 //        this.handler = handler;
-        this.fragment = fragment;
         initView();
     }
 
