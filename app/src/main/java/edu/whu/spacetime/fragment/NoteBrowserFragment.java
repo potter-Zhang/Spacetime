@@ -37,12 +37,17 @@ public class NoteBrowserFragment extends Fragment {
     public static final String PDF = "application/pdf";
     public static final String AUDIO = "";
 
+    private View fragmentView;
+
+    // 抽屉
     private DrawerLayout drawer;
     private FloatingActionButton btn_import_file;
     private Uri import_file_uri;
 
+    // 侧边栏中的笔记本菜单fragment
     private NotebookBrowserFragment notebookBrowserFragment;
 
+    // 当前选中的笔记本
     private Notebook currentNotebook;
 
     public NoteBrowserFragment() {
@@ -69,13 +74,14 @@ public class NoteBrowserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragmentView = inflater.inflate(R.layout.fragment_note_browser, container, false);
+        fragmentView = inflater.inflate(R.layout.fragment_note_browser, container, false);
         this.drawer = fragmentView.findViewById(R.id.drawer);
         this.btn_import_file = fragmentView.findViewById(R.id.btn_import_file);
 
         TextView tvNotebookName = fragmentView.findViewById(R.id.tv_notebookName);
         tvNotebookName.setText(currentNotebook.getName());
 
+        // 动态注册侧边栏中的notebookFragment
         this.notebookBrowserFragment = registerNotebookFragment();
 
         // 设置笔记列表显示内容
@@ -85,24 +91,14 @@ public class NoteBrowserFragment extends Fragment {
         ImageButton btnDrawerOpen = fragmentView.findViewById(R.id.btn_drawer_open);
         btnDrawerOpen.setOnClickListener(v -> openDrawer());
 
-        this.notebookBrowserFragment.setOnNotebookChangedListener(newNotebook -> {
-            // 显示该笔记本中的笔记
-            this.currentNotebook = newNotebook;
-            tvNotebookName.setText(newNotebook.getName());
-            drawer.close();
-        });
-
         // 设置弹出导入文件
-        this.btn_import_file.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ImportDialog dialogView = new ImportDialog(getActivity());
-                dialogView.setCanceledOnTouchOutside(true);
-                dialogView.setOnChooseFileListener(type -> {
-                    openFolder(type);
-                });
-                dialogView.show();
-            }
+        this.btn_import_file.setOnClickListener(v -> {
+            ImportDialog dialogView = new ImportDialog(getActivity());
+            dialogView.setCanceledOnTouchOutside(true);
+            dialogView.setOnChooseFileListener(type -> {
+                openFolder(type);
+            });
+            dialogView.show();
         });
 
         return fragmentView;
@@ -112,9 +108,11 @@ public class NoteBrowserFragment extends Fragment {
     public void onResume() {
         super.onResume();
         // 切换fragment回来后要重新动态注册notebookFragment
-        // this.notebookBrowserFragment = registerNotebookFragment();
+        if (this.notebookBrowserFragment != null)
+            this.notebookBrowserFragment = registerNotebookFragment();
     }
 
+    // 设置要展示的笔记
     private void setNoteList(View fragmentView) {
         ListView noteListView = fragmentView.findViewById(R.id.list_note);
         List<Note> noteList = new ArrayList<>();
@@ -142,6 +140,14 @@ public class NoteBrowserFragment extends Fragment {
         NotebookBrowserFragment notebookFragment = new NotebookBrowserFragment();
         fs.add(R.id.container_notebook, notebookFragment);
         fs.commit();
+
+        TextView tvNotebookName = fragmentView.findViewById(R.id.tv_notebookName);
+        notebookFragment.setOnNotebookChangedListener(newNotebook -> {
+            // 显示该笔记本中的笔记
+            this.currentNotebook = newNotebook;
+            tvNotebookName.setText(newNotebook.getName());
+            drawer.close();
+        });
         return notebookFragment;
     }
 
