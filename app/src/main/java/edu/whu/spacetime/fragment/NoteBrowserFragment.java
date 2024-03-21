@@ -1,7 +1,7 @@
 package edu.whu.spacetime.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -108,6 +108,8 @@ public class NoteBrowserFragment extends Fragment {
             dialogView.show();
         });
 
+        fragmentView.findViewById(R.id.btn_create_note).setOnClickListener(v -> jump2Editor(null));
+
         return fragmentView;
     }
 
@@ -163,11 +165,13 @@ public class NoteBrowserFragment extends Fragment {
 
     // 跳转到编辑器
     private void jump2Editor(Note note) {
+        Context mContext = getActivity();
         Intent intent = new Intent(getActivity(), EditorActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("note", note);
         intent.putExtras(bundle);
         startActivity(intent);
+        ((Activity)mContext).overridePendingTransition(R.anim.from_bottom, R.anim.from_top);
     }
 
     void openFolder(String str) {

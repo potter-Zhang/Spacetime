@@ -107,6 +107,7 @@
                 fab:fab_title="label"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_create_note"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@color/white"
