@@ -108,7 +108,10 @@ public class NoteBrowserFragment extends Fragment {
             dialogView.show();
         });
 
-        fragmentView.findViewById(R.id.btn_create_note).setOnClickListener(v -> jump2Editor(null));
+        fragmentView.findViewById(R.id.btn_create_note).setOnClickListener(v -> {
+            jump2Editor(null);
+            getActivity().overridePendingTransition(R.anim.from_bottom, R.anim.from_top);
+        });
 
         return fragmentView;
     }
@@ -165,13 +168,12 @@ public class NoteBrowserFragment extends Fragment {
 
     // 跳转到编辑器
     private void jump2Editor(Note note) {
-        Context mContext = getActivity();
         Intent intent = new Intent(getActivity(), EditorActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("note", note);
         intent.putExtras(bundle);
         startActivity(intent);
-        ((Activity)mContext).overridePendingTransition(R.anim.from_bottom, R.anim.from_top);
+        getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
     void openFolder(String str) {
