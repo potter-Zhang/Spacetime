@@ -110,6 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@color/white"
+                fab:fab_icon="@drawable/icon_edit"
                 fab:fab_size="normal"
                 fab:fab_colorPressed="@color/pressed_gray"/>
 

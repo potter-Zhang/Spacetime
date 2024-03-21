@@ -2,7 +2,10 @@ package edu.whu.spacetime;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
 import androidx.room.Room;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import edu.whu.spacetime.database.SpacetimeDatabase;
 import edu.whu.spacetime.domain.User;
@@ -38,8 +41,15 @@ public class SpacetimeApplication  extends Application {
         super.onCreate();
         app = this;
 
+        Migration migration1_2 = new Migration(1, 2) {
+            @Override
+            public void migrate(@NonNull SupportSQLiteDatabase supportSQLiteDatabase) {
+                supportSQLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS `Todo` (`todoId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `userId` INTEGER NOT NULL, `title` TEXT, `addr` TEXT, `checked` INTEGER NOT NULL, `createTime` TEXT)");
+            }
+        };
+
         database = Room.databaseBuilder(this, SpacetimeDatabase.class, "spacetime")
-                .addMigrations()
+                .addMigrations(migration1_2)
                 .allowMainThreadQueries()
                 .build();
     }
