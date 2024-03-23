@@ -14,6 +14,9 @@
         android:theme="@style/Theme.Spacetime"
         tools:targetApi="31">
         <activity
+            android:name=".activity.UserCalendarActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.UserSettingActivity"
             android:exported="false" />
         <activity
@@ -23,10 +26,10 @@
             android:name=".activity.EditorActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".activity.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

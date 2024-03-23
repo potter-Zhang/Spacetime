@@ -60,11 +60,13 @@ dependencies {
     implementation ("com.getbase:floatingactionbutton:1.10.1")
 
     // 弹出菜单
+    implementation ("com.github.li-xiaojun:XPopupExt:1.0.1")
     implementation ("com.github.li-xiaojun:XPopup:2.10.0")
     implementation ("androidx.appcompat:appcompat:1.3.1")
     implementation ("com.google.android.material:material:1.4.0")
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
 
-    // 文件选择器
+    // 日历
+    implementation ("com.github.angcyo:CalendarView:3.7.1.37")
 
 }

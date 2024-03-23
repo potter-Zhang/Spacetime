@@ -17,4 +17,13 @@
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>
     <string name="create">新建</string>
+
+    <string name="username">用户名</string>
+    <string name="password">密码</string>
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+
+    <string name="expand">扩写</string>
+    <string name="abbreviate">缩写</string>
+    <string name="translate">翻译</string>
 </resources>

@@ -42,7 +42,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="left|center"
+                    android:minWidth="100dp"
+                    tools:ignore="RtlHardcoded">
                     <TextView
                         android:id="@+id/tv_notebookName"
                         android:layout_width="wrap_content"
@@ -55,6 +57,7 @@
                         android:layout_height="5dp"
                         android:background="@color/black"/>
                     <TextView
+                        android:id="@+id/tv_notebookNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="共7篇笔记" />
@@ -96,16 +99,20 @@
             android:layout_marginBottom="30dp">
 
             <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_import_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@color/white"
                 fab:fab_colorPressed="@color/pressed_gray"
+                fab:fab_icon="@drawable/icon_import"
                 fab:fab_title="label"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_create_note"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@color/white"
+                fab:fab_icon="@drawable/icon_edit"
                 fab:fab_size="normal"
                 fab:fab_colorPressed="@color/pressed_gray"/>
 

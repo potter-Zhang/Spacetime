@@ -8,17 +8,25 @@ import androidx.room.Update;
 
 import java.util.List;
 
+<<<<<<< HEAD
 import edu.whu.spacetime.domain.Note;
+=======
+>>>>>>> d1ec726b3e9c70eaebb767126b6a88894aa58e54
 import edu.whu.spacetime.domain.Notebook;
 
 @Dao
 public interface NotebookDao {
     @Insert
-    void insertNotebook(Notebook... notebook);
-    @Update
-    void updateNotebook(Notebook... notebook);
+    void insertNotebook(Notebook... notebooks);
+
     @Delete
-    void deleteNotebook(Notebook... notebook);
+    void deleteNotebook(Notebook... notebooks);
+
+    @Update
+    void updateNotebook(Notebook... notebooks);
+
+    @Query("SELECT * FROM notebook WHERE userId=:userId")
+    List<Notebook> getNotebooksByUserId(int userId);
 
     @Query("SELECT * FROM notebook WHERE userId = :userId")
     List<Notebook> getNotebookByUserId(int userId);

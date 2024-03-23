@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.adapter.NoteBookListAdapter;
+import edu.whu.spacetime.dao.NotebookDao;
 import edu.whu.spacetime.domain.Notebook;
 import edu.whu.spacetime.widget.InputDialog;
 
 public class NotebookBrowserFragment extends Fragment {
 
     private NoteBookListAdapter adapter;
+
+    private NotebookDao notebookDao;
 
     // 自定义笔记本切换事件监听器
     public interface OnNotebookChangedListener {
@@ -44,6 +49,7 @@ public class NotebookBrowserFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        notebookDao = SpacetimeApplication.getInstance().getDatabase().getNotebookDao();
     }
 
     @Override
@@ -55,7 +61,7 @@ public class NotebookBrowserFragment extends Fragment {
 
         // 设置监听
         fragmentView.findViewById(R.id.btn_create_notebook).setOnClickListener(v -> {
-            // 新建
+            // 弹出新建对话框
             this.openInputDialog();
         });
         return fragmentView;
@@ -64,9 +70,8 @@ public class NotebookBrowserFragment extends Fragment {
     // 设置ListView要显示的笔记本和相应的监听器
     private void setNotebookList(View fragmentView) {
         ListView notebookListView = fragmentView.findViewById(R.id.list_notebook);
-        List<Notebook> notebookList = new ArrayList<>();
-        notebookList.add(new Notebook("测试1", 0));
-        notebookList.add(new Notebook("测试2", 0));
+        List<Notebook> notebookList = notebookDao.getNotebooksByUserId(SpacetimeApplication
+                .getInstance().getCurrentUser().getUserId());
         adapter = new NoteBookListAdapter(getContext(), R.layout.item_notebook_list, notebookList);
         notebookListView.setAdapter(adapter);
 
@@ -82,8 +87,8 @@ public class NotebookBrowserFragment extends Fragment {
     private void openInputDialog() {
         InputDialog inputDialog = new InputDialog(getContext(), true);
         inputDialog.setOnInputConfirmListener(text -> {
-            Notebook newNotebook = new Notebook();
-            newNotebook.setName(text);
+            Notebook newNotebook = new Notebook(text, SpacetimeApplication.getInstance().getCurrentUser().getUserId());
+            notebookDao.insertNotebook(newNotebook);
             adapter.add(newNotebook);
             adapter.notifyDataSetChanged();
         });

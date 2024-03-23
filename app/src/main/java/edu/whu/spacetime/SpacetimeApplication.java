@@ -1,28 +1,39 @@
 package edu.whu.spacetime;
 
 import android.app.Application;
-import android.provider.DocumentsContract;
 
+import androidx.annotation.NonNull;
 import androidx.room.Room;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import edu.whu.spacetime.database.NoteDatabase;
-import edu.whu.spacetime.database.NotebookDatabase;
+import edu.whu.spacetime.database.SpacetimeDatabase;
+import edu.whu.spacetime.domain.User;
 
 public class SpacetimeApplication  extends Application {
     private static SpacetimeApplication app;
 
-    // 笔记本数据库对象
-    private NotebookDatabase notebookDatabase;
-
-    // 笔记数据库对象
-    private NoteDatabase noteDatabase;
-
-    public static SpacetimeApplication getIntance() {
+    // 单例
+    public static SpacetimeApplication getInstance() {
         return app;
     }
 
-    public NoteDatabase getNoteDatabase() {
-        return noteDatabase;
+    // 数据库对象
+    private SpacetimeDatabase database;
+
+    // 当前登录的用户
+    private User currentUser;
+
+    public SpacetimeDatabase getDatabase() {
+        return database;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 
     @Override
@@ -30,8 +41,16 @@ public class SpacetimeApplication  extends Application {
         super.onCreate();
         app = this;
 
-        // 构建数据库实例
-        notebookDatabase = Room.databaseBuilder(this, NotebookDatabase.class, "notebook").build();
-        noteDatabase = Room.databaseBuilder(this, NoteDatabase.class, "note").build();
+        Migration migration1_2 = new Migration(1, 2) {
+            @Override
+            public void migrate(@NonNull SupportSQLiteDatabase supportSQLiteDatabase) {
+                supportSQLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS `Todo` (`todoId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `userId` INTEGER NOT NULL, `title` TEXT, `addr` TEXT, `checked` INTEGER NOT NULL, `createTime` TEXT)");
+            }
+        };
+
+        database = Room.databaseBuilder(this, SpacetimeDatabase.class, "spacetime")
+                .addMigrations(migration1_2)
+                .allowMainThreadQueries()
+                .build();
     }
 }
