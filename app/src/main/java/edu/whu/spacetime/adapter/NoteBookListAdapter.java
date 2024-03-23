@@ -16,6 +16,8 @@ import com.lxj.xpopup.XPopup;
 import java.util.List;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.SpacetimeApplication;
+import edu.whu.spacetime.dao.NotebookDao;
 import edu.whu.spacetime.domain.Notebook;
 import edu.whu.spacetime.widget.NoteBookPopupMenu;
 
@@ -24,10 +26,13 @@ public class NoteBookListAdapter extends ArrayAdapter<Notebook> {
 
     private List<Notebook> notebookList;
 
+    private NotebookDao notebookDao;
+
     public NoteBookListAdapter(@NonNull Context context, int resource, @NonNull List<Notebook> objects) {
         super(context, resource, objects);
         this.resourceId = resource;
         this.notebookList = objects;
+        this.notebookDao = SpacetimeApplication.getInstance().getDatabase().getNotebookDao();
     }
 
     @NonNull
@@ -44,13 +49,21 @@ public class NoteBookListAdapter extends ArrayAdapter<Notebook> {
         final XPopup.Builder builder = new XPopup.Builder(getContext()).watchView(btnMore);
         NoteBookPopupMenu popup = new NoteBookPopupMenu(getContext());
 
+        // 默认笔记本不允许重命名和删除
+        if (noteBook.getName().equals("全部笔记")) {
+            btnMore.setVisibility(View.INVISIBLE);
+            return view;
+        }
+
         // 设置弹出菜单按钮的点击事件
         popup.setDeleteListener(() -> {
             notebookList.remove(noteBook);
+            notebookDao.deleteNotebook(noteBook);
             notifyDataSetChanged();
         });
         popup.setRenameListener(t -> {
             noteBook.setName(t);
+            notebookDao.updateNotebook(noteBook);
             notifyDataSetChanged();
         });
         btnMore.setOnClickListener(v -> builder.asCustom(popup).show());

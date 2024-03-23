@@ -1,14 +1,22 @@
 package edu.whu.spacetime.domain;
 
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import edu.whu.spacetime.domain.typeConverter.MyTypeConverter;
+import edu.whu.spacetime.domain.typeConverter.TypeConverter_todo;
 
-public class Todo {
-    private int id;
+@Entity
+public class Todo implements Serializable {
+    @PrimaryKey(autoGenerate = true)
+    private int todoId;
 
     private int userId;
 
@@ -16,22 +24,24 @@ public class Todo {
 
     private String addr;
 
-    @TypeConverters(MyTypeConverter.class)
+    private boolean checked;
+
+    @TypeConverters(TypeConverter_todo.class)
     private LocalDateTime createTime;
 
     @Ignore
-    Todo(){}
+    public Todo(){}
 
-    public Todo(int id, int userId, String title, String addr, LocalDateTime time){
-        this.id = id;
+    public Todo(int userId, String title, String addr, LocalDateTime createTime,boolean checked){
         this.userId = userId;
         this.title = title;
         this.addr = addr;
-        this.createTime = time;
+        this.createTime = createTime;
+        this.checked = checked;
     }
 
-    public int getId(){ return this.id;}
-    public void setId(int id){ this.id = id;}
+    public int getTodoId(){ return this.todoId;}
+    public void setTodoId(int todoId){ this.todoId = todoId;}
     public int getUserId(){ return this.userId;}
     public void setUserId(int userId){ this.userId = userId;}
     public String getTitle(){ return this.title;}
@@ -40,4 +50,12 @@ public class Todo {
     public void setAddr(){ this.addr = addr;}
     public LocalDateTime getCreateTime(){ return this.createTime;}
     public void setCreateTime(LocalDateTime time){ this.createTime = time;}
+
+    public boolean getChecked(){
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
 }

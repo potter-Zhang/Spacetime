@@ -86,5 +86,6 @@ public class LoginActivity extends AppCompatActivity {
     private void jump2Main() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 }
