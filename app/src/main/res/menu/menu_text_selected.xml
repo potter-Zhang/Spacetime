@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:ignore="MissingDefaultResource">
+    <item
+        android:id="@+id/item_translate"
+        android:enabled="true"
+        android:title="@string/translate" />
+    <item
+        android:id="@+id/item_expand"
+        android:title="@string/expand" />
+    <item
+        android:id="@+id/item_abbreviate"
+        android:title="@string/abbreviate"/>
+</menu>

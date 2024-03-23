@@ -11,18 +11,30 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.ContextMenu;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import androidx.annotation.Nullable;
+
+import com.xuexiang.xui.widget.toast.XToast;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import edu.whu.spacetime.R;
 
 /**
  * Copyright (C) 2020 Wasabeef
@@ -111,6 +123,46 @@ public class RichEditor extends WebView {
     loadUrl(SETUP_HTML);
 
     applyAttributes(context, attrs);
+  }
+
+  // 自定义长按文本后的弹出菜单
+  @Override
+  public ActionMode startActionMode(ActionMode.Callback callback, int type) {
+    return super.startActionMode(new MyCallBack(), type);
+  }
+
+  private class MyCallBack implements ActionMode.Callback {
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+
+      menu.clear();
+      mode.getMenuInflater().inflate(R.menu.menu_text_selected, menu);
+      return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+      return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+      int itemId = item.getItemId();
+      if (itemId == R.id.item_translate) {
+        XToast.info(getContext(), "翻译").show();
+      } else if (itemId == R.id.item_expand) {
+        XToast.info(getContext(), "扩写").show();
+      } else if (itemId == R.id.item_abbreviate) {
+        XToast.info(getContext(), "缩写").show();
+      }
+      mode.finish();
+      return true;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+
+    }
   }
 
   protected EditorWebViewClient createWebviewClient() {
