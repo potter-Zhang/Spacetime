@@ -15,11 +15,14 @@
 
       <ImageButton
         android:id="@+id/action_undo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@null"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="6sp"
+        android:layout_marginStart="6sp"
+        android:layout_marginTop="6sp"
+        android:layout_marginBottom="6sp"
         android:contentDescription="@null"
-        android:src="@drawable/undo" />
+        android:background="@drawable/undo" />
 
       <ImageButton
         android:id="@+id/action_redo"
