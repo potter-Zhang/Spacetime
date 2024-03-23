@@ -27,6 +27,7 @@ import edu.whu.spacetime.dao.TodoDao;
 import edu.whu.spacetime.domain.Todo;
 import edu.whu.spacetime.fragment.TodoBrowserFragment;
 import edu.whu.spacetime.widget.NoteBookPopupMenu;
+import edu.whu.spacetime.widget.SwipeListLayout;
 import edu.whu.spacetime.widget.TodoSetPopup;
 
 public class TodoListAdapter extends ArrayAdapter<Todo> {
@@ -59,6 +60,8 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
         tvTitle.setText(todo.getTitle());
         if(!todo.getAddr().isEmpty()){
             tvAddr.setText("地点：".concat(todo.getAddr()));
+        }else{
+            tvAddr.setText("");
         }
         tvTime.setText(todo.getCreateTime().format(df));
 
@@ -79,7 +82,8 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
         });
 
         //添加点击事件，打开编辑弹窗
-        view.setOnClickListener(new View.OnClickListener() {
+        View layout = view.findViewById(R.id.layout_todo_main);
+        layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new XPopup.Builder(getContext())
@@ -88,15 +92,28 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
             }
         });
 
-        //添加删除事件
-        Button btn = view.findViewById(R.id.btn_todo_deleteItem);
-        btn.setOnClickListener(new View.OnClickListener() {
+        //左滑添加删除事件
+        View btn_dele = view.findViewById(R.id.btn_todo_deleteItem);
+        btn_dele.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 todoDao.deleteTodo(todo);
                 Todo_view.refresh();
             }
         });
+
+        //左滑添加编辑事件
+        View btn_edit = view.findViewById(R.id.btn_todo_edit);
+        btn_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new XPopup.Builder(getContext())
+                        .asCustom(new TodoSetPopup(getContext(),Todo_view,todo))
+                        .show();
+            }
+        });
+
+
         return view;
     }
 }
