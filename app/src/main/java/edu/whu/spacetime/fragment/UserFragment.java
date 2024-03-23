@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import android.preference.PreferenceManager;
@@ -26,8 +27,12 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.activity.UserAccountActivity;
+import edu.whu.spacetime.activity.UserCalendarActivity;
 import edu.whu.spacetime.activity.UserSettingActivity;
+import edu.whu.spacetime.dao.UserDao;
+import edu.whu.spacetime.domain.User;
 import edu.whu.spacetime.util.PickUtils;
 import edu.whu.spacetime.util.ResultContract;
 import edu.whu.spacetime.widget.ImportDialog;
@@ -38,13 +43,9 @@ import edu.whu.spacetime.widget.ImportDialog;
  * create an instance of this fragment.
  */
 public class UserFragment extends Fragment implements View.OnClickListener {
-    public static final String PPT = "application/vnd.ms-powerpoint";
-    public static final String PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-    public static final String PDF = "application/pdf";
-    public static final String AUDIO = "";
     private View rootView;
     private CircleImageView user_profile;
-    private RelativeLayout account_btn, user_setting_btn, user_collection_btn, user_update_btn;
+    private RelativeLayout account_btn, user_setting_btn, user_collection_btn, user_update_btn, user_calendar_btn;
     private IconImageView setting_button;
     private AlertDialog import_popUp;
     private View importWindow;
@@ -94,6 +95,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         user_setting_btn = rootView.findViewById(R.id.user_setting_btn);
         user_collection_btn = rootView.findViewById(R.id.user_collection_btn);
         user_update_btn = rootView.findViewById(R.id.user_checkUpdate_btn);
+        user_calendar_btn = rootView.findViewById(R.id.user_calendar_btn);
 
         user_profile.setOnClickListener(this);
         account_btn.setOnClickListener(this);
@@ -101,6 +103,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         user_setting_btn.setOnClickListener(this);
         user_collection_btn.setOnClickListener(this);
         user_update_btn.setOnClickListener(this);
+        user_calendar_btn.setOnClickListener(this);
     }
 
     @Override
@@ -116,6 +119,9 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
         } else if (vId == R.id.user_checkUpdate_btn) {
             Toast.makeText(getContext(), "您已经是最新版本", Toast.LENGTH_SHORT).show();
+        } else if (vId == R.id.user_calendar_btn) {
+            Intent intent2 = new Intent(getContext(), UserCalendarActivity.class);
+            startActivity(intent2);
         }
     }
 }
