@@ -1,7 +1,7 @@
 package edu.whu.spacetime.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -108,6 +108,11 @@ public class NoteBrowserFragment extends Fragment {
             dialogView.show();
         });
 
+        fragmentView.findViewById(R.id.btn_create_note).setOnClickListener(v -> {
+            jump2Editor(null);
+            getActivity().overridePendingTransition(R.anim.from_bottom, R.anim.from_top);
+        });
+
         return fragmentView;
     }
 
@@ -168,6 +173,7 @@ public class NoteBrowserFragment extends Fragment {
         bundle.putSerializable("note", note);
         intent.putExtras(bundle);
         startActivity(intent);
+        getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
     void openFolder(String str) {

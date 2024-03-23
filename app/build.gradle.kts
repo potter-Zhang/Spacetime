@@ -66,6 +66,7 @@ dependencies {
     implementation ("com.google.android.material:material:1.4.0")
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
 
-    // 文件选择器
+    // 日历
+    implementation ("com.github.angcyo:CalendarView:3.7.1.37")
 
 }
