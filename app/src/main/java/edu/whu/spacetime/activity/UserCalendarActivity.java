@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,10 +17,21 @@ import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarLayout;
 import com.haibin.calendarview.CalendarView;
 
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.SpacetimeApplication;
+import edu.whu.spacetime.adapter.NoteListAdapter;
+import edu.whu.spacetime.dao.NoteDao;
 import edu.whu.spacetime.domain.Note;
 
 public class UserCalendarActivity extends AppCompatActivity implements CalendarView.OnCalendarSelectListener,
@@ -38,7 +51,10 @@ public class UserCalendarActivity extends AppCompatActivity implements CalendarV
     RelativeLayout mRelativeTool;
     private int mYear;
     CalendarLayout mCalendarLayout;
-    RecyclerView mRecyclerView;
+    ListView mListView;
+    private NoteDao noteDao;
+    private List<Note> allNotes;
+    private Map<String, List<Note>> notesMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +77,8 @@ public class UserCalendarActivity extends AppCompatActivity implements CalendarV
             mTextLunar.setVisibility(View.GONE);
             mTextYear.setVisibility(View.GONE);
             mTextMonthDay.setText(String.valueOf(mYear));
+            mCalendarView.getSelectedCalendar();
+//            mListView.setAdapter(new NoteListAdapter(this, R.layout.item_note_list, notesMap.get()));
         }
         else if (vId == R.id.fl_current) {
             mCalendarView.scrollToCurrent();
@@ -88,6 +106,7 @@ public class UserCalendarActivity extends AppCompatActivity implements CalendarV
     }
 
     private void initView() {
+        noteDao = SpacetimeApplication.getInstance().getDatabase().getNoteDao();
         mTextMonthDay = findViewById(R.id.tv_month_day);
         mTextYear = findViewById(R.id.tv_year);
         mTextLunar = findViewById(R.id.tv_lunar);
@@ -107,37 +126,35 @@ public class UserCalendarActivity extends AppCompatActivity implements CalendarV
     }
 
     public void initData() {
-        int year = mCalendarView.getCurYear();
-        int month = mCalendarView.getCurMonth();
+        String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        int userId = SpacetimeApplication.getInstance().getCurrentUser().getUserId();
+        allNotes = noteDao.queryByUserId(userId);
 
+        notesMap = new HashMap<>();
+        for (int i = 0; i < allNotes.size(); i ++ ) {
+            Note now = allNotes.get(i);
+            LocalDateTime noteTime = now.getCreateTime();
+            String ymd = noteTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            Objects.requireNonNull(notesMap.get(ymd)).add(now);
+        }
 
         Map<String, Calendar> map = new HashMap<>();
-        map.put(getSchemeCalendar(year, month, 3, 0xFF40db25, "20").toString(),
-                getSchemeCalendar(year, month, 3, 0xFF40db25, "20"));
-        map.put(getSchemeCalendar(year, month, 6, 0xFFe69138, "33").toString(),
-                getSchemeCalendar(year, month, 6, 0xFFe69138, "33"));
-        map.put(getSchemeCalendar(year, month, 9, 0xFFdf1356, "25").toString(),
-                getSchemeCalendar(year, month, 9, 0xFFdf1356, "25"));
-        map.put(getSchemeCalendar(year, month, 13, 0xFFedc56d, "50").toString(),
-                getSchemeCalendar(year, month, 13, 0xFFedc56d, "50"));
-        map.put(getSchemeCalendar(year, month, 14, 0xFFedc56d, "80").toString(),
-                getSchemeCalendar(year, month, 14, 0xFFedc56d, "80"));
-        map.put(getSchemeCalendar(year, month, 15, 0xFFaacc44, "20").toString(),
-                getSchemeCalendar(year, month, 15, 0xFFaacc44, "20"));
-        map.put(getSchemeCalendar(year, month, 18, 0xFFbc13f0, "70").toString(),
-                getSchemeCalendar(year, month, 18, 0xFFbc13f0, "70"));
-        map.put(getSchemeCalendar(year, month, 25, 0xFF13acf0, "36").toString(),
-                getSchemeCalendar(year, month, 25, 0xFF13acf0, "36"));
-        map.put(getSchemeCalendar(year, month, 27, 0xFF13acf0, "95").toString(),
-                getSchemeCalendar(year, month, 27, 0xFF13acf0, "95"));
+        for (Map.Entry<String, List<Note>> entry : notesMap.entrySet()) {
+            String key = entry.getKey();
+            Integer value = entry.getValue().size();
+            int year = Integer.parseInt(key.substring(0, 4));
+            int month = Integer.parseInt(key.substring(5, 7));
+            int day = Integer.parseInt(key.substring(8, 10));
+            String text = Integer.toString(value);
+            Calendar calendar = getSchemeCalendar(year, month, day, getGradientColor(value), text);
+            map.put(calendar.toString(), calendar);
+        }
+
         //此方法在巨大的数据量上不影响遍历性能，推荐使用
         mCalendarView.setSchemeDate(map);
 
-
-
-        mRecyclerView = findViewById(R.id.recyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //mRecyclerView.setAdapter();
+        mListView = findViewById(R.id.listView);
+        mListView.setAdapter(new NoteListAdapter(this, R.layout.item_note_list, Objects.requireNonNull(notesMap.get(today))));
     }
 
     private Calendar getSchemeCalendar(int year, int month, int day, int color, String text) {
@@ -148,5 +165,32 @@ public class UserCalendarActivity extends AppCompatActivity implements CalendarV
         calendar.setSchemeColor(color);//如果单独标记颜色、则会使用这个颜色
         calendar.setScheme(text);
         return calendar;
+    }
+
+    private int getGradientColor(int index) {
+        switch (index) {
+            case 1:
+                return R.color.one_note_color;
+            case 2:
+                return R.color.two_notes_color;
+            case 3:
+                return R.color.three_notes_color;
+            case 4:
+                return R.color.four_notes_color;
+            case 5:
+                return R.color.five_notes_color;
+            case 6:
+                return R.color.six_notes_color;
+            case 7:
+                return R.color.seven_notes_color;
+            case 8:
+                return R.color.eight_notes_color;
+            case 9:
+                return R.color.nine_notes_color;
+            case 10:
+                return R.color.ten_notes_color;
+            default:
+                return 0xFFFFFFFF;
+        }
     }
 }

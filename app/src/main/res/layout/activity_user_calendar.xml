@@ -123,14 +123,14 @@
             app:year_view_month_text_size="20sp"
             app:year_view_scheme_color="#f17706" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <ListView
+            android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff" >
+            android:background="@color/light_gray" >
 
 
-        </androidx.recyclerview.widget.RecyclerView>
+        </ListView>
 
     </com.haibin.calendarview.CalendarLayout>
 </LinearLayout>
