@@ -1,7 +1,9 @@
 package edu.whu.spacetime.activity;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import edu.whu.spacetime.R;
@@ -14,13 +16,42 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.xuexiang.xui.widget.toast.XToast;
+
+import java.time.LocalDateTime;
+
+import edu.whu.spacetime.SpacetimeApplication;
+import edu.whu.spacetime.domain.Note;
+import edu.whu.spacetime.domain.Notebook;
 import edu.whu.spacetime.jp.wasabeef.richeditor.RichEditor;
+
 
 public class EditorActivity extends AppCompatActivity {
 
     private RichEditor mEditor;
     private TextView mPreview;
 
+    private Note note;
+
+    @Override
+    public void onBackPressed() {
+        // save the note
+        note.setContent(mEditor.getHtml());
+        SpacetimeApplication.getInstance().getDatabase().getNoteDao().insertNote(note);
+        XToast.info(mEditor.getContext(), "已经成功保存笔记").show();
+        super.onBackPressed();
+    }
+
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,16 +59,28 @@ public class EditorActivity extends AppCompatActivity {
         mEditor = (RichEditor) findViewById(R.id.editor);
         mEditor.setEditorHeight(200);
         mEditor.setEditorFontSize(22);
-        mEditor.setEditorFontColor(Color.RED);
+        mEditor.setEditorFontColor(Color.BLACK);
         //mEditor.setEditorBackgroundColor(Color.BLUE);
         //mEditor.setBackgroundColor(Color.BLUE);
         //mEditor.setBackgroundResource(R.drawable.bg);
         mEditor.setPadding(10, 10, 10, 10);
         //mEditor.setBackground("https://raw.githubusercontent.com/wasabeef/art/master/chip.jpg");
         mEditor.setPlaceholder("Insert text here...");
-        //mEditor.setInputEnabled(false);
+
+        //note = getIntent().getSerializableExtra("note", Note.class);
+        Bundle bundle = getIntent().getExtras();
+        note = (Note) bundle.getSerializable("note");
+        if (note == null) {
+            // 新建一个笔记
+            note = new Note();
+            note.setCreateTime(LocalDateTime.now());
+            note.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
+            note.setNotebookId(bundle.getInt("notebookId"));
+            note.setTitle("测试");
+        }
 
         mPreview = (TextView) findViewById(R.id.preview);
+        mEditor.setText(note.getContent());
         mEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
             @Override
             public void onTextChange(String text) {
@@ -258,6 +301,25 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mEditor.insertTodo();
+            }
+        });
+
+        findViewById(R.id.save_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                note.setContent(mEditor.getHtml());
+                SpacetimeApplication.getInstance().getDatabase().getNoteDao().insertNote(note);
+                SpacetimeApplication.getInstance().getDatabase().getNoteDao().deleteNote(note);
+                XToast.success(mEditor.getContext(), "成功保存笔记").show();
+                finish();
+            }
+        });
+
+        findViewById(R.id.return_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                XToast.success(mEditor.getContext(), "已经自动保存笔记").show();
+                finish();
             }
         });
     }

@@ -24,4 +24,6 @@ public interface NotebookDao {
     @Query("SELECT * FROM notebook WHERE userId=:userId")
     List<Notebook> getNotebooksByUserId(int userId);
 
+    @Query("SELECT * FROM notebook WHERE userId = :userId")
+    List<Notebook> getNotebookByUserId(int userId);
 }
