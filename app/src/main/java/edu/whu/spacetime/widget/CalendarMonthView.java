@@ -87,7 +87,7 @@ public class CalendarMonthView extends MonthView {
      * @return 获取角度
      */
     private static int getAngle(int progress) {
-        return (int) (progress * 3.6);
+        return (int) (progress * 36);
     }
 
 

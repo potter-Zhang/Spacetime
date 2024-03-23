@@ -14,7 +14,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <LinearLayout
+            <GridLayout
+                android:id="@+id/tool_gl"
+                android:rowCount="1"
+                android:columnCount="3"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:background="@drawable/user_header_selector"
@@ -24,27 +27,42 @@
                     android:id="@+id/user_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="260dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_column="0"
+                    android:layout_columnWeight="5"
+                    android:layout_gravity="start"
                     android:src="@drawable/icon_comment" />
 
-                <com.xuexiang.xui.widget.imageview.IconImageView
-                    android:id="@+id/user_customer_service"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginTop="10dp"
-                    android:src="@drawable/icon_customer_service" />
-
-                <com.xuexiang.xui.widget.imageview.IconImageView
-                    android:id="@+id/user_setting"
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:src="@drawable/icon_user_setting" />
+                    android:layout_column="1">
 
-            </LinearLayout>
+                    <com.xuexiang.xui.widget.imageview.IconImageView
+                        android:id="@+id/user_customer_service"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_gravity="end"
+                        android:src="@drawable/icon_customer_service" />
+
+                    <com.xuexiang.xui.widget.imageview.IconImageView
+                        android:id="@+id/user_setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_gravity="end"
+                        android:src="@drawable/icon_user_setting"
+                        tools:ignore="NotSibling" />
+
+                </LinearLayout>
+
+            </GridLayout>
 
 
             <androidx.cardview.widget.CardView

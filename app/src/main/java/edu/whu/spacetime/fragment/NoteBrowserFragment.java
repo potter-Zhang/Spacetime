@@ -170,8 +170,12 @@ public class NoteBrowserFragment extends Fragment {
     private void jump2Editor(Note note) {
         Intent intent = new Intent(getActivity(), EditorActivity.class);
         Bundle bundle = new Bundle();
+
         bundle.putSerializable("note", note);
+        bundle.putInt("notebookId", currentNotebook.getNotebookId());
+        //bundle.putChar("h", 'h');
         intent.putExtras(bundle);
+
         startActivity(intent);
         getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }

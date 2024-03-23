@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import edu.whu.spacetime.domain.Note;
@@ -26,4 +27,7 @@ public interface NoteDao {
 
     @Query("SELECT * FROM note WHERE notebookId=:notebookId")
     List<Note> queryAllInNotebook(int notebookId);
+
+    @Query("SELECT * FROM note WHERE userId=:userId")
+    List<Note> queryByUserId(int userId);
 }
