@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -47,9 +48,11 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
         Todo todo = getItem(position);
         View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
         TextView tvTitle = view.findViewById(R.id.tv_todo_title);
+        CheckBox checkBox = view.findViewById(R.id.ckBox_todo_ok);
         assert todo != null;
         if(todo.getChecked()){
             tvTitle.setTextColor(Color.GRAY);
+            checkBox.setChecked(true);
         }
         TextView tvAddr = view.findViewById(R.id.tv_todo_addr);
         TextView tvTime = view.findViewById(R.id.tv_todo_time);
@@ -58,7 +61,7 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
             tvAddr.setText("地点：".concat(todo.getAddr()));
         }
         tvTime.setText(todo.getCreateTime().format(df));
-        CheckBox checkBox = view.findViewById(R.id.ckBox_todo_ok);
+
         //勾选改变位置
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -82,6 +85,16 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
                 new XPopup.Builder(getContext())
                         .asCustom(new TodoSetPopup(getContext(),Todo_view,todo))
                         .show();
+            }
+        });
+
+        //添加删除事件
+        Button btn = view.findViewById(R.id.btn_todo_deleteItem);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                todoDao.deleteTodo(todo);
+                Todo_view.refresh();
             }
         });
         return view;

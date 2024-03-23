@@ -27,6 +27,7 @@ import edu.whu.spacetime.adapter.TodoListAdapter;
 import edu.whu.spacetime.domain.Note;
 import edu.whu.spacetime.domain.Notebook;
 import edu.whu.spacetime.domain.Todo;
+import edu.whu.spacetime.widget.NoScrollListView;
 import edu.whu.spacetime.widget.TodoSetPopup;
 
 public class TodoBrowserFragment extends Fragment {
@@ -61,8 +62,8 @@ public class TodoBrowserFragment extends Fragment {
         });
     }
     private void setTodoList() {
-        ListView todoListView = fragView.findViewById(R.id.list_todo);
-        ListView todoListView_ok = fragView.findViewById(R.id.list_todo_ok);
+        NoScrollListView todoListView = fragView.findViewById(R.id.list_todo);
+        NoScrollListView todoListView_ok = fragView.findViewById(R.id.list_todo_ok);
         int userId = SpacetimeApplication.getInstance().getCurrentUser().getUserId();
         todoList_unChecked = SpacetimeApplication.getInstance().getDatabase().getTodoDao().getUnCheckedTodo(userId);
         todoList_Checked = SpacetimeApplication.getInstance().getDatabase().getTodoDao().getCheckedTodo(userId);
