@@ -8,10 +8,6 @@ import androidx.room.Update;
 
 import java.util.List;
 
-<<<<<<< HEAD
-import edu.whu.spacetime.domain.Note;
-=======
->>>>>>> d1ec726b3e9c70eaebb767126b6a88894aa58e54
 import edu.whu.spacetime.domain.Notebook;
 
 @Dao

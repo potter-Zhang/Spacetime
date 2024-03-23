@@ -359,6 +359,8 @@ public class RichEditor extends WebView {
     exec("javascript:RE.redo();");
   }
 
+  public void setText(String text) { exec("javascript:RE.setText('" + text + "');");}
+
   public void setBold() {
     exec("javascript:RE.setBold();");
   }
