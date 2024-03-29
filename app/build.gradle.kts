@@ -33,6 +33,12 @@ android {
     buildFeatures {
         dataBinding = true
     }
+    configurations {
+        all {
+            // 排除导致冲突的依赖(由dashscope引起)
+            exclude("com.google.guava", "listenablefuture")
+        }
+    }
 }
 
 dependencies {
@@ -69,4 +75,6 @@ dependencies {
     // 日历
     implementation ("com.github.angcyo:CalendarView:3.7.1.37")
 
+    // 通义千问DashScope
+    implementation("com.alibaba:dashscope-sdk-java:2.12.0")
 }

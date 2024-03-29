@@ -26,4 +26,5 @@
     <string name="expand">扩写</string>
     <string name="abbreviate">缩写</string>
     <string name="translate">翻译</string>
+    <string name="segment">分段</string>
 </resources>
