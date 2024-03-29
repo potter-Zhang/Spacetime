@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+        viewpager.setUserInputEnabled(false);
     }
 
     // 初始化navigationview，把每个item绑定到一个fragment上

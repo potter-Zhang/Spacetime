@@ -104,7 +104,6 @@ RE.redo = function() {
 
 RE.setBold = function() {
     document.execCommand('bold', false, null);
-    RE.getSelection()
 }
 
 RE.setItalic = function() {
@@ -366,4 +365,8 @@ RE.getSelection = function() {
   const selection = window.getSelection()
   injectedObj.resultCallback(selection.toString())
 
+}
+
+RE.setText = function(text) {
+    RE.editor.innerText = text
 }

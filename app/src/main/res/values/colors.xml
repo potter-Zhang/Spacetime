@@ -20,4 +20,18 @@
     <color name="notebook_name_color">#FF000000</color>
 
     <color name="dark_yellow">#FFCCB416</color>
+
+    <!-- 每天1-10篇笔记的渐变色-->
+    <color name="one_note_color">#FFA5D63F</color>
+    <color name="two_notes_color">#93C132</color>
+    <color name="three_notes_color">#88B52A</color>
+    <color name="four_notes_color">#749F1A</color>
+    <color name="five_notes_color">#5C810F</color>
+    <color name="six_notes_color">#587C0E</color>
+    <color name="seven_notes_color">#476706</color>
+    <color name="eight_notes_color">#4B6E03</color>
+    <color name="nine_notes_color">#456503</color>
+    <color name="ten_notes_color">#375100</color>
+
+
 </resources>
