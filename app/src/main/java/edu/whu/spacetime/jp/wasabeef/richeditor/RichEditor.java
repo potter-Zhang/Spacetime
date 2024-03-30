@@ -26,6 +26,8 @@ import android.webkit.WebViewClient;
 
 import androidx.annotation.Nullable;
 
+import com.alibaba.dashscope.exception.InputRequiredException;
+import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.xuexiang.xui.widget.toast.XToast;
 
 import java.io.UnsupportedEncodingException;
@@ -35,6 +37,7 @@ import java.util.List;
 import java.util.Locale;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.service.AIFunctionService;
 
 /**
  * Copyright (C) 2020 Wasabeef
@@ -145,6 +148,19 @@ public class RichEditor extends WebView {
       return false;
     }
 
+    private void expand() {
+      AIFunctionService service = new AIFunctionService();
+      StringBuilder builder = new StringBuilder();
+      service.setOnNewMessageComeListener(message -> {
+        builder.append(message);
+      });
+      try {
+        service.expandNote(getContext(), "扩写测试");
+      } catch (Exception e) {
+        XToast.error(getContext(), "出现错误").show();
+      }
+    }
+
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
       int itemId = item.getItemId();
@@ -152,6 +168,7 @@ public class RichEditor extends WebView {
         XToast.info(getContext(), "翻译").show();
       } else if (itemId == R.id.item_expand) {
         XToast.info(getContext(), "扩写").show();
+        this.expand();
       } else if (itemId == R.id.item_abbreviate) {
         XToast.info(getContext(), "缩写").show();
       }

@@ -1,5 +1,10 @@
 package edu.whu.spacetime.service;
 
+import android.accounts.NetworkErrorException;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.alibaba.dashscope.aigc.generation.Generation;
 import com.alibaba.dashscope.aigc.generation.GenerationParam;
 import com.alibaba.dashscope.aigc.generation.GenerationResult;
@@ -21,17 +26,21 @@ public class AIFunctionService {
 
     private OnNewMessageComeListener listener;
 
-    private static final String APIKEY = "b587806232773fb8b507e8b36dc3abe6a13ef7d5";
+    private static final String APIKEY = "sk-bd7a36da81b74033a786934763bf4856";
 
     private static final String ABSTRACT_PROMPT = "接下来我会给出我的笔记，你需要提炼、 缩写我的笔记，尽量精简，要比之前的笔记字数少。\n" +
-                                                    "要求：1、充分使用多级标题；" +
+                                                    "要求：1、充分使用多级标题，标题需要使用序号进行编号，标题后跟换行符号" +
                                                     "2、最终不需要回答其他信息，返回缩写后的结果即可。"+
                                                     "给出的笔记是：\n";
 
     private static final String EXPAND_PROMPT = "接下来我会给出我的笔记，你需要根据关键信息扩写我的笔记，尽量详细。\n" +
-                                                "要求：1、充分使用多级标题；" +
+                                                "要求：1、充分使用多级标题，标题需要使用序号进行编号，标题后跟换行符。" +
                                                 "2、最终不需要回答其他信息，返回缩写后的结果即可。"+
                                                 "给出的笔记是：\n";
+
+    private static final String TRANSLATE_PROMPT = "接下来我会给出一段文本，你需要将这段文本翻译为英文。\n" +
+                                                    "最终不需要回答其他信息，返回缩写后的结果即可。"+
+                                                    "给出的文本是：\n";
 
     public AIFunctionService() {
         Constants.apiKey = APIKEY;
@@ -41,7 +50,21 @@ public class AIFunctionService {
         this.listener = listener;
     }
 
-    private Flowable<GenerationResult> getStreamResult(String command) throws NoApiKeyException, InputRequiredException {
+    // 判断是否联网
+    private boolean isNetworkConnected(Context context) {
+        if (context != null) {
+            ConnectivityManager mConnectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+            if (mNetworkInfo != null) {
+                return mNetworkInfo.isAvailable();
+            }
+        }
+        return false;
+    }
+
+    // 调用流式输出API，会调用listener的回调函数
+    private void startStreamCall(String command) {
         Generation gen = new Generation();
         // 要发送的消息
         Message userMsg = Message
@@ -51,34 +74,43 @@ public class AIFunctionService {
                 .build();
         // 模型信息参数
         GenerationParam param = GenerationParam.builder()
-                .model("qwen-max")
+                // .model("qwen-max")
+                .model("qwen-turbo")
                 .messages(Arrays.asList(userMsg))
                 .resultFormat(GenerationParam.ResultFormat.MESSAGE)
                 .topP(0.8).enableSearch(true)  // set streaming output
                 .incrementalOutput(true)  // get streaming output incrementally
                 .build();
-        return gen.streamCall(param);
+        // 开始调用API，网络请求必须在子线程内进行
+        new Thread(() -> {
+            Flowable<GenerationResult> result;
+            try {
+                result = gen.streamCall(param);
+            } catch (NoApiKeyException | InputRequiredException e) {
+                throw new RuntimeException(e);
+            }
+            result.blockingForEach(message -> {
+                // 调用回调函数
+                listener.OnNewMessageCome(message.getOutput().getChoices().get(0).getMessage().getContent());
+            });
+        }).start();
     }
 
     // 缩写笔记
-    public void abstractNote(String noteContent) throws NoApiKeyException, InputRequiredException {
+    public void abstractNote(Context context, String noteContent) throws NetworkErrorException {
+        if (!isNetworkConnected(context)) {
+            throw new NetworkErrorException("网络未连接！");
+        }
         String command = ABSTRACT_PROMPT + noteContent;
-        Flowable<GenerationResult> result = getStreamResult(command);
-        StringBuilder fullContent = new StringBuilder();
-        result.blockingForEach(message -> {
-            fullContent.append(message.getOutput().getChoices().get(0).getMessage().getContent());
-            listener.OnNewMessageCome(message.getOutput().getChoices().get(0).getMessage().getContent());
-        });
+        startStreamCall(command);
     }
 
     // 扩写笔记
-    public void expandNote(String noteContent) throws NoApiKeyException, InputRequiredException {
+    public void expandNote(Context context, String noteContent) throws NetworkErrorException {
+        if (!isNetworkConnected(context)) {
+            throw new NetworkErrorException("网络未连接！");
+        }
         String command = EXPAND_PROMPT + noteContent;
-        Flowable<GenerationResult> result = getStreamResult(command);
-        StringBuilder fullContent = new StringBuilder();
-        result.blockingForEach(message -> {
-            fullContent.append(message.getOutput().getChoices().get(0).getMessage().getContent());
-            listener.OnNewMessageCome(message.getOutput().getChoices().get(0).getMessage().getContent());
-        });
+        startStreamCall(command);
     }
 }
