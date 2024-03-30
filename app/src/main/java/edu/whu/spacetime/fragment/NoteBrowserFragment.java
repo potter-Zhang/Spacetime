@@ -122,15 +122,14 @@ public class NoteBrowserFragment extends Fragment {
         // 切换fragment回来后要重新动态注册notebookFragment
         if (this.notebookBrowserFragment != null)
             this.notebookBrowserFragment = registerNotebookFragment();
+        // 从编辑界面返回时可能添加了新的笔记，因此重新加载笔记列表
+        setNoteList();
     }
 
     // 设置要展示的笔记
     private void setNoteList() {
         ListView noteListView = fragmentView.findViewById(R.id.list_note);
-        List<Note> noteList = new ArrayList<>();
-        noteList.add(new Note("测试1", 0, 0, "测试内容", LocalDateTime.now()));
-        noteList.add(new Note("测试2", 0, 0, "测试内容", LocalDateTime.now()));
-        // List<Note> noteList = noteDao.queryAllInNotebook(currentNotebook.getNotebookId());
+        List<Note> noteList = noteDao.queryAllInNotebook(currentNotebook.getNotebookId());
         NoteListAdapter listAdapter = new NoteListAdapter(getContext(), R.layout.item_note_list, noteList);
         noteListView.setAdapter(listAdapter);
         TextView tvNotebookNumber = fragmentView.findViewById(R.id.tv_notebookNumber);

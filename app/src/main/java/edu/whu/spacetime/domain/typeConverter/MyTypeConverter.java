@@ -6,19 +6,20 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class MyTypeConverter {
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     @TypeConverter
     public String dateToString(LocalDateTime time) {
         if (time == null) {
             return "";
         } else {
-            return time.toString();
+
+            return time.format(formatter);
         }
     }
 
     @TypeConverter
     public LocalDateTime fromTimestamp(String stamp) {
-        String pattern = "yyyy-MM-dd'T'HH:mm:ss"; // 日期时间的格式模式
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return LocalDateTime.parse(stamp, formatter);
     }
 }
