@@ -134,7 +134,7 @@ public class SwipeListLayout extends FrameLayout {
             // 向右滑xvel为正 向左滑xvel为负
             if (releasedChild == itemView) {
                 if (xvel == 0
-                        && Math.abs(itemView.getLeft()) > hiddenViewWidth / 2.0f) {
+                        && Math.abs(itemView.getLeft()) > hiddenViewWidth / 10.0f) {
                     open(smooth);
                 } else if (xvel < 0) {
                     open(smooth);

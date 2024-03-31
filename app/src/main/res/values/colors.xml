@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="main_theme">#FFA5D63F</color>
+    <color name="main_theme">#ACE157</color>
     <color name="main_theme_dark">#FF8AAD3E</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
@@ -33,5 +33,6 @@
     <color name="nine_notes_color">#456503</color>
     <color name="ten_notes_color">#375100</color>
 
+    <color name="bottom_item_checked">#09bb07</color>
 
 </resources>

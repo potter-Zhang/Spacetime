@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.MenuItem;
@@ -68,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+        //ColorStateList colorStateList = getColorStateList(R.color.bottom_text_color);
+        //nav.setItemTextColor(colorStateList);
         viewpager.setUserInputEnabled(false);
     }
 

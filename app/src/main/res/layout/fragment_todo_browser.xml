@@ -23,33 +23,37 @@
             android:orientation="vertical">
             <ImageView
                 android:layout_gravity="center_vertical|left"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:scaleType="fitCenter"
-                android:layout_marginEnd="20dp"
-                android:src="@drawable/icon_list"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="15dp"
+                android:src="@drawable/icon_todo_checked"
                 tools:ignore="RtlHardcoded"/>
             <LinearLayout
                 android:layout_column="1"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_gravity="left|center_vertical"
+                android:gravity="left|center"
                 tools:ignore="RtlHardcoded">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="待办"
-                    android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="28sp"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
                     android:layout_gravity="left"
                     tools:ignore="RtlHardcoded" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="#333"/>
                 <TextView
                     android:id="@+id/tv_todo_numOfTodo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="17sp"
                     android:text="x条待办"
                     android:layout_gravity="left"
                     tools:ignore="RtlHardcoded" />
@@ -64,22 +68,13 @@
                 android:gravity="center_vertical"
                 tools:ignore="RtlHardcoded">
                 <ImageButton
-                    android:layout_gravity="center|right"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:scaleType="fitCenter"
-                    android:layout_marginEnd="20dp"
-                    android:src="@drawable/icon_search"
-                    tools:ignore="RtlHardcoded"/>
-                <ImageButton
                     android:id="@+id/btn_todo_addItem"
-                    android:layout_column="3"
                     android:layout_gravity="center|right"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:scaleType="fitCenter"
                     android:layout_marginEnd="15dp"
-                    android:src="@drawable/icon_add"
+                    android:src="@drawable/selector_add"
                     tools:ignore="RtlHardcoded"/>
             </LinearLayout>
         </GridLayout>
@@ -102,8 +97,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="--已完成--"
-                    android:textSize="20dp"
+                    android:text="---已完成---"
+                    android:textSize="15sp"
                     android:gravity="center_horizontal"
                     />
 

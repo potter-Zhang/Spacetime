@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="100dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@drawable/shape_popup_menu"
-    android:paddingTop="15dp"
-    android:paddingBottom="15dp">
+    android:background="@drawable/shape_popup_menu_small"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
     <TextView
         android:id="@+id/tv_rename"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/rename"
         android:gravity="center"
-        android:textSize="20dp"
+        android:textSize="15sp"
         android:padding="10dp"
         android:background="@drawable/selector_list_item"
         android:textColor="@color/black"/>
@@ -23,11 +23,11 @@
         android:background="@color/light_gray"/>
     <TextView
         android:id="@+id/tv_delete"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/delete"
-        android:textSize="20dp"
+        android:textSize="15sp"
         android:padding="10dp"
         android:background="@drawable/selector_list_item"
         android:textColor="@color/xui_config_color_red"/>
