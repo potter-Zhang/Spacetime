@@ -18,6 +18,7 @@ import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.adapter.MyFragmentPagerAdapter;
 import edu.whu.spacetime.dao.NotebookDao;
 import edu.whu.spacetime.domain.Notebook;
+import edu.whu.spacetime.fragment.AugmentedFacesFragment;
 import edu.whu.spacetime.fragment.NoteBrowserFragment;
 import edu.whu.spacetime.fragment.TodoBrowserFragment;
 import edu.whu.spacetime.fragment.UserFragment;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         fragments.add(initNoteFragment());
         fragments.add(new TodoBrowserFragment());
         fragments.add(UserFragment.newInstance());
+        fragments.add(new AugmentedFacesFragment());
         MyFragmentPagerAdapter myFragmentPagerAdapter = new MyFragmentPagerAdapter(
                 getSupportFragmentManager(), getLifecycle(), fragments);
         viewpager.setAdapter(myFragmentPagerAdapter);
@@ -62,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
                     case 2:
                         nav.setSelectedItemId(R.id.navigation_item3);
                         break;
+                    case 3:
+                        nav.setSelectedItemId(R.id.navigation_item4);
                     default:
                         break;
                 }
@@ -92,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
                     viewpager.setCurrentItem(2);
                     return true;
                 }
+                else if (id == R.id.navigation_item4) {
+                    viewpager.setCurrentItem(3);
+                    return true;
+                }
                 return false;
             }
         });
@@ -103,4 +111,5 @@ public class MainActivity extends AppCompatActivity {
         Notebook notebook = notebookDao.getNotebooksByUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId()).get(0);
         return NoteBrowserFragment.newInstance(notebook);
     }
+
 }

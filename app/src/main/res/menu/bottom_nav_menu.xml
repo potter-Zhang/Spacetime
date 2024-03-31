@@ -10,9 +10,13 @@
     <item
         android:id="@+id/navigation_item2"
         android:icon="@drawable/selector_import"
-        android:title="@string/include" />
+        android:title="待办" />
     <item
         android:id="@+id/navigation_item3"
         android:icon="@drawable/selector_user"
         android:title="@string/me"/>
+    <item
+        android:id="@+id/navigation_item4"
+        android:icon="@drawable/virtual_reality_glasses"
+        android:title="AR"/>
 </menu>

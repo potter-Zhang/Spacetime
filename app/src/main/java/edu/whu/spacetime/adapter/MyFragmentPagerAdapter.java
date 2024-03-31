@@ -1,6 +1,7 @@
 package edu.whu.spacetime.adapter;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
@@ -12,6 +13,8 @@ import java.util.List;
 public class MyFragmentPagerAdapter extends FragmentStateAdapter {
 
     List<Fragment> fragmentList = new ArrayList<>();
+
+
     public MyFragmentPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, List<Fragment> fragments) {
         super(fragmentManager, lifecycle);
         fragmentList = fragments;
