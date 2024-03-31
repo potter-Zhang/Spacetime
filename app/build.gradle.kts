@@ -77,4 +77,15 @@ dependencies {
 
     // 通义千问DashScope
     implementation("com.alibaba:dashscope-sdk-java:2.12.0")
+
+    // Googla AR
+    // ARCore (Google Play Services for AR) library.
+    implementation("com.google.ar:core:1.42.0")
+
+    // Obj - a simple Wavefront OBJ file loader
+    // https://github.com/javagl/Obj
+    implementation("de.javagl:obj:0.4.0")
+
+    implementation("androidx.appcompat:appcompat:1.1.0")
+    implementation("com.google.android.material:material:1.1.0")
 }
