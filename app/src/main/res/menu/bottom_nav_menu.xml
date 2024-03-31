@@ -9,8 +9,9 @@
         app:showAsAction="always"/>
     <item
         android:id="@+id/navigation_item2"
-        android:icon="@drawable/selector_import"
-        android:title="待办" />
+        android:icon="@drawable/selector_todo"
+        android:title="@string/todo" />
+
     <item
         android:id="@+id/navigation_item3"
         android:icon="@drawable/selector_user"

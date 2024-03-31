@@ -80,7 +80,10 @@ public class EditorActivity extends AppCompatActivity {
         }
 
         mPreview = (TextView) findViewById(R.id.preview);
-        mEditor.setText(note.getContent());
+        if (note != null) {
+            // mEditor.setText(note.getContent());
+        }
+
         mEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
             @Override
             public void onTextChange(String text) {

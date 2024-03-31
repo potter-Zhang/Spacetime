@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="350dp"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/shape_popup_menu"
@@ -11,17 +11,18 @@
         android:id="@+id/tv_input_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:textColor="@color/black"
         android:layout_marginBottom="20dp"
         android:text="@string/rename"/>
     <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
         android:id="@+id/edit_input"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         app:met_baseColor="@color/dark_yellow"
         app:met_clearButton="true"
+        android:textSize="22sp"
         app:met_underlineColor="@color/dark_yellow" />
     <TextView
         android:id="@+id/btn_confirm_input"

@@ -2,6 +2,7 @@
     <string name="app_name">Spacetime</string>
     <string name="index">首页</string>
     <string name="include">导入</string>
+    <string name="todo">待办</string>
     <string name="me">我的</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -27,4 +28,7 @@
     <string name="abbreviate">缩写</string>
     <string name="translate">翻译</string>
     <string name="segment">分段</string>
+
+    <string name="replace">替换</string>
+    <string name="insert">插入</string>
 </resources>
