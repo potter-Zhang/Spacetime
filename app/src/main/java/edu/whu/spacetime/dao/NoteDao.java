@@ -30,4 +30,5 @@ public interface NoteDao {
 
     @Query("SELECT * FROM note WHERE userId=:userId")
     List<Note> queryByUserId(int userId);
+
 }
