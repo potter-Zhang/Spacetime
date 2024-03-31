@@ -27,4 +27,7 @@
     <string name="abbreviate">缩写</string>
     <string name="translate">翻译</string>
     <string name="segment">分段</string>
+
+    <string name="replace">替换</string>
+    <string name="insert">插入</string>
 </resources>
