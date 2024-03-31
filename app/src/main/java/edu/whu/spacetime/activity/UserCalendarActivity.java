@@ -21,6 +21,7 @@ import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,22 +69,19 @@ public class UserCalendarActivity extends AppCompatActivity implements CalendarV
     @Override
     public void onClick(View v) {
         int vId = v.getId();
-        if (vId == R.id.tv_month_day) {
-            if (!mCalendarLayout.isExpand()) {
-                mCalendarLayout.expand();
-                return;
-            }
-            mCalendarView.showYearSelectLayout(mYear);
-            mTextLunar.setVisibility(View.GONE);
-            mTextYear.setVisibility(View.GONE);
-            mTextMonthDay.setText(String.valueOf(mYear));
-            mCalendarView.getSelectedCalendar();
-//            mListView.setAdapter(new NoteListAdapter(this, R.layout.item_note_list, notesMap.get()));
-        }
-        else if (vId == R.id.fl_current) {
+        if (vId == R.id.fl_current) {
             mCalendarView.scrollToCurrent();
         }
+        else if (vId == R.id.calendarView)
+        {
+            int chosenYear = mCalendarView.getCurYear();
+            int chosenMonth = mCalendarView.getCurMonth();
+            int chosenDay = mCalendarView.getCurDay();
+            String chosenData =chosenYear + "-" + chosenMonth + "-" + chosenDay;
+            mListView.setAdapter(new NoteListAdapter(getApplicationContext(), R.layout.item_note_list, notesMap.get(chosenData)));
+        }
     }
+
 
     @Override
     public void onCalendarOutOfRange(Calendar calendar) {
@@ -98,6 +96,19 @@ public class UserCalendarActivity extends AppCompatActivity implements CalendarV
         mTextYear.setText(String.valueOf(calendar.getYear()));
         mTextLunar.setText(calendar.getLunar());
         mYear = calendar.getYear();
+        String chosenData = mYear + "-";
+        int chosenMonth = calendar.getMonth();
+        if (chosenMonth < 10)
+            chosenData += '0' + String.valueOf(chosenMonth) + "-";
+        else
+            chosenData += String.valueOf(chosenMonth) + "-";
+        int chosenDay = calendar.getDay();
+        if (chosenDay < 10)
+            chosenData += '0' + String.valueOf(chosenDay);
+        else
+            chosenData += String.valueOf(chosenDay);
+        List<Note> noteList = notesMap.getOrDefault(chosenData, new ArrayList<>());
+        mListView.setAdapter(new NoteListAdapter(getApplicationContext(), R.layout.item_note_list, noteList));
     }
 
     @Override
@@ -107,13 +118,13 @@ public class UserCalendarActivity extends AppCompatActivity implements CalendarV
 
     private void initView() {
         noteDao = SpacetimeApplication.getInstance().getDatabase().getNoteDao();
+        mListView = findViewById(R.id.listView);
         mTextMonthDay = findViewById(R.id.tv_month_day);
         mTextYear = findViewById(R.id.tv_year);
         mTextLunar = findViewById(R.id.tv_lunar);
         mRelativeTool = findViewById(R.id.rl_tool);
         mCalendarView = findViewById(R.id.calendarView);
         mTextCurrentDay = findViewById(R.id.tv_current_day);
-        mTextMonthDay.setOnClickListener(this);
         findViewById(R.id.fl_current).setOnClickListener(this);
         mCalendarLayout = findViewById(R.id.calendarLayout);
         mCalendarView.setOnCalendarSelectListener(this);
@@ -130,12 +141,15 @@ public class UserCalendarActivity extends AppCompatActivity implements CalendarV
         int userId = SpacetimeApplication.getInstance().getCurrentUser().getUserId();
         allNotes = noteDao.queryByUserId(userId);
 
+        // 得到每天的Note
         notesMap = new HashMap<>();
         for (int i = 0; i < allNotes.size(); i ++ ) {
             Note now = allNotes.get(i);
             LocalDateTime noteTime = now.getCreateTime();
             String ymd = noteTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            Objects.requireNonNull(notesMap.get(ymd)).add(now);
+            List<Note> noteList = notesMap.getOrDefault(ymd, new ArrayList<>());
+            noteList.add(now);
+            notesMap.put(ymd, noteList);
         }
 
         Map<String, Calendar> map = new HashMap<>();
@@ -153,7 +167,6 @@ public class UserCalendarActivity extends AppCompatActivity implements CalendarV
         //此方法在巨大的数据量上不影响遍历性能，推荐使用
         mCalendarView.setSchemeDate(map);
 
-        mListView = findViewById(R.id.listView);
         mListView.setAdapter(new NoteListAdapter(this, R.layout.item_note_list, Objects.requireNonNull(notesMap.get(today))));
     }
 
