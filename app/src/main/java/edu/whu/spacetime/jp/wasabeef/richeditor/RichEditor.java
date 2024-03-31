@@ -1,5 +1,6 @@
 package edu.whu.spacetime.jp.wasabeef.richeditor;
 
+import android.accounts.NetworkErrorException;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -28,6 +29,7 @@ import androidx.annotation.Nullable;
 
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
+import com.lxj.xpopup.XPopup;
 import com.xuexiang.xui.widget.toast.XToast;
 
 import java.io.UnsupportedEncodingException;
@@ -35,9 +37,13 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.service.AIFunctionService;
+import edu.whu.spacetime.widget.AIResultDialog;
 
 /**
  * Copyright (C) 2020 Wasabeef
@@ -105,6 +111,15 @@ public class RichEditor extends WebView {
   private OnDecorationStateListener mDecorationStateListener;
   private AfterInitialLoadListener mLoadListener;
 
+  /**
+   * 锁变量，用于同步js线程
+   */
+  public static final Lock reentrantLock = new ReentrantLock();
+  /**
+   * 锁的条件变量
+   */
+  public static final Condition condition = reentrantLock.newCondition();
+
   public RichEditor(Context context) {
     this(context, null);
   }
@@ -128,13 +143,22 @@ public class RichEditor extends WebView {
     applyAttributes(context, attrs);
   }
 
-  // 自定义长按文本后的弹出菜单
+  /**
+   * 自定义长按文本后的弹出菜单
+   * @param callback Callback that will control the lifecycle of the action mode
+   * @param type One of {@link ActionMode#TYPE_PRIMARY} or {@link ActionMode#TYPE_FLOATING}.
+   * @return
+   */
   @Override
   public ActionMode startActionMode(ActionMode.Callback callback, int type) {
     return super.startActionMode(new MyCallBack(), type);
   }
 
   private class MyCallBack implements ActionMode.Callback {
+    private static final int EXPAND = 0;
+    private static final int ABSTRACT = 1;
+    private static final int TRANSLATE = 2;
+
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 
@@ -148,29 +172,50 @@ public class RichEditor extends WebView {
       return false;
     }
 
-    private void expand() {
+    private void aiFunction(int mode) throws InterruptedException {
       AIFunctionService service = new AIFunctionService();
-      StringBuilder builder = new StringBuilder();
-      service.setOnNewMessageComeListener(message -> {
-        builder.append(message);
-      });
+      AIResultDialog dialog = new AIResultDialog(getContext());
+      getSelection();
+      reentrantLock.lock();
+      while (resultBuffer == null) {
+        condition.await();
+      }
+      reentrantLock.unlock();
+      String selectionText = getResult();
+      service.setOnNewMessageComeListener(message -> dialog.appendText(message));
       try {
-        service.expandNote(getContext(), "扩写测试");
-      } catch (Exception e) {
-        XToast.error(getContext(), "出现错误").show();
+        switch (mode) {
+          case EXPAND:
+            service.expandNote(getContext(), selectionText);
+            break;
+          case TRANSLATE:
+            service.translate(getContext(), selectionText);
+            break;
+          case ABSTRACT:
+            service.abstractNote(getContext(), selectionText);
+            break;
+        }
+        new XPopup.Builder(getContext()).asCustom(dialog).show();
+      } catch (NetworkErrorException e) {
+        XToast.error(getContext(), "未连接网络!").show();
+      } finally {
+        resultBuffer = null;
       }
     }
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
       int itemId = item.getItemId();
-      if (itemId == R.id.item_translate) {
-        XToast.info(getContext(), "翻译").show();
-      } else if (itemId == R.id.item_expand) {
-        XToast.info(getContext(), "扩写").show();
-        this.expand();
-      } else if (itemId == R.id.item_abbreviate) {
-        XToast.info(getContext(), "缩写").show();
+      try {
+        if (itemId == R.id.item_translate) {
+          this.aiFunction(TRANSLATE);
+        } else if (itemId == R.id.item_expand) {
+          this.aiFunction(EXPAND);
+        } else if (itemId == R.id.item_abbreviate) {
+          this.aiFunction(ABSTRACT);
+        }
+      } catch (Exception e) {
+       return true;
       }
       mode.finish();
       return true;
@@ -356,6 +401,9 @@ public class RichEditor extends WebView {
   @JavascriptInterface
   public void resultCallback(String result) {
     resultBuffer = result;
+    RichEditor.reentrantLock.lock();
+    RichEditor.condition.signalAll();
+    RichEditor.reentrantLock.unlock();
     Log.e("resultCallback", result);
   }
 

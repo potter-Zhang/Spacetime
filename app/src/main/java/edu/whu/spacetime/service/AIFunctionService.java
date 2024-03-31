@@ -19,7 +19,9 @@ import java.util.Arrays;
 import io.reactivex.Flowable;
 
 public class AIFunctionService {
-    // 自定义的流式输出监听器，当接收到流的新response时调用回调函数
+    /**
+     * 流式输出监听器，每次接收到新的response时调用回调函数
+     */
     public interface OnNewMessageComeListener {
         void OnNewMessageCome(String message);
     }
@@ -38,9 +40,15 @@ public class AIFunctionService {
                                                 "2、最终不需要回答其他信息，返回缩写后的结果即可。"+
                                                 "给出的笔记是：\n";
 
-    private static final String TRANSLATE_PROMPT = "接下来我会给出一段文本，你需要将这段文本翻译为英文。\n" +
-                                                    "最终不需要回答其他信息，返回缩写后的结果即可。"+
+    private static final String TRANSLATE_PROMPT = "接下来我会给出一段文本，你需要将这段文本从中文翻译为英文或者从英文翻译为中文。\n" +
+                                                    "最终不需要回答其他信息，只返回翻译后的结果即可。"+
                                                     "给出的文本是：\n";
+
+    private static final String SEGMENT_PROMPT = "接下来我会给出一篇笔记，请将其根据内容使用各级标题进行合理的分段.\n" +
+                                                "要求：1、充分使用多级标题，标题需要使用序号进行编号，标题后跟换行符。" +
+                                                "2、最终不需要回答其他信息，返回分段后的结果即可。"+
+                                                "给出的笔记是：\n";
+
 
     public AIFunctionService() {
         Constants.apiKey = APIKEY;
@@ -50,7 +58,10 @@ public class AIFunctionService {
         this.listener = listener;
     }
 
-    // 判断是否联网
+    /**
+     * 判断设备是否联网
+     * @param context 上下文
+     */
     private boolean isNetworkConnected(Context context) {
         if (context != null) {
             ConnectivityManager mConnectivityManager = (ConnectivityManager) context
@@ -63,7 +74,10 @@ public class AIFunctionService {
         return false;
     }
 
-    // 调用流式输出API，会调用listener的回调函数
+    /**
+     * 调用流式输出API，每接收一个response时会调用listener的回调
+     * @param command 给ai发送的指令
+     */
     private void startStreamCall(String command) {
         Generation gen = new Generation();
         // 要发送的消息
@@ -96,7 +110,12 @@ public class AIFunctionService {
         }).start();
     }
 
-    // 缩写笔记
+    /**
+     * 对笔记进行缩写
+     * @param context 上下文，用于判断是否连接网络
+     * @param noteContent 笔记内容
+     * @throws NetworkErrorException 网络未连接时抛出异常
+     */
     public void abstractNote(Context context, String noteContent) throws NetworkErrorException {
         if (!isNetworkConnected(context)) {
             throw new NetworkErrorException("网络未连接！");
@@ -105,12 +124,45 @@ public class AIFunctionService {
         startStreamCall(command);
     }
 
-    // 扩写笔记
+    /**
+     * 对笔记进行扩写
+     * @param context 上下文，用于判断是否连接网络
+     * @param noteContent 笔记内容
+     * @throws NetworkErrorException 网络未连接时抛出异常
+     */
     public void expandNote(Context context, String noteContent) throws NetworkErrorException {
         if (!isNetworkConnected(context)) {
             throw new NetworkErrorException("网络未连接！");
         }
         String command = EXPAND_PROMPT + noteContent;
+        startStreamCall(command);
+    }
+
+    /**
+     * 翻译文本内容
+     * @param context 上下文，用于判断是否连接网络
+     * @param content 要翻译的内容
+     * @throws NetworkErrorException 网络未连接时抛出异常
+     */
+    public void translate(Context context, String content) throws NetworkErrorException {
+        if (!isNetworkConnected(context)) {
+            throw new NetworkErrorException("网络未连接！");
+        }
+        String command = TRANSLATE_PROMPT + content;
+        startStreamCall(command);
+    }
+
+    /**
+     * 将笔记分段
+     * @param context 上下文，用于判断是否连接网络
+     * @param content 要分段的内容
+     * @throws NetworkErrorException 网络未连接时抛出异常
+     */
+    public void segment(Context context, String content) throws NetworkErrorException {
+        if (!isNetworkConnected(context)) {
+            throw new NetworkErrorException("网络未连接！");
+        }
+        String command = SEGMENT_PROMPT + content;
         startStreamCall(command);
     }
 }
