@@ -86,7 +86,6 @@ public class RichEditor extends WebView {
 
   private String resultBuffer;
 
-
   public interface OnTextChangeListener {
 
     void onTextChange(String text);
@@ -139,7 +138,6 @@ public class RichEditor extends WebView {
     setWebChromeClient(new WebChromeClient());
     setWebViewClient(createWebviewClient());
     loadUrl(SETUP_HTML);
-
     applyAttributes(context, attrs);
   }
 
@@ -178,6 +176,7 @@ public class RichEditor extends WebView {
       AIFunctionService service = new AIFunctionService();
       AIResultDialog dialog = new AIResultDialog(getContext());
       getSelection();
+      // 等待js线程获取到选中文本并返回结果
       reentrantLock.lock();
       while (resultBuffer == null) {
         condition.await();

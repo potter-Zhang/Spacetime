@@ -1,13 +1,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:background="@color/white">
 
   <!--头部action bar-->
   <GridLayout
       android:id="@+id/browse_action_bar"
       android:layout_width="match_parent"
-      android:layout_height="80dp"
+      android:layout_height="60dp"
       android:background="@color/main_theme"
       android:columnCount="4"
       android:rowCount="1"
@@ -378,6 +379,37 @@
 
     </LinearLayout>
   </HorizontalScrollView>
+
+  <EditText
+      android:id="@+id/edit_note_title"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="标题"
+      android:inputType="text"
+      android:background="@null"
+      android:theme="@style/MyEditTextStyle"
+      android:paddingLeft="10dp"
+      android:layout_marginTop="5dp"
+      android:textSize="24sp"/>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:paddingStart="10dp"
+      android:layout_marginTop="5dp">
+    <TextView
+        android:id="@+id/tv_char_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100字"/>
+    <TextView
+        android:id="@+id/tv_current_notebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="当前笔记本名称"/>
+  </LinearLayout>
 
   <edu.whu.spacetime.jp.wasabeef.richeditor.RichEditor
     android:id="@+id/editor"
