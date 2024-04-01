@@ -165,14 +165,17 @@ public class NoteBrowserFragment extends Fragment {
         return notebookFragment;
     }
 
-    // 跳转到编辑器
+    /**
+     * 跳转到编辑器
+     * @param note 被点击选项对应的Note类
+     */
     private void jump2Editor(Note note) {
         Intent intent = new Intent(getActivity(), EditorActivity.class);
         Bundle bundle = new Bundle();
 
         bundle.putSerializable("note", note);
         bundle.putInt("notebookId", currentNotebook.getNotebookId());
-        //bundle.putChar("h", 'h');
+        bundle.putString("notebookName", currentNotebook.getName());
         intent.putExtras(bundle);
 
         startActivity(intent);

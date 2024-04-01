@@ -1,33 +1,25 @@
 package edu.whu.spacetime.activity;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Build;
-import android.os.Bundle;
-
-import edu.whu.spacetime.R;
-
-
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.xuexiang.xui.widget.toast.XToast;
 
-import org.checkerframework.checker.units.qual.N;
-
 import java.time.LocalDateTime;
 
+import edu.whu.spacetime.R;
 import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.dao.NoteDao;
 import edu.whu.spacetime.domain.Note;
-import edu.whu.spacetime.domain.Notebook;
 import edu.whu.spacetime.jp.wasabeef.richeditor.RichEditor;
+import java.util.regex.*;
 
 
 public class EditorActivity extends AppCompatActivity {
@@ -35,14 +27,29 @@ public class EditorActivity extends AppCompatActivity {
     private RichEditor mEditor;
     private TextView mPreview;
 
+    private TextView wordCount;
+
     private EditText editNoteTitle;
 
     private NoteDao noteDao;
 
     private Note note;
 
+    /**
+     * 当前笔记所处的笔记本，用于将笔记保存到指定的笔记本
+     */
     private int notebookId;
 
+    /**
+     * 用于匹配html标签，统计字数时先去除标签
+     */
+    private static final String htmlRegex = "<[^>]+>";
+
+    private Pattern htmlPattern;
+
+    /**
+     * 保存笔记
+     */
     private void saveNote() {
         if (note == null) {
             note = new Note();
@@ -72,24 +79,37 @@ public class EditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
         noteDao = SpacetimeApplication.getInstance().getDatabase().getNoteDao();
+        htmlPattern = Pattern.compile(htmlRegex);
+        editNoteTitle = findViewById(R.id.edit_note_title);
+        mPreview = (TextView) findViewById(R.id.preview);
+        wordCount = findViewById(R.id.tv_word_count);
+
         mEditor = (RichEditor) findViewById(R.id.editor);
         mEditor.setEditorHeight(200);
         mEditor.setEditorFontSize(22);
         mEditor.setEditorFontColor(Color.BLACK);
         mEditor.setPadding(10, 10, 10, 10);
         mEditor.setPlaceholder("请输入文本...");
-
-        editNoteTitle = findViewById(R.id.edit_note_title);
+        mEditor.setOnTextChangeListener(text -> {
+            mPreview.setText(text);
+            Matcher matcher = htmlPattern.matcher(text);
+            String plainText = matcher.replaceAll("");
+            wordCount.setText(plainText.length() + "字");
+        });
 
         Bundle bundle = getIntent().getExtras();
         note = (Note) bundle.getSerializable("note");
         notebookId = bundle.getInt("notebookId");
+        String notebookName = bundle.getString("notebookName");
+        TextView tvCurrentNotebook = findViewById(R.id.tv_current_notebook);
+        tvCurrentNotebook.setText(notebookName);
         if (note != null) {
             mEditor.setHtml(note.getContent());
             editNoteTitle.setText(note.getTitle());
+            Matcher matcher = htmlPattern.matcher(note.getContent());
+            String plainText = matcher.replaceAll("");
+            wordCount.setText(plainText.length() + "字");
         }
-        mPreview = (TextView) findViewById(R.id.preview);
-        mEditor.setOnTextChangeListener(text -> mPreview.setText(text));
         bindBtnFunction();
     }
 
