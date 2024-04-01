@@ -43,7 +43,7 @@ public class EditorActivity extends AppCompatActivity {
     /**
      * 用于匹配html标签，统计字数时先去除标签
      */
-    private static final String htmlRegex = "<[^>]+>";
+    private static final String HTMLREGEX = "<[^>]+>";
 
     private Pattern htmlPattern;
 
@@ -51,17 +51,23 @@ public class EditorActivity extends AppCompatActivity {
      * 保存笔记
      */
     private void saveNote() {
+        String content = mEditor.getHtml();
+        content = (content == null) ? "" : content;
+        String title = editNoteTitle.getText().toString();
+        String plainText = htmlPattern.matcher(content).replaceAll("");
         if (note == null) {
             note = new Note();
-            note.setContent(mEditor.getHtml());
-            note.setTitle(editNoteTitle.getText().toString());
+            note.setContent(content);
+            note.setPlainText(plainText);
+            note.setTitle(title);
             note.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
             note.setCreateTime(LocalDateTime.now());
             note.setNotebookId(notebookId);
             noteDao.insertNote(note);
         } else {
-            note.setContent(mEditor.getHtml());
-            note.setTitle(editNoteTitle.getText().toString());
+            note.setContent(content);
+            note.setPlainText(plainText);
+            note.setTitle(title);
             noteDao.updateNote(note);
         }
         XToast.success(this, "保存成功").show();
@@ -79,7 +85,7 @@ public class EditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
         noteDao = SpacetimeApplication.getInstance().getDatabase().getNoteDao();
-        htmlPattern = Pattern.compile(htmlRegex);
+        htmlPattern = Pattern.compile(HTMLREGEX);
         editNoteTitle = findViewById(R.id.edit_note_title);
         mPreview = (TextView) findViewById(R.id.preview);
         wordCount = findViewById(R.id.tv_word_count);
@@ -105,6 +111,7 @@ public class EditorActivity extends AppCompatActivity {
         tvCurrentNotebook.setText(notebookName);
         if (note != null) {
             mEditor.setHtml(note.getContent());
+            mPreview.setText(note.getContent());
             editNoteTitle.setText(note.getTitle());
             Matcher matcher = htmlPattern.matcher(note.getContent());
             String plainText = matcher.replaceAll("");
