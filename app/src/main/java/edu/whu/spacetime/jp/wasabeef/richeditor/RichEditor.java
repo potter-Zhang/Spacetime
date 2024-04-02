@@ -86,7 +86,6 @@ public class RichEditor extends WebView {
 
   private String resultBuffer;
 
-
   public interface OnTextChangeListener {
 
     void onTextChange(String text);
@@ -114,11 +113,11 @@ public class RichEditor extends WebView {
   /**
    * 锁变量，用于同步js线程
    */
-  public static final Lock reentrantLock = new ReentrantLock();
+  private static final Lock reentrantLock = new ReentrantLock();
   /**
    * 锁的条件变量
    */
-  public static final Condition condition = reentrantLock.newCondition();
+  private static final Condition condition = reentrantLock.newCondition();
 
   public RichEditor(Context context) {
     this(context, null);
@@ -139,7 +138,6 @@ public class RichEditor extends WebView {
     setWebChromeClient(new WebChromeClient());
     setWebViewClient(createWebviewClient());
     loadUrl(SETUP_HTML);
-
     applyAttributes(context, attrs);
   }
 
@@ -154,6 +152,9 @@ public class RichEditor extends WebView {
     return super.startActionMode(new MyCallBack(), type);
   }
 
+  /**
+   * 自定义ActionMode的Callback类，将文本选中弹出菜单改为自定义选项
+   */
   private class MyCallBack implements ActionMode.Callback {
     private static final int EXPAND = 0;
     private static final int ABSTRACT = 1;
@@ -161,7 +162,6 @@ public class RichEditor extends WebView {
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-
       menu.clear();
       mode.getMenuInflater().inflate(R.menu.menu_text_selected, menu);
       return true;
@@ -176,6 +176,7 @@ public class RichEditor extends WebView {
       AIFunctionService service = new AIFunctionService();
       AIResultDialog dialog = new AIResultDialog(getContext());
       getSelection();
+      // 等待js线程获取到选中文本并返回结果
       reentrantLock.lock();
       while (resultBuffer == null) {
         condition.await();
@@ -199,6 +200,7 @@ public class RichEditor extends WebView {
       } catch (NetworkErrorException e) {
         XToast.error(getContext(), "未连接网络!").show();
       } finally {
+        // 清空resultBuffer，否则下一次进入方法时条件变量直接成立
         resultBuffer = null;
       }
     }

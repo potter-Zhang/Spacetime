@@ -17,15 +17,9 @@ import com.alibaba.dashscope.utils.Constants;
 import java.util.Arrays;
 
 import io.reactivex.Flowable;
+import edu.whu.spacetime.service.listener.OnNewMessageComeListener;
 
 public class AIFunctionService {
-    /**
-     * 流式输出监听器，每次接收到新的response时调用回调函数
-     */
-    public interface OnNewMessageComeListener {
-        void OnNewMessageCome(String message);
-    }
-
     private OnNewMessageComeListener listener;
 
     private static final String APIKEY = "sk-bd7a36da81b74033a786934763bf4856";

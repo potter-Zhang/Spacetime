@@ -9,6 +9,11 @@
         <item name="xui_actionbar_color">@color/main_theme</item>
     </style>
 
+    <!--输入光标的颜色为主题色-->
+    <style name="MyEditTextStyle" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">@color/main_theme</item>
+    </style>
+
     <!--
       Base application theme, dependent on API level. This theme is replaced
       by AppBaseTheme from res/values-vXX/styles.xml on newer devices.

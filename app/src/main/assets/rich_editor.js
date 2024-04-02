@@ -364,7 +364,6 @@ RE.editor.addEventListener("click", RE.enabledEditingItems);
 RE.getSelection = function() {
   const selection = window.getSelection()
   injectedObj.resultCallback(selection.toString())
-
 }
 
 RE.setText = function(text) {

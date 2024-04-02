@@ -35,7 +35,7 @@
         <activity
             android:name=".activity.MainActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="stateVisible|adjustPan"/>
         <activity
             android:name=".activity.LoginActivity"
             android:exported="true">

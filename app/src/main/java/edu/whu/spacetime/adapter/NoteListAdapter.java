@@ -35,7 +35,7 @@ public class NoteListAdapter extends ArrayAdapter<Note> {
         TextView tvTime = view.findViewById(R.id.tv_note_time);
 
         tvTitle.setText(note.getTitle());
-        tvAbstract.setText(note.getContent());
+        tvAbstract.setText(note.getPlainText());
         tvTime.setText(note.getCreateTime().toLocalDate().toString());
         return view;
     }
