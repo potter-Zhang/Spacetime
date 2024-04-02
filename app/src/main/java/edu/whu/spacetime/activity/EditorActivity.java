@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.lxj.xpopup.XPopup;
 import com.xuexiang.xui.widget.toast.XToast;
 
 import java.time.LocalDateTime;
@@ -19,12 +20,17 @@ import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.dao.NoteDao;
 import edu.whu.spacetime.domain.Note;
 import edu.whu.spacetime.jp.wasabeef.richeditor.RichEditor;
+import edu.whu.spacetime.widget.AIChatPopup;
+
 import java.util.regex.*;
 
 
 public class EditorActivity extends AppCompatActivity {
 
     private RichEditor mEditor;
+
+    private AIChatPopup chatPopup;
+
     private TextView mPreview;
 
     private TextView wordCount;
@@ -113,9 +119,7 @@ public class EditorActivity extends AppCompatActivity {
             mEditor.setHtml(note.getContent());
             mPreview.setText(note.getContent());
             editNoteTitle.setText(note.getTitle());
-            Matcher matcher = htmlPattern.matcher(note.getContent());
-            String plainText = matcher.replaceAll("");
-            wordCount.setText(plainText.length() + "字");
+            wordCount.setText(note.getPlainText().length() + "字");
         }
         bindBtnFunction();
     }
@@ -208,6 +212,15 @@ public class EditorActivity extends AppCompatActivity {
         findViewById(R.id.return_btn).setOnClickListener(v -> {
             saveNote();
             finish();
+        });
+
+        findViewById(R.id.btn_ai_chat).setOnClickListener(v -> {
+            chatPopup = (chatPopup == null) ? new AIChatPopup(this, note.getPlainText()) : chatPopup;
+            new XPopup.Builder(this)
+                    .isDestroyOnDismiss(false)
+                    .autoFocusEditText(false)
+                    .asCustom(chatPopup)
+                    .show();
         });
     }
 

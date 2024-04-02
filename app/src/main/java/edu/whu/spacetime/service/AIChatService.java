@@ -64,7 +64,7 @@ public class AIChatService {
      * @param context 上下文，用于判断设备是否联网
      * @param noteContent 笔记的内容
      */
-    public void initChat(Context context, String noteContent) throws InputRequiredException, NetworkErrorException {
+    public void initChat(Context context, String noteContent) throws NetworkErrorException {
         if (!isNetworkConnected(context)) {
             throw new NetworkErrorException();
         }
@@ -81,44 +81,48 @@ public class AIChatService {
                 .enableSearch(false)
                 .incrementalOutput(true)
                 .build();
-        Flowable<GenerationResult> result;
-        try {
-            result = gen.streamCall(param);
-        } catch (NoApiKeyException e) {
-            // NoApiKeyException不用抛出
-            return;
-        }
-        StringBuilder fullContent = new StringBuilder();
-        result.blockingForEach(message -> {
-            fullContent.append(message.getOutput().getChoices().get(0).getMessage().getContent());
-        });
-        Message assistantMsg = Message.builder().role(Role.ASSISTANT.getValue()).content(fullContent.toString()).build();
-        msgManager.add(assistantMsg);
+        new Thread(() -> {
+            Flowable<GenerationResult> result;
+            try {
+                result = gen.streamCall(param);
+            } catch (NoApiKeyException | InputRequiredException e) {
+                // NoApiKeyException不用抛出
+                return;
+            }
+            StringBuilder fullContent = new StringBuilder();
+            result.blockingForEach(message -> {
+                fullContent.append(message.getOutput().getChoices().get(0).getMessage().getContent());
+            });
+            Message assistantMsg = Message.builder().role(Role.ASSISTANT.getValue()).content(fullContent.toString()).build();
+            msgManager.add(assistantMsg);
+        }).start();
     }
 
     /**
      * 根据笔记内容回答用户问题
      * @param question 问题
-     * @throws InputRequiredException 输入为空时抛出该错误
      */
-    public void answer(String question) throws InputRequiredException {
+    public void answer(String question) {
         Message usrMessage = Message.builder().role(Role.USER.getValue()).content(question).build();
         msgManager.add(usrMessage);
-        Flowable<GenerationResult> result;
-        try {
-            result = gen.streamCall(param);
-        } catch (NoApiKeyException e) {
-            return;
-        }
-        StringBuilder fullContent = new StringBuilder();
-
-        result.blockingForEach(message -> {
-            if (this.listener != null) {
-                listener.OnNewMessageCome(message.getOutput().getChoices().get(0).getMessage().getContent());
+        param.setMessages(msgManager.get());
+        new Thread(() -> {
+            Flowable<GenerationResult> result;
+            try {
+                result = gen.streamCall(param);
+            } catch (NoApiKeyException | InputRequiredException e) {
+                return;
             }
-            fullContent.append(message.getOutput().getChoices().get(0).getMessage().getContent());
-        });
-        Message assistantMsg = Message.builder().role(Role.ASSISTANT.getValue()).content(fullContent.toString()).build();
-        msgManager.add(assistantMsg);
+            StringBuilder fullContent = new StringBuilder();
+
+            result.blockingForEach(message -> {
+                if (this.listener != null) {
+                    listener.OnNewMessageCome(message.getOutput().getChoices().get(0).getMessage().getContent());
+                }
+                fullContent.append(message.getOutput().getChoices().get(0).getMessage().getContent());
+            });
+            Message assistantMsg = Message.builder().role(Role.ASSISTANT.getValue()).content(fullContent.toString()).build();
+            msgManager.add(assistantMsg);
+        }).start();
     }
 }
