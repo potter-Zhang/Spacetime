@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -214,14 +215,20 @@ public class EditorActivity extends AppCompatActivity {
             finish();
         });
 
-        findViewById(R.id.btn_ai_chat).setOnClickListener(v -> {
-            chatPopup = (chatPopup == null) ? new AIChatPopup(this, note.getPlainText()) : chatPopup;
-            new XPopup.Builder(this)
-                    .isDestroyOnDismiss(false)
-                    .autoFocusEditText(false)
-                    .asCustom(chatPopup)
-                    .show();
-        });
+        ImageButton btnAIChat = findViewById(R.id.btn_ai_chat);
+        if (note == null) {
+            // 新建笔记时不能使用ai对话
+            btnAIChat.setVisibility(View.GONE);
+        } else {
+            btnAIChat.setOnClickListener(v -> {
+                chatPopup = (chatPopup == null) ? new AIChatPopup(this, note.getPlainText()) : chatPopup;
+                new XPopup.Builder(this)
+                        .isDestroyOnDismiss(false)
+                        .autoFocusEditText(false)
+                        .asCustom(chatPopup)
+                        .show();
+            });
+        }
     }
 
 }
