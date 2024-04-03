@@ -84,6 +84,9 @@ public class RichEditor extends WebView {
     JUSTIFYRIGHT
   }
 
+  /**
+   * 用于存储getSelection()的结果
+   */
   private String resultBuffer;
 
   public interface OnTextChangeListener {
@@ -175,6 +178,9 @@ public class RichEditor extends WebView {
     private void aiFunction(int mode) throws InterruptedException {
       AIFunctionService service = new AIFunctionService();
       AIResultDialog dialog = new AIResultDialog(getContext());
+      dialog.setReplaceListener(content -> replaceSelection(content));
+      dialog.setInsertListener(content -> insertAfterSelection(content));
+
       getSelection();
       // 等待js线程获取到选中文本并返回结果
       reentrantLock.lock();
@@ -183,6 +189,8 @@ public class RichEditor extends WebView {
       }
       reentrantLock.unlock();
       String selectionText = getResult();
+
+      // 流式输出每个结果到来后将其添加到textview中显示
       service.setOnNewMessageComeListener(message -> dialog.appendText(message));
       try {
         switch (mode) {
@@ -415,6 +423,14 @@ public class RichEditor extends WebView {
   public RichEditor getSelection() {
     exec("javascript:RE.getSelection();");
     return this;
+  }
+
+  public void replaceSelection(String text) {
+    exec("javascript:RE.replaceSelection('" + text + "');");
+  }
+
+  public void insertAfterSelection(String text) {
+    exec("javascript:RE.insertAfterSelection('" + text + "');");
   }
   //==================================
 

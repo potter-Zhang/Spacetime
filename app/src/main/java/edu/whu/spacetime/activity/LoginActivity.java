@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // 给新用户创建一个新笔记本
         NotebookDao notebookDao = SpacetimeApplication.getInstance().getDatabase().getNotebookDao();
-        Notebook defaultNotebook = new Notebook("全部笔记", newUser.getUserId());
+        Notebook defaultNotebook = new Notebook("默认笔记本", newUser.getUserId());
         notebookDao.insertNotebook(defaultNotebook);
         jump2Main();
     }

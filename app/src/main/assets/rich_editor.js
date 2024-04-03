@@ -31,6 +31,7 @@ RE.editor = document.getElementById('editor');
 document.addEventListener("selectionchange", function() { RE.backuprange(); });
 
 // Initializations
+// 将更改后的html传回给EditorWebViewClient
 RE.callback = function() {
     window.location.href = "re-callback://" + encodeURIComponent(RE.getHtml());
 }
@@ -368,4 +369,20 @@ RE.getSelection = function() {
 
 RE.setText = function(text) {
     RE.editor.innerText = text
+}
+
+RE.replaceSelection = function(text) {
+    const selection = window.getSelection()
+    selection.deleteFromDocument()    //清除选择的内容
+    var r = selection.getRangeAt(0)   //即使已经执行了deleteFromDocument(), 这个函数仍然返回一个有效对象.
+    var h1 = document.createElement('span') //生成一个插入对象
+    h1.innerHTML = text  //设置这个对象的内容
+    r.insertNode(h1)     //把对象插入到选区, 这个操作不会替换选择的内容, 而是追加到选区的后面, 所以如果需要普通粘贴的替换效果, 之前执行deleteFromDocument()函数.
+    RE.callback()
+}
+
+RE.insertAfterSelection = function(text) {
+    const selection = window.getSelection()
+    RE.replaceSelection(selection.toString() + text)
+    selection.collapseToEnd()
 }
