@@ -167,7 +167,8 @@ public class UserCalendarActivity extends AppCompatActivity implements CalendarV
         //此方法在巨大的数据量上不影响遍历性能，推荐使用
         mCalendarView.setSchemeDate(map);
 
-        mListView.setAdapter(new NoteListAdapter(this, R.layout.item_note_list, Objects.requireNonNull(notesMap.get(today))));
+        List<Note> initNotes = notesMap.getOrDefault(today, new ArrayList<>());
+        mListView.setAdapter(new NoteListAdapter(this, R.layout.item_note_list, initNotes));
     }
 
     private Calendar getSchemeCalendar(int year, int month, int day, int color, String text) {
