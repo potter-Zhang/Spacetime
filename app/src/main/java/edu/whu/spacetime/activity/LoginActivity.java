@@ -56,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (inputUsername.length() == 0 || inputPassword.length() == 0) {
             XToast.error(this, "用户名或密码不能为空！").show();
+            return;
         }
 
         if (userDao.getUserByName(inputUsername) != null) {

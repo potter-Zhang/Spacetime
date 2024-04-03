@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -126,7 +129,9 @@ public class NoteBrowserFragment extends Fragment {
         setNoteList();
     }
 
-    // 设置要展示的笔记
+    /**
+     * 设置要显示的笔记，绑定ListView中item的点击和长按事件
+     */
     private void setNoteList() {
         ListView noteListView = fragmentView.findViewById(R.id.list_note);
         List<Note> noteList = noteDao.queryAllInNotebook(currentNotebook.getNotebookId());
@@ -134,9 +139,46 @@ public class NoteBrowserFragment extends Fragment {
         noteListView.setAdapter(listAdapter);
         TextView tvNotebookNumber = fragmentView.findViewById(R.id.tv_notebookNumber);
         tvNotebookNumber.setText(String.format("共%d篇笔记", noteList.size()));
+
+        // 长按进入编辑模式，显示复选框
+        noteListView.setOnItemLongClickListener((parent, view, position, id) -> {
+            if (!listAdapter.isAtEditMode()) {
+                listAdapter.editMode();
+                listAdapter.notifyDataSetChanged();
+                fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.VISIBLE);
+                return true;
+            } else {
+                return false;
+            }
+        });
         noteListView.setOnItemClickListener((parent, view, position, id) -> {
-            Note note = (Note)parent.getItemAtPosition(position);
-            jump2Editor(note);
+            // 编辑模式下点击item就选中checkbox，否则进入编辑器
+            if (listAdapter.isAtEditMode()) {
+                CheckBox checkBox = view.findViewById(R.id.check_note);
+                checkBox.toggle();
+                if (checkBox.isChecked()) {
+                    listAdapter.addCheckedNote(listAdapter.getItem(position));
+                } else {
+                    listAdapter.removeCheckedNote(listAdapter.getItem(position));
+                }
+            } else {
+                Note note = (Note)parent.getItemAtPosition(position);
+                jump2Editor(note);
+            }
+        });
+
+        // 取消按钮
+        fragmentView.findViewById(R.id.btn_cancel_edit).setOnClickListener(v -> {
+            listAdapter.exitEditMode();
+            listAdapter.notifyDataSetChanged();
+            fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.INVISIBLE);
+        });
+        // 删除按钮
+        fragmentView.findViewById(R.id.btn_del_notes).setOnClickListener(v -> {
+            listAdapter.removeCheckedNoteInView();
+            listAdapter.exitEditMode();
+            listAdapter.notifyDataSetChanged();
+            fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.INVISIBLE);
         });
     }
 
@@ -146,7 +188,9 @@ public class NoteBrowserFragment extends Fragment {
         }
     }
 
-    // 动态注册笔记本侧边栏
+    /**
+     * 动态注册笔记本侧边栏
+    */
     private NotebookBrowserFragment registerNotebookFragment() {
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fs = fragmentManager.beginTransaction();

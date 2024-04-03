@@ -2,33 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="10dp"
-    android:background="@drawable/selector_list_item">
-    <TextView
-        android:id="@+id/tv_note_title"
+    android:background="@drawable/selector_list_item"
+    android:descendantFocusability="blocksDescendants">
+    <CheckBox
+        android:id="@+id/check_note"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:text="标题"
-        android:textColor="@color/black"/>
-
-    <!--ellipsize使文本过长时用省略号表示-->
-    <TextView
-        android:id="@+id/tv_note_abstract"
-        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:layout_marginEnd="10dp"
+        android:theme="@style/MyCheckboxStyle"/>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="摘要"/>
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_note_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:text="标题"
+            android:textColor="@color/black"/>
 
-    <TextView
-        android:id="@+id/tv_note_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="时间"/>
+        <!--ellipsize使文本过长时用省略号表示-->
+        <TextView
+            android:id="@+id/tv_note_abstract"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="摘要"/>
+
+        <TextView
+            android:id="@+id/tv_note_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="时间"/>
+    </LinearLayout>
+
 
 </LinearLayout>

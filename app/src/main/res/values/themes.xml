@@ -14,6 +14,10 @@
         <item name="colorControlActivated">@color/main_theme</item>
     </style>
 
+    <style name="MyCheckboxStyle" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/light_gray</item>
+        <item name="colorControlActivated">@color/main_theme</item>
+    </style>
     <!--
       Base application theme, dependent on API level. This theme is replaced
       by AppBaseTheme from res/values-vXX/styles.xml on newer devices.

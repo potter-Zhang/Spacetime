@@ -64,15 +64,44 @@
                         android:layout_height="wrap_content"
                         android:text="共7篇笔记" />
                 </LinearLayout>
-                <ImageButton
+                <LinearLayout
+                    android:id="@+id/bar_edit_btn"
                     android:layout_column="3"
-                    android:layout_gravity="center|right"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:scaleType="fitCenter"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/selector_search"
-                    tools:ignore="RtlHardcoded"/>
+                    android:layout_width="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center|end"
+                    android:visibility="invisible">
+                    <com.xuexiang.xui.widget.button.ButtonView
+                        android:id="@+id/btn_cancel_edit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cancel"
+                        android:textColor="@color/white"
+                        android:layout_marginEnd="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="15dp"
+                        fab:textRadius="6dp"
+                        fab:textSolidColor="@color/dark_yellow"
+                        fab:textSelectedSolidColor="@color/dark_yellow_pressed"/>
+                    <com.xuexiang.xui.widget.button.ButtonView
+                        android:id="@+id/btn_del_notes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/delete"
+                        android:textColor="@color/white"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="15dp"
+                        fab:textRadius="6dp"
+                        fab:textSolidColor="@color/red"
+                        fab:textSelectedSolidColor="@color/red_pressed"/>
+                </LinearLayout>
+
             </GridLayout>
 
             <!--ListView显示笔记-->
