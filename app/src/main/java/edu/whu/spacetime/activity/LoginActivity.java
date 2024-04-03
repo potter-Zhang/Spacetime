@@ -65,9 +65,9 @@ public class LoginActivity extends AppCompatActivity {
         }
         // 创建新用户
         User newUser = new User(inputUsername, inputPassword, "");
-        userDao.insertUser(newUser);
+        Long userId = userDao.insertUser(newUser);
         // 读取一次user获取数据库自动生成的userId
-        newUser = userDao.getUserByName(newUser.getUsername());
+        newUser.setUserId(userId.intValue());
         SpacetimeApplication.getInstance().setCurrentUser(newUser);
 
         // 给新用户创建一个新笔记本
