@@ -58,7 +58,7 @@ public class NoteListAdapter extends ArrayAdapter<Note> {
             if (isChecked) {
                 this.addCheckedNote(note);
             } else {
-                this.remove(note);
+                this.removeCheckedNote(note);
             }
         });
         return view;
