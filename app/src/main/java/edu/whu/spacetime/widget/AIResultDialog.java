@@ -11,9 +11,35 @@ import com.lxj.xpopup.core.BottomPopupView;
 import edu.whu.spacetime.R;
 
 public class AIResultDialog extends BottomPopupView {
+    /**
+     * “替换”按钮点击监听器
+     */
+    public interface OnReplaceListener {
+        void onReplaceBtnClicked(String content);
+    }
+
+    /**
+     * "插入"按钮点击监听器
+     */
+    public interface OnInsertListener {
+        void onInsertBtnClicked(String content);
+    }
+
+    private OnReplaceListener replaceListener;
+
+    private OnInsertListener insertListener;
+
     private TextView tv_ai_result;
 
     private StringBuilder builder;
+
+    public void setReplaceListener(OnReplaceListener replaceListener) {
+        this.replaceListener = replaceListener;
+    }
+
+    public void setInsertListener(OnInsertListener insertListener) {
+        this.insertListener = insertListener;
+    }
 
     public void appendText(String msg) {
         builder.append(msg);
@@ -47,11 +73,15 @@ public class AIResultDialog extends BottomPopupView {
         findViewById(R.id.tv_ai_cancel).setOnClickListener(v -> dismiss());
 
         findViewById(R.id.tv_ai_replace).setOnClickListener(v -> {
-
+            if (this.replaceListener != null) {
+                replaceListener.onReplaceBtnClicked(builder.toString());
+            }
         });
 
         findViewById(R.id.tv_ai_insert).setOnClickListener(v -> {
-
+            if (this.insertListener != null) {
+                insertListener.onInsertBtnClicked(builder.toString());
+            }
         });
     }
 }

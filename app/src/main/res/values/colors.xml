@@ -20,6 +20,10 @@
     <color name="notebook_name_color">#FF000000</color>
 
     <color name="dark_yellow">#FFCCB416</color>
+    <color name="dark_yellow_pressed">#AACCB416</color>
+
+    <color name="red">#FFFF0000</color>
+    <color name="red_pressed">#AAFF0000</color>
 
     <!-- 每天1-10篇笔记的渐变色-->
     <color name="one_note_color">#FFA5D63F</color>

@@ -14,7 +14,7 @@ import edu.whu.spacetime.domain.Note;
 @Dao
 public interface NoteDao {
     @Insert
-    void insertNote(Note... note);
+    List<Long> insertNote(Note... note);
 
     @Delete
     void deleteNote(Note... note);

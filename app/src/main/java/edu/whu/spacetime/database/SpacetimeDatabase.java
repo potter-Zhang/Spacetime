@@ -15,7 +15,7 @@ import edu.whu.spacetime.domain.Todo;
 import edu.whu.spacetime.domain.User;
 
 @Database(entities = {Notebook.class, User.class, Note.class, Todo.class},
-        version = 2, exportSchema = true
+        version = 3, exportSchema = true
 )
 public abstract class SpacetimeDatabase extends RoomDatabase {
     public abstract UserDao getUserDao();

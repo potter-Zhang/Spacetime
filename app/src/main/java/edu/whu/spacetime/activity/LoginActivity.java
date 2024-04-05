@@ -56,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (inputUsername.length() == 0 || inputPassword.length() == 0) {
             XToast.error(this, "用户名或密码不能为空！").show();
+            return;
         }
 
         if (userDao.getUserByName(inputUsername) != null) {
@@ -64,14 +65,14 @@ public class LoginActivity extends AppCompatActivity {
         }
         // 创建新用户
         User newUser = new User(inputUsername, inputPassword, "");
-        userDao.insertUser(newUser);
+        Long userId = userDao.insertUser(newUser);
         // 读取一次user获取数据库自动生成的userId
-        newUser = userDao.getUserByName(newUser.getUsername());
+        newUser.setUserId(userId.intValue());
         SpacetimeApplication.getInstance().setCurrentUser(newUser);
 
         // 给新用户创建一个新笔记本
         NotebookDao notebookDao = SpacetimeApplication.getInstance().getDatabase().getNotebookDao();
-        Notebook defaultNotebook = new Notebook("全部笔记", newUser.getUserId());
+        Notebook defaultNotebook = new Notebook("默认笔记本", newUser.getUserId());
         notebookDao.insertNotebook(defaultNotebook);
         jump2Main();
     }

@@ -19,10 +19,20 @@ public class Note implements Serializable {
 
     private int userId;
 
-    // 所处的笔记本
+    /**
+     * 所处的笔记本
+    */
     private int notebookId;
 
+    /**
+     * 笔记的富文本内容，包含html标签
+     */
     private String content;
+
+    /**
+     * 笔记的纯本文形式
+     */
+    private String plainText;
 
     @TypeConverters(MyTypeConverter.class)
     private LocalDateTime createTime;
@@ -94,5 +104,13 @@ public class Note implements Serializable {
 
     public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
+    }
+
+    public String getPlainText() {
+        return plainText;
+    }
+
+    public void setPlainText(String plainText) {
+        this.plainText = plainText;
     }
 }

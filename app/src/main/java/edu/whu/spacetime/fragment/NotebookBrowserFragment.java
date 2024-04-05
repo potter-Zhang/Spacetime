@@ -83,12 +83,13 @@ public class NotebookBrowserFragment extends Fragment {
             }
         });
     }
-
+    
     private void openInputDialog() {
         InputDialog inputDialog = new InputDialog(getContext(), true);
         inputDialog.setOnInputConfirmListener(text -> {
             Notebook newNotebook = new Notebook(text, SpacetimeApplication.getInstance().getCurrentUser().getUserId());
-            notebookDao.insertNotebook(newNotebook);
+            List<Long> rowId = notebookDao.insertNotebook(newNotebook);
+            newNotebook.setNotebookId(rowId.get(0).intValue());
             adapter.add(newNotebook);
             adapter.notifyDataSetChanged();
         });

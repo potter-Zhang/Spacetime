@@ -11,7 +11,7 @@ import edu.whu.spacetime.domain.User;
 @Dao
 public interface UserDao {
     @Insert
-    void insertUser(User... users);
+    Long insertUser(User user);
 
     @Delete
     void deleteUser(User... users);

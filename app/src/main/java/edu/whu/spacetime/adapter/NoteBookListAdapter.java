@@ -50,7 +50,8 @@ public class NoteBookListAdapter extends ArrayAdapter<Notebook> {
         NoteBookPopupMenu popup = new NoteBookPopupMenu(getContext());
 
         // 默认笔记本不允许重命名和删除
-        if (noteBook.getName().equals("全部笔记")) {
+        // FIXME: 用户创建了名为"默认笔记本"的笔记本时有bug
+        if (noteBook.getName().equals("默认笔记本")) {
             btnMore.setVisibility(View.INVISIBLE);
             return view;
         }

@@ -13,7 +13,7 @@ import edu.whu.spacetime.domain.Notebook;
 @Dao
 public interface NotebookDao {
     @Insert
-    void insertNotebook(Notebook... notebooks);
+    List<Long> insertNotebook(Notebook... notebooks);
 
     @Delete
     void deleteNotebook(Notebook... notebooks);
