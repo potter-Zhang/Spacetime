@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package edu.whu.spacetime.fragment;
-
-import static androidx.databinding.DataBindingUtil.setContentView;
+package edu.whu.spacetime.activity;
 
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -26,22 +24,14 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
 import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.ArCoreApk.Availability;
@@ -69,6 +59,7 @@ import com.google.ar.core.common.helpers.InstantPlacementSettings;
 import com.google.ar.core.common.helpers.SnackbarHelper;
 import com.google.ar.core.common.helpers.TapHelper;
 import com.google.ar.core.common.helpers.TrackingStateHelper;
+import com.google.ar.core.common.render.LabelRender;
 import com.google.ar.core.common.samplerender.Framebuffer;
 import com.google.ar.core.common.samplerender.GLError;
 import com.google.ar.core.common.samplerender.Mesh;
@@ -86,6 +77,9 @@ import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
 import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
+import com.lxj.xpopup.XPopup;
+import com.xuexiang.xui.widget.toast.XToast;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -94,10 +88,16 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.widget.InputDialog;
 
+/**
+ * This is a simple example that shows how to create an augmented reality (AR) application using the
+ * ARCore API. The application will display any detected planes and will allow the user to tap on a
+ * plane to place a 3D model.
+ */
+public class HelloArActivity extends AppCompatActivity implements SampleRender.Renderer {
 
-public class HelloArFragment extends Fragment implements SampleRender.Renderer {
-    private static final String TAG = edu.whu.spacetime.fragment.HelloArFragment.class.getSimpleName();
+    private static final String TAG = HelloArActivity.class.getSimpleName();
 
     private static final String SEARCHING_PLANE_MESSAGE = "Searching for surfaces...";
     private static final String WAITING_FOR_TAP_MESSAGE = "Tap on a surface to place an object.";
@@ -130,12 +130,14 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
     private Session session;
     private final SnackbarHelper messageSnackbarHelper = new SnackbarHelper();
     private DisplayRotationHelper displayRotationHelper;
-    private final TrackingStateHelper trackingStateHelper = new TrackingStateHelper(getActivity());
+    private final TrackingStateHelper trackingStateHelper = new TrackingStateHelper(this);
     private TapHelper tapHelper;
     private SampleRender render;
 
     private PlaneRenderer planeRenderer;
     private BackgroundRenderer backgroundRenderer;
+
+    private LabelRender labelRender;
     private Framebuffer virtualSceneFramebuffer;
     private boolean hasSetTextureNames = false;
 
@@ -167,7 +169,7 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
     private Texture virtualObjectAlbedoTexture;
     private Texture virtualObjectAlbedoInstantPlacementTexture;
 
-    private final List<edu.whu.spacetime.fragment.WrappedAnchor> wrappedAnchors = new ArrayList<>();
+    private final List<WrappedAnchor> wrappedAnchors = new ArrayList<>();
 
     // Environmental HDR
     private Texture dfgTexture;
@@ -179,102 +181,58 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
     private final float[] projectionMatrix = new float[16];
     private final float[] modelViewMatrix = new float[16]; // view x model
     private final float[] modelViewProjectionMatrix = new float[16]; // projection x view x model
+
+    private final float[] ViewProjectionMatrix = new float[16];
     private final float[] sphericalHarmonicsCoefficients = new float[9 * 3];
     private final float[] viewInverseMatrix = new float[16];
     private final float[] worldLightDirection = {0.0f, 0.0f, 0.0f, 0.0f};
     private final float[] viewLightDirection = new float[4]; // view x world light direction
 
-    private ActivityResultLauncher<String> requestPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    // Permission is granted. Continue the action or workflow in your
-                    // app.
-                    if (!CameraPermissionHelper.hasCameraPermission(getActivity())) {
-                        // Use toast instead of snackbar here since the activity will exit.
-                        Toast.makeText(getActivity(), "Camera permission is needed to run this application", Toast.LENGTH_LONG)
-                                .show();
-                        if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(getActivity())) {
-                            // Permission denied with checking "Do not ask again".
-                            CameraPermissionHelper.launchPermissionSettings(getActivity());
-                        }
-
-                    }
-                        //finish();
-                } else {
-                    // Explain to the user that the feature is unavailable because the
-                    // features requires a permission that the user has denied. At the
-                    // same time, respect the user's decision. Don't link to system
-                    // settings in an effort to convince the user to change their
-                    // decision.
-                }
-            });
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        displayRotationHelper = new DisplayRotationHelper(/* context= */ getActivity());
+        setContentView(R.layout.activity_ar);
+        surfaceView = findViewById(R.id.surfaceview);
+        displayRotationHelper = new DisplayRotationHelper(/* context= */ this);
 
         // Set up touch listener.
-        tapHelper = new TapHelper(/* context= */ getActivity());
-
-
-        depthSettings.onCreate(getActivity());
-        instantPlacementSettings.onCreate(getActivity());
-        trackingStateHelper.setActivity(getActivity());
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View fragmentView = inflater.inflate(R.layout.fragment_ar, container, false);
-        surfaceView = fragmentView.findViewById(R.id.surfaceview);
-        fragmentView.getViewTreeObserver().addOnWindowFocusChangeListener(new ViewTreeObserver.OnWindowFocusChangeListener() {
-            @Override
-            public void onWindowFocusChanged(boolean hasFocus) {
-                FullScreenHelper.setFullScreenOnWindowFocusChanged(getActivity(), hasFocus);
-            }
-        });
-
+        tapHelper = new TapHelper(/* context= */ this);
         surfaceView.setOnTouchListener(tapHelper);
+
         // Set up renderer.
-        render = new SampleRender(surfaceView, this, getActivity().getAssets());
+        render = new SampleRender(surfaceView, this, getAssets());
 
         installRequested = false;
 
-
-        ImageButton settingsButton = fragmentView.findViewById(R.id.settings_button);
+        depthSettings.onCreate(this);
+        instantPlacementSettings.onCreate(this);
+        ImageButton settingsButton = findViewById(R.id.settings_button);
         settingsButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        PopupMenu popup = new PopupMenu(getActivity(), v);
-                        popup.setOnMenuItemClickListener(this::settingsMenuClick);
+                        PopupMenu popup = new PopupMenu(HelloArActivity.this, v);
+                        popup.setOnMenuItemClickListener(HelloArActivity.this::settingsMenuClick);
                         popup.inflate(R.menu.settings_menu);
                         popup.show();
                     }
-
-                    private boolean settingsMenuClick(MenuItem item) {
-                        if (item.getItemId() == R.id.depth_settings) {
-                            launchDepthSettingsMenuDialog();
-                            return true;
-                        } else if (item.getItemId() == R.id.instant_placement_settings) {
-                            launchInstantPlacementSettingsMenuDialog();
-                            return true;
-                        }
-                        return false;
-                    }
-
-
                 });
-
-        return fragmentView;
     }
 
+    /** Menu button to launch feature specific settings. */
+    protected boolean settingsMenuClick(MenuItem item) {
+        if (item.getItemId() == R.id.depth_settings) {
+            launchDepthSettingsMenuDialog();
+            return true;
+        } else if (item.getItemId() == R.id.instant_placement_settings) {
+            launchInstantPlacementSettingsMenuDialog();
+            return true;
+        }
+        return false;
+    }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         if (session != null) {
             // Explicitly close ARCore Session to release native resources.
             // Review the API reference for important considerations before calling close() in apps with
@@ -288,7 +246,7 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
 
         if (session == null) {
@@ -296,11 +254,11 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
             String message = null;
             try {
                 // Always check the latest availability.
-                Availability availability = ArCoreApk.getInstance().checkAvailability(getActivity());
+                Availability availability = ArCoreApk.getInstance().checkAvailability(this);
 
                 // In all other cases, try to install ARCore and handle installation failures.
                 if (availability != Availability.SUPPORTED_INSTALLED) {
-                    switch (ArCoreApk.getInstance().requestInstall(getActivity(), !installRequested)) {
+                    switch (ArCoreApk.getInstance().requestInstall(this, !installRequested)) {
                         case INSTALL_REQUESTED:
                             installRequested = true;
                             return;
@@ -311,13 +269,13 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
 
                 // ARCore requires camera permissions to operate. If we did not yet obtain runtime
                 // permission on Android M and above, now is a good time to ask the user for it.
-                if (!CameraPermissionHelper.hasCameraPermission(getActivity())) {
-                    CameraPermissionHelper.requestCameraPermission(getActivity());
+                if (!CameraPermissionHelper.hasCameraPermission(this)) {
+                    CameraPermissionHelper.requestCameraPermission(this);
                     return;
                 }
 
                 // Create the session.
-                session = new Session(/* context= */ getActivity());
+                session = new Session(/* context= */ this);
             } catch (UnavailableArcoreNotInstalledException
                      | UnavailableUserDeclinedInstallationException e) {
                 message = "Please install ARCore";
@@ -337,7 +295,7 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
             }
 
             if (message != null) {
-                messageSnackbarHelper.showError(getActivity(), message);
+                messageSnackbarHelper.showError(this, message);
                 Log.e(TAG, "Exception creating session", exception);
                 return;
             }
@@ -354,7 +312,7 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
             // https://developers.google.com/ar/develop/java/recording-and-playback
             session.resume();
         } catch (CameraNotAvailableException e) {
-            messageSnackbarHelper.showError(getActivity(), "Camera not available. Try restarting the app.");
+            messageSnackbarHelper.showError(this, "Camera not available. Try restarting the app.");
             session = null;
             return;
         }
@@ -377,12 +335,35 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
+        super.onRequestPermissionsResult(requestCode, permissions, results);
+        if (!CameraPermissionHelper.hasCameraPermission(this)) {
+            // Use toast instead of snackbar here since the activity will exit.
+            Toast.makeText(this, "Camera permission is needed to run this application", Toast.LENGTH_LONG)
+                    .show();
+            if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
+                // Permission denied with checking "Do not ask again".
+                CameraPermissionHelper.launchPermissionSettings(this);
+            }
+            finish();
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        FullScreenHelper.setFullScreenOnWindowFocusChanged(this, hasFocus);
+    }
+
+    @Override
     public void onSurfaceCreated(SampleRender render) {
         // Prepare the rendering objects. This involves reading shaders and 3D model files, so may throw
         // an IOException.
         try {
             planeRenderer = new PlaneRenderer(render);
             backgroundRenderer = new BackgroundRenderer(render);
+            labelRender = new LabelRender();
+            labelRender.onSurfaceCreated(render);
             virtualSceneFramebuffer = new Framebuffer(render, /* width= */ 1, /* height= */ 1);
 
             cubemapFilter =
@@ -402,7 +383,7 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
 
             ByteBuffer buffer =
                     ByteBuffer.allocateDirect(dfgResolution * dfgResolution * dfgChannels * halfFloatSize);
-            try (InputStream is = getActivity().getAssets().open("models/dfg.raw")) {
+            try (InputStream is = getAssets().open("models/dfg.raw")) {
                 is.read(buffer.array());
             }
             // SampleRender abstraction leaks here.
@@ -477,7 +458,7 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
                             .setTexture("u_DfgTexture", dfgTexture);
         } catch (IOException e) {
             Log.e(TAG, "Failed to read a required asset file", e);
-            messageSnackbarHelper.showError(getActivity(), "Failed to read a required asset file: " + e);
+            messageSnackbarHelper.showError(this, "Failed to read a required asset file: " + e);
         }
     }
 
@@ -516,7 +497,7 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
             frame = session.update();
         } catch (CameraNotAvailableException e) {
             Log.e(TAG, "Camera not available during onDrawFrame", e);
-            messageSnackbarHelper.showError(getActivity(), "Camera not available. Try restarting the app.");
+            messageSnackbarHelper.showError(this, "Camera not available. Try restarting the app.");
             return;
         }
         Camera camera = frame.getCamera();
@@ -528,7 +509,7 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
             backgroundRenderer.setUseOcclusion(render, depthSettings.useDepthForOcclusion());
         } catch (IOException e) {
             Log.e(TAG, "Failed to read a required asset file", e);
-            messageSnackbarHelper.showError(getActivity(), "Failed to read a required asset file: " + e);
+            messageSnackbarHelper.showError(this, "Failed to read a required asset file: " + e);
             return;
         }
         // BackgroundRenderer.updateDisplayGeometry must be called every frame to update the coordinates
@@ -569,9 +550,9 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
             message = SEARCHING_PLANE_MESSAGE;
         }
         if (message == null) {
-            messageSnackbarHelper.hide(getActivity());
+            messageSnackbarHelper.hide(this);
         } else {
-            messageSnackbarHelper.showMessage(getActivity(), message);
+            messageSnackbarHelper.showMessage(this, message);
         }
 
         // -- Draw background
@@ -621,7 +602,7 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
 
         // Visualize anchors created by touch.
         render.clear(virtualSceneFramebuffer, 0f, 0f, 0f, 0f);
-        for (edu.whu.spacetime.fragment.WrappedAnchor wrappedAnchor : wrappedAnchors) {
+        for (WrappedAnchor wrappedAnchor : wrappedAnchors) {
             Anchor anchor = wrappedAnchor.getAnchor();
             Trackable trackable = wrappedAnchor.getTrackable();
             if (anchor.getTrackingState() != TrackingState.TRACKING) {
@@ -636,6 +617,9 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
             Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
             Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
 
+            // viewproj for label
+            Matrix.multiplyMM(ViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+
             // Update shader properties and draw
             virtualObjectShader.setMat4("u_ModelView", modelViewMatrix);
             virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
@@ -649,7 +633,8 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
                 virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture);
             }
 
-            render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
+            //render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
+            labelRender.draw(render, ViewProjectionMatrix, anchor.getPose(), camera.getPose(), wrappedAnchor.getText());
         }
 
         // Compose the virtual scene with the background.
@@ -690,10 +675,17 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
                     // Adding an Anchor tells ARCore that it should track this position in
                     // space. This anchor is created on the Plane to place the 3D model
                     // in the correct position relative both to the world and to the plane.
-                    wrappedAnchors.add(new edu.whu.spacetime.fragment.WrappedAnchor(hit.createAnchor(), trackable));
+                    WrappedAnchor anchor = new WrappedAnchor(hit.createAnchor(), trackable);
+                    wrappedAnchors.add(anchor);
                     // For devices that support the Depth API, shows a dialog to suggest enabling
                     // depth-based occlusion. This dialog needs to be spawned on the UI thread.
-                    getActivity().runOnUiThread(this::showOcclusionDialogIfNeeded);
+                    this.runOnUiThread(this::showOcclusionDialogIfNeeded);
+                    this.runOnUiThread(()->{
+                        InputDialog dialog = new InputDialog(this, "");
+                        dialog.setOnInputConfirmListener(text -> anchor.setText(text));
+                        new XPopup.Builder(this).asCustom(dialog).show();
+
+                    });
 
                     // Hits are sorted by depth. Consider only closest hit on a plane, Oriented Point, or
                     // Instant Placement Point.
@@ -714,7 +706,7 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
         }
 
         // Asks the user whether they want to use depth-based occlusion.
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(this)
                 .setTitle(R.string.options_title_with_depth)
                 .setMessage(R.string.depth_use_explanation)
                 .setPositiveButton(
@@ -733,7 +725,7 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
     private void launchInstantPlacementSettingsMenuDialog() {
         resetSettingsMenuDialogCheckboxes();
         Resources resources = getResources();
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(this)
                 .setTitle(R.string.options_title_instant_placement)
                 .setMultiChoiceItems(
                         resources.getStringArray(R.array.instant_placement_options_array),
@@ -758,7 +750,7 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
         Resources resources = getResources();
         if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
             // With depth support, the user can select visualization options.
-            new AlertDialog.Builder(getActivity())
+            new AlertDialog.Builder(this)
                     .setTitle(R.string.options_title_with_depth)
                     .setMultiChoiceItems(
                             resources.getStringArray(R.array.depth_options_array),
@@ -774,7 +766,7 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
                     .show();
         } else {
             // Without depth support, no settings are available.
-            new AlertDialog.Builder(getActivity())
+            new AlertDialog.Builder(this)
                     .setTitle(R.string.options_title_without_depth)
                     .setPositiveButton(
                             R.string.done,
@@ -882,16 +874,29 @@ public class HelloArFragment extends Fragment implements SampleRender.Renderer {
         }
         session.configure(config);
     }
-
 }
 
+/**
+ * Associates an Anchor with the trackable it was attached to. This is used to be able to check
+ * whether or not an Anchor originally was attached to an {@link InstantPlacementPoint}.
+ */
 class WrappedAnchor {
     private Anchor anchor;
     private Trackable trackable;
 
+    private String text;
+
     public WrappedAnchor(Anchor anchor, Trackable trackable) {
         this.anchor = anchor;
         this.trackable = trackable;
+    }
+
+    public String getText() {
+        return text == null ? "" : text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public Anchor getAnchor() {

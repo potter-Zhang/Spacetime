@@ -37,7 +37,7 @@
         app:met_baseColor="@color/black"
         app:met_clearButton="true"
         app:met_underlineColor="@color/black"
-        android:hint="请输入地点"/>
+        android:hint="请输入备注"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
