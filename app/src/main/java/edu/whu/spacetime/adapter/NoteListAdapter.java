@@ -23,6 +23,12 @@ import edu.whu.spacetime.domain.Note;
 import edu.whu.spacetime.fragment.NoteBrowserFragment;
 
 public class NoteListAdapter extends ArrayAdapter<Note> {
+    private class ViewHolder {
+        private TextView tvTitle;
+        private TextView tvAbstract;
+        private TextView tvTime;
+        private CheckBox checkNote;
+    }
     private int resourceId;
 
     private boolean atEditMode = false;
@@ -41,27 +47,34 @@ public class NoteListAdapter extends ArrayAdapter<Note> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Note note = getItem(position);
-        View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
-        TextView tvTitle = view.findViewById(R.id.tv_note_title);
-        TextView tvAbstract = view.findViewById(R.id.tv_note_abstract);
-        TextView tvTime = view.findViewById(R.id.tv_note_time);
-        CheckBox checkNote = view.findViewById(R.id.check_note);
-
-        tvTitle.setText(note.getTitle());
-        tvAbstract.setText(note.getPlainText());
-        tvTime.setText(note.getCreateTime().toLocalDate().toString());
-        if (isAtEditMode()) {
-            checkNote.setVisibility(View.VISIBLE);
+        ViewHolder viewHolder;
+        if (convertView == null) {
+            viewHolder = new ViewHolder();
+            convertView = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
+            viewHolder.tvTitle = convertView.findViewById(R.id.tv_note_title);
+            viewHolder.tvAbstract = convertView.findViewById(R.id.tv_note_abstract);
+            viewHolder.tvTime = convertView.findViewById(R.id.tv_note_time);
+            viewHolder.checkNote = convertView.findViewById(R.id.check_note);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        checkNote.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        Note note = getItem(position);
+        viewHolder.tvTitle.setText(note.getTitle());
+        int maxLength = Math.min(note.getPlainText().length(), 100);
+        viewHolder.tvAbstract.setText(note.getPlainText().substring(0, maxLength));
+        viewHolder.tvTime.setText(note.getCreateTime().toLocalDate().toString());
+        if (isAtEditMode()) {
+            viewHolder.checkNote.setVisibility(View.VISIBLE);
+        }
+        viewHolder.checkNote.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 this.addCheckedNote(note);
             } else {
                 this.removeCheckedNote(note);
             }
         });
-        return view;
+        return convertView;
     }
 
     public boolean isAtEditMode() {
