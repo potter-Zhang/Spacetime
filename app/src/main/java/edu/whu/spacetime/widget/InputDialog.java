@@ -17,9 +17,9 @@ public class InputDialog extends BottomPopupView {
 
     private OnInputConfirmListener confirmListener;
 
-    public InputDialog(@NonNull Context context, boolean createOrRename) {
+    public InputDialog(@NonNull Context context, String title) {
         super(context);
-        this.title = createOrRename ? "新建笔记本" : "重命名";
+        this.title = title;
     }
 
     public void setOnInputConfirmListener(OnInputConfirmListener listener) {
@@ -44,7 +44,7 @@ public class InputDialog extends BottomPopupView {
             // 点击确定按钮后触发确认事件，调用监听器的回调方法
             String input = inputText.getText().toString();
             if (input.length() == 0) {
-                XToast.error(getContext(), "笔记本名称不能为空！").show();
+                XToast.error(getContext(), "输入不能为空！").show();
             } else {
                 this.confirmListener.onConfirm(input);
                 dismiss();

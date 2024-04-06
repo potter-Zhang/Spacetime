@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.MenuItem;
@@ -12,6 +14,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.SpacetimeApplication;
@@ -28,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView nav;
     private ViewPager2 viewpager;
 
+    private List<Fragment> fragments;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,9 +41,22 @@ public class MainActivity extends AppCompatActivity {
         initViewPager();
     }
 
+    @Override
+    public void onBackPressed() {
+        boolean exitTrigger = false;
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof NoteBrowserFragment) {
+                exitTrigger = ((NoteBrowserFragment) fragment).onBackPressed();
+            }
+        }
+        if (!exitTrigger) {
+            super.onBackPressed();
+        }
+    }
+
     private void initViewPager() {
         viewpager = findViewById(R.id.id_viewpager);
-        ArrayList<Fragment> fragments = new ArrayList<>();
+        fragments = new ArrayList<>();
         // 在这里添加fragment
         fragments.add(initNoteFragment());
         fragments.add(new TodoBrowserFragment());
@@ -72,8 +90,18 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-        //ColorStateList colorStateList = getColorStateList(R.color.bottom_text_color);
-        //nav.setItemTextColor(colorStateList);
+        //设置底部导航栏字体颜色
+        //状态
+        int[][] states = new int[2][];
+        //按下
+        states[0] = new int[] {android.R.attr.state_checked};
+        //默认
+        states[1] = new int[] {-android.R.attr.state_checked};
+
+        //状态对应颜色值（按下，默认）
+        int[] colors = new int[] {Color.parseColor("#09bb07"),Color.GRAY};
+        ColorStateList colorList = new ColorStateList(states, colors);
+        nav.setItemTextColor(colorList);
         viewpager.setUserInputEnabled(false);
     }
 

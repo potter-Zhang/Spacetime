@@ -49,6 +49,8 @@ public class ImportDialog extends Dialog implements View.OnClickListener {
         import_audio = view.findViewById(R.id.btn_import_audio);
 
         import_pdf.setOnClickListener(this);
+        import_ppt.setOnClickListener(this);
+        import_audio.setOnClickListener(this);
     }
 
     @Override
@@ -59,11 +61,11 @@ public class ImportDialog extends Dialog implements View.OnClickListener {
             dismiss();
         }
         else if (id == R.id.btn_import_ppt) {
-            onChooseFileListener.OnChooseFileListener("pdf");
+            onChooseFileListener.OnChooseFileListener("ppt");
             dismiss();
         }
         else if (id == R.id.btn_import_audio) {
-            onChooseFileListener.OnChooseFileListener("pdf");
+            onChooseFileListener.OnChooseFileListener("audio");
             dismiss();
         }
     }

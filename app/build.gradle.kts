@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     id("com.android.application")
 }
@@ -48,6 +50,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.room:room-common:2.6.1")
     implementation("androidx.room:room-runtime:2.6.1")
+    implementation(files("libs/poishadow-all.jar"))
     testImplementation("junit:junit:4.13.2")
     implementation("androidx.databinding:databinding-runtime:8.3.0")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
@@ -88,4 +91,7 @@ dependencies {
 
     implementation("androidx.appcompat:appcompat:1.1.0")
     implementation("com.google.android.material:material:1.1.0")
+
+    // pdfbox
+    implementation ("com.tom-roush:pdfbox-android:2.0.27.0")
 }

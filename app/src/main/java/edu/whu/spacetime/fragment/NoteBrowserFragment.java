@@ -1,20 +1,19 @@
 package edu.whu.spacetime.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -22,8 +21,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import edu.whu.spacetime.R;
@@ -32,16 +31,25 @@ import edu.whu.spacetime.activity.EditorActivity;
 import edu.whu.spacetime.adapter.NoteListAdapter;
 import edu.whu.spacetime.dao.NoteDao;
 import edu.whu.spacetime.domain.Note;
-
-import edu.whu.spacetime.widget.ImportDialog;
 import edu.whu.spacetime.domain.Notebook;
+import edu.whu.spacetime.service.ConvertService;
+import edu.whu.spacetime.util.PickUtils;
+import edu.whu.spacetime.widget.ImportDialog;
 
 public class NoteBrowserFragment extends Fragment {
     private static final String ARG_NOTEBOOK = "notebook";
-    public static final String PPT = "application/vnd.ms-powerpoint";
-    public static final String PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-    public static final String PDF = "application/pdf";
-    public static final String AUDIO = "";
+    private static final String PPT = "application/vnd.ms-powerpoint";
+    private static final int PPT_REQUEST_CODE = 0;
+    private static final String PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    private static final String PDF = "application/pdf";
+    private static final int PDF_REQUEST_CODE = 1;
+    private static final String AUDIO = "";
+    private static final int AUDIO_REQUEST_CODE = 2;
+
+    /**
+     * 文件转文字
+     */
+    private ConvertService convertService;
 
     private View fragmentView;
 
@@ -52,7 +60,6 @@ public class NoteBrowserFragment extends Fragment {
      */
     private DrawerLayout drawer;
     private FloatingActionButton btn_import_file;
-    private Uri import_file_uri;
 
     // 侧边栏中的笔记本菜单fragment
     private NotebookBrowserFragment notebookBrowserFragment;
@@ -82,6 +89,7 @@ public class NoteBrowserFragment extends Fragment {
             currentNotebook = (Notebook) getArguments().getSerializable(ARG_NOTEBOOK);
         }
         this.noteDao = SpacetimeApplication.getInstance().getDatabase().getNoteDao();
+        this.convertService = new ConvertService(getContext());
     }
 
     @Override
@@ -116,7 +124,7 @@ public class NoteBrowserFragment extends Fragment {
         });
 
         fragmentView.findViewById(R.id.btn_create_note).setOnClickListener(v -> {
-            jump2Editor(null);
+            jump2Editor(null, null);
             getActivity().overridePendingTransition(R.anim.from_bottom, R.anim.from_top);
         });
 
@@ -131,6 +139,16 @@ public class NoteBrowserFragment extends Fragment {
             this.notebookBrowserFragment = registerNotebookFragment();
         // 从编辑界面返回时可能添加了新的笔记，因此重新加载笔记列表
         refreshNoteList();
+    }
+
+    public boolean onBackPressed() {
+        if (noteListAdapter.isAtEditMode()) {
+            noteListAdapter.exitEditMode();
+            noteListAdapter.notifyDataSetChanged();
+            fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.INVISIBLE);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -179,17 +197,17 @@ public class NoteBrowserFragment extends Fragment {
                 }
             } else {
                 Note note = (Note)parent.getItemAtPosition(position);
-                jump2Editor(note);
+                jump2Editor(note, null);
             }
         });
 
-        // 取消按钮
+        // 取消按钮，退出编辑模式
         fragmentView.findViewById(R.id.btn_cancel_edit).setOnClickListener(v -> {
             noteListAdapter.exitEditMode();
             noteListAdapter.notifyDataSetChanged();
             fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.INVISIBLE);
         });
-        // 删除按钮
+        // 删除按钮，确认删除选中的笔记
         fragmentView.findViewById(R.id.btn_del_notes).setOnClickListener(v -> {
             noteListAdapter.removeCheckedNoteInView();
             noteListAdapter.exitEditMode();
@@ -229,14 +247,16 @@ public class NoteBrowserFragment extends Fragment {
     /**
      * 跳转到编辑器
      * @param note 被点击选项对应的Note类
+     * @param content 如果没有Note类，可以设置该字段来展示特定内容
      */
-    private void jump2Editor(Note note) {
+    private void jump2Editor(Note note, String content) {
         Intent intent = new Intent(getActivity(), EditorActivity.class);
         Bundle bundle = new Bundle();
 
         bundle.putSerializable("note", note);
         bundle.putInt("notebookId", currentNotebook.getNotebookId());
         bundle.putString("notebookName", currentNotebook.getName());
+        bundle.putString("content", content);
         intent.putExtras(bundle);
 
         startActivity(intent);
@@ -249,26 +269,57 @@ public class NoteBrowserFragment extends Fragment {
 
         if (str.equals("pdf")) {
             intent.setType(PDF);
+            startActivityForResult(intent, PDF_REQUEST_CODE);
         }
         else if (str.equals("ppt")) {
             intent.setType(PPT);
+            startActivityForResult(intent, PPT_REQUEST_CODE);
         }
         else if (str.equals("audio")) {
             intent.setType("*/*");
+            startActivityForResult(intent, AUDIO_REQUEST_CODE);
         }
 
-        startActivityForResult(intent, 0);
+
     }
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
-            // The document selected by the user won't be returned in the intent.
-            // Instead, a URI to that document will be contained in the return intent
-            // provided to this method as a parameter.
-            // Pull that URI using resultData.getData().
+        if (resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
-                import_file_uri = resultData.getData();
+                Uri import_file_uri = resultData.getData();
+                convert2TextAndShow(import_file_uri, requestCode);
             }
         }
+    }
+
+    /**
+     * 将PPT、PDF、音频转换为文字然后打开编辑器
+     * @param uri 文件Uri
+     */
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void convert2TextAndShow(Uri uri, int requestCode) {
+        fragmentView.findViewById(R.id.progress_importing).setVisibility(View.VISIBLE);
+        // 耗时操作使用子线程
+        new Thread(() -> {
+            try {
+                String path, result = null;
+                if (requestCode == PDF_REQUEST_CODE) {
+                    path = PickUtils.getTMPPath(getContext(), uri, ".pdf");
+                    File file = new File(path);
+                    result = convertService.pdf2Text(file);
+                    file.delete();
+                } else if (requestCode == PPT_REQUEST_CODE) {
+                    path = PickUtils.getTMPPath(getContext(), uri, ".ppt");
+                    File file = new File(path);
+                    result = convertService.ppt2Text(file);
+                    file.delete();
+                }
+                fragmentView.findViewById(R.id.progress_importing).setVisibility(View.INVISIBLE);
+                jump2Editor(null, result);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 }
