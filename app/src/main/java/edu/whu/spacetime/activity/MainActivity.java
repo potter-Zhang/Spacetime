@@ -12,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.SpacetimeApplication;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView nav;
     private ViewPager2 viewpager;
 
+    private List<Fragment> fragments;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,9 +39,22 @@ public class MainActivity extends AppCompatActivity {
         initViewPager();
     }
 
+    @Override
+    public void onBackPressed() {
+        boolean exitTrigger = false;
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof NoteBrowserFragment) {
+                exitTrigger = ((NoteBrowserFragment) fragment).onBackPressed();
+            }
+        }
+        if (!exitTrigger) {
+            super.onBackPressed();
+        }
+    }
+
     private void initViewPager() {
         viewpager = findViewById(R.id.id_viewpager);
-        ArrayList<Fragment> fragments = new ArrayList<>();
+        fragments = new ArrayList<>();
         // 在这里添加fragment
         fragments.add(initNoteFragment());
         fragments.add(new TodoBrowserFragment());

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.FileUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +22,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.SpacetimeApplication;
@@ -144,6 +139,16 @@ public class NoteBrowserFragment extends Fragment {
             this.notebookBrowserFragment = registerNotebookFragment();
         // 从编辑界面返回时可能添加了新的笔记，因此重新加载笔记列表
         refreshNoteList();
+    }
+
+    public boolean onBackPressed() {
+        if (noteListAdapter.isAtEditMode()) {
+            noteListAdapter.exitEditMode();
+            noteListAdapter.notifyDataSetChanged();
+            fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.INVISIBLE);
+            return true;
+        }
+        return false;
     }
 
     /**
