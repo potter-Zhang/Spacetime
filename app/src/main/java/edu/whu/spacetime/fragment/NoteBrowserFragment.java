@@ -1,20 +1,20 @@
 package edu.whu.spacetime.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.FileUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -22,9 +22,13 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.SpacetimeApplication;
@@ -32,9 +36,10 @@ import edu.whu.spacetime.activity.EditorActivity;
 import edu.whu.spacetime.adapter.NoteListAdapter;
 import edu.whu.spacetime.dao.NoteDao;
 import edu.whu.spacetime.domain.Note;
-
-import edu.whu.spacetime.widget.ImportDialog;
 import edu.whu.spacetime.domain.Notebook;
+import edu.whu.spacetime.service.ConvertService;
+import edu.whu.spacetime.util.PickUtils;
+import edu.whu.spacetime.widget.ImportDialog;
 
 public class NoteBrowserFragment extends Fragment {
     private static final String ARG_NOTEBOOK = "notebook";
@@ -42,6 +47,11 @@ public class NoteBrowserFragment extends Fragment {
     public static final String PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
     public static final String PDF = "application/pdf";
     public static final String AUDIO = "";
+
+    /**
+     * 文件转文字
+     */
+    private ConvertService convertService;
 
     private View fragmentView;
 
@@ -52,7 +62,6 @@ public class NoteBrowserFragment extends Fragment {
      */
     private DrawerLayout drawer;
     private FloatingActionButton btn_import_file;
-    private Uri import_file_uri;
 
     // 侧边栏中的笔记本菜单fragment
     private NotebookBrowserFragment notebookBrowserFragment;
@@ -82,6 +91,7 @@ public class NoteBrowserFragment extends Fragment {
             currentNotebook = (Notebook) getArguments().getSerializable(ARG_NOTEBOOK);
         }
         this.noteDao = SpacetimeApplication.getInstance().getDatabase().getNoteDao();
+        this.convertService = new ConvertService(getContext());
     }
 
     @Override
@@ -116,7 +126,7 @@ public class NoteBrowserFragment extends Fragment {
         });
 
         fragmentView.findViewById(R.id.btn_create_note).setOnClickListener(v -> {
-            jump2Editor(null);
+            jump2Editor(null, null);
             getActivity().overridePendingTransition(R.anim.from_bottom, R.anim.from_top);
         });
 
@@ -179,17 +189,17 @@ public class NoteBrowserFragment extends Fragment {
                 }
             } else {
                 Note note = (Note)parent.getItemAtPosition(position);
-                jump2Editor(note);
+                jump2Editor(note, null);
             }
         });
 
-        // 取消按钮
+        // 取消按钮，退出编辑模式
         fragmentView.findViewById(R.id.btn_cancel_edit).setOnClickListener(v -> {
             noteListAdapter.exitEditMode();
             noteListAdapter.notifyDataSetChanged();
             fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.INVISIBLE);
         });
-        // 删除按钮
+        // 删除按钮，确认删除选中的笔记
         fragmentView.findViewById(R.id.btn_del_notes).setOnClickListener(v -> {
             noteListAdapter.removeCheckedNoteInView();
             noteListAdapter.exitEditMode();
@@ -229,14 +239,16 @@ public class NoteBrowserFragment extends Fragment {
     /**
      * 跳转到编辑器
      * @param note 被点击选项对应的Note类
+     * @param content 如果没有Note类，可以设置该字段来展示特定内容
      */
-    private void jump2Editor(Note note) {
+    private void jump2Editor(Note note, String content) {
         Intent intent = new Intent(getActivity(), EditorActivity.class);
         Bundle bundle = new Bundle();
 
         bundle.putSerializable("note", note);
         bundle.putInt("notebookId", currentNotebook.getNotebookId());
         bundle.putString("notebookName", currentNotebook.getName());
+        bundle.putString("content", content);
         intent.putExtras(bundle);
 
         startActivity(intent);
@@ -259,16 +271,33 @@ public class NoteBrowserFragment extends Fragment {
 
         startActivityForResult(intent, 0);
     }
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
-            // The document selected by the user won't be returned in the intent.
-            // Instead, a URI to that document will be contained in the return intent
-            // provided to this method as a parameter.
-            // Pull that URI using resultData.getData().
             if (resultData != null) {
-                import_file_uri = resultData.getData();
+                Uri import_file_uri = resultData.getData();
+                pdf2text(import_file_uri);
             }
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void pdf2text(Uri uri) {
+        fragmentView.findViewById(R.id.progress_importing).setVisibility(View.VISIBLE);
+        // 耗时操作使用子线程
+        new Thread(() -> {
+            try {
+
+                String path = PickUtils.getPDFPath(getContext(), uri);
+                File file = new File(path);
+                String result = convertService.pdf2Text(file);
+                file.delete();
+                fragmentView.findViewById(R.id.progress_importing).setVisibility(View.INVISIBLE);
+                jump2Editor(null, result);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 }

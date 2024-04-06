@@ -22,6 +22,7 @@ import edu.whu.spacetime.dao.NoteDao;
 import edu.whu.spacetime.domain.Note;
 import edu.whu.spacetime.jp.wasabeef.richeditor.RichEditor;
 import edu.whu.spacetime.widget.AIChatPopup;
+import edu.whu.spacetime.widget.ConfirmDialog;
 
 import java.util.regex.*;
 
@@ -62,6 +63,7 @@ public class EditorActivity extends AppCompatActivity {
         content = (content == null) ? "" : content;
         String title = editNoteTitle.getText().toString();
         String plainText = htmlPattern.matcher(content).replaceAll("");
+        ConfirmDialog saveDialog;
         if (note == null) {
             note = new Note();
             note.setContent(content);
@@ -70,14 +72,25 @@ public class EditorActivity extends AppCompatActivity {
             note.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
             note.setCreateTime(LocalDateTime.now());
             note.setNotebookId(notebookId);
-            noteDao.insertNote(note);
+            saveDialog = new ConfirmDialog(this, getColor(R.color.dark_yellow), "新建笔记", "新建");
+            saveDialog.setOnConfirmListener(() -> {
+                noteDao.insertNote(note);
+                finish();
+            });
+            saveDialog.setCancelListener(() -> finish());
+            new XPopup.Builder(this).isDestroyOnDismiss(true).asCustom(saveDialog).show();
         } else {
             note.setContent(content);
             note.setPlainText(plainText);
             note.setTitle(title);
-            noteDao.updateNote(note);
+            saveDialog = new ConfirmDialog(this, getColor(R.color.dark_yellow), "保存笔记", "保存");
+            saveDialog.setOnConfirmListener(() -> {
+                noteDao.updateNote(note);
+                finish();
+            });
+            saveDialog.setCancelListener(() -> finish());
+            new XPopup.Builder(this).isDestroyOnDismiss(true).asCustom(saveDialog).show();
         }
-        XToast.success(this, "保存成功").show();
     }
 
     @Override
@@ -99,7 +112,7 @@ public class EditorActivity extends AppCompatActivity {
 
         mEditor = (RichEditor) findViewById(R.id.editor);
         mEditor.setEditorHeight(200);
-        mEditor.setEditorFontSize(22);
+        mEditor.setEditorFontSize(16);
         mEditor.setEditorFontColor(Color.BLACK);
         mEditor.setPadding(10, 10, 10, 10);
         mEditor.setPlaceholder("请输入文本...");
@@ -116,11 +129,19 @@ public class EditorActivity extends AppCompatActivity {
         String notebookName = bundle.getString("notebookName");
         TextView tvCurrentNotebook = findViewById(R.id.tv_current_notebook);
         tvCurrentNotebook.setText(notebookName);
+        // 打开笔记时传入的Note不为空，新建笔记时则传入null
         if (note != null) {
             mEditor.setHtml(note.getContent());
             mPreview.setText(note.getContent());
             editNoteTitle.setText(note.getTitle());
             wordCount.setText(note.getPlainText().length() + "字");
+        } else {
+            String content = bundle.getString("content");
+            if (content != null) {
+                mEditor.setHtml(content);
+                mPreview.setText(content);
+                wordCount.setText(content.length() + "字");
+            }
         }
         bindBtnFunction();
     }
@@ -207,12 +228,10 @@ public class EditorActivity extends AppCompatActivity {
 
         findViewById(R.id.save_btn).setOnClickListener(v -> {
             saveNote();
-            finish();
         });
 
         findViewById(R.id.return_btn).setOnClickListener(v -> {
             saveNote();
-            finish();
         });
 
         ImageButton btnAIChat = findViewById(R.id.btn_ai_chat);

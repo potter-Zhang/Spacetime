@@ -1,6 +1,7 @@
 package edu.whu.spacetime.widget;
 
 import android.content.Context;
+import android.graphics.Color;
 
 import androidx.annotation.NonNull;
 
@@ -59,7 +60,7 @@ public class NoteBookPopupMenu extends AttachPopupView  {
     }
 
     private void openRenameDialog() {
-        InputDialog inputDialog = new InputDialog(getContext(), false);
+        InputDialog inputDialog = new InputDialog(getContext(), "重命名");
         inputDialog.setOnInputConfirmListener(t -> {
             // 确认后触发重命名事件
             if (this.renameListener != null)
@@ -73,7 +74,7 @@ public class NoteBookPopupMenu extends AttachPopupView  {
     }
 
     private void openDeleteDialog() {
-        ConfirmDeleteDialog deleteDialog = new ConfirmDeleteDialog(getContext());
+        ConfirmDialog deleteDialog = new ConfirmDialog(getContext(), Color.RED, "确定要删除吗？", "删除");
         deleteDialog.setOnConfirmListener(() -> {
             // 确认后触发OnDelete事件
             if (deleteListener != null)

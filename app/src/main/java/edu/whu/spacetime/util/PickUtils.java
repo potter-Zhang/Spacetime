@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.FileUtils;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
@@ -14,12 +15,14 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public class PickUtils {
     public static final String DOCUMENTS_DIR = "documents";
@@ -269,5 +272,23 @@ public class PickUtils {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 将URI转换为PDF文件路径
+     * @param uri 文件选择器返回的uri
+     * @return PDF文件路径
+     * @throws IOException
+     */
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static String getPDFPath(Context context, Uri uri) throws IOException {
+        InputStream stream = context.getContentResolver().openInputStream(uri);
+        // 将内容写到临时文件内然后返回路径
+        String path = context.getCacheDir() + "tmp.pdf";
+        OutputStream outputStream = new FileOutputStream(path);
+        FileUtils.copy(stream, outputStream);
+        stream.close();
+        outputStream.close();
+        return path;
     }
 }

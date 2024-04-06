@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     id("com.android.application")
 }
@@ -88,4 +90,7 @@ dependencies {
 
     implementation("androidx.appcompat:appcompat:1.1.0")
     implementation("com.google.android.material:material:1.1.0")
+
+    // pdfbox
+    implementation ("com.tom-roush:pdfbox-android:2.0.27.0")
 }

@@ -85,7 +85,7 @@ public class NotebookBrowserFragment extends Fragment {
     }
     
     private void openInputDialog() {
-        InputDialog inputDialog = new InputDialog(getContext(), true);
+        InputDialog inputDialog = new InputDialog(getContext(), "新建笔记本");
         inputDialog.setOnInputConfirmListener(text -> {
             Notebook newNotebook = new Notebook(text, SpacetimeApplication.getInstance().getCurrentUser().getUserId());
             List<Long> rowId = notebookDao.insertNotebook(newNotebook);
