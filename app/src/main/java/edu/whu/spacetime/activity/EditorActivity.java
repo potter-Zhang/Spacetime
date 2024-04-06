@@ -96,7 +96,6 @@ public class EditorActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         saveNote();
-        super.onBackPressed();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
