@@ -18,6 +18,6 @@
         android:title="@string/me"/>
     <item
         android:id="@+id/navigation_item4"
-        android:icon="@drawable/virtual_reality_glasses"
+        android:icon="@drawable/selector_virtual_reality_glasses"
         android:title="AR"/>
 </menu>
