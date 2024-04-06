@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.MenuItem;
@@ -19,7 +21,7 @@ import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.adapter.MyFragmentPagerAdapter;
 import edu.whu.spacetime.dao.NotebookDao;
 import edu.whu.spacetime.domain.Notebook;
-import edu.whu.spacetime.fragment.HelloArFragment;
+
 import edu.whu.spacetime.fragment.NoteBrowserFragment;
 import edu.whu.spacetime.fragment.TodoBrowserFragment;
 import edu.whu.spacetime.fragment.UserFragment;
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         fragments.add(initNoteFragment());
         fragments.add(new TodoBrowserFragment());
         fragments.add(UserFragment.newInstance());
-        fragments.add(new HelloArFragment());
+        //f/ragments.add(new HelloArFragment());
         MyFragmentPagerAdapter myFragmentPagerAdapter = new MyFragmentPagerAdapter(
                 getSupportFragmentManager(), getLifecycle(), fragments);
         viewpager.setAdapter(myFragmentPagerAdapter);
@@ -88,8 +90,18 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-        //ColorStateList colorStateList = getColorStateList(R.color.bottom_text_color);
-        //nav.setItemTextColor(colorStateList);
+        //设置底部导航栏字体颜色
+        //状态
+        int[][] states = new int[2][];
+        //按下
+        states[0] = new int[] {android.R.attr.state_checked};
+        //默认
+        states[1] = new int[] {-android.R.attr.state_checked};
+
+        //状态对应颜色值（按下，默认）
+        int[] colors = new int[] {Color.parseColor("#09bb07"),Color.GRAY};
+        ColorStateList colorList = new ColorStateList(states, colors);
+        nav.setItemTextColor(colorList);
         viewpager.setUserInputEnabled(false);
     }
 
