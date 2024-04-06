@@ -275,16 +275,16 @@ public class PickUtils {
     }
 
     /**
-     * 将URI转换为PDF文件路径
+     * 将URI转换为临时文件的路径
      * @param uri 文件选择器返回的uri
-     * @return PDF文件路径
+     * @return 创建的临时文件路径
      * @throws IOException
      */
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public static String getPDFPath(Context context, Uri uri) throws IOException {
+    public static String getTMPPath(Context context, Uri uri, String suffix) throws IOException {
         InputStream stream = context.getContentResolver().openInputStream(uri);
         // 将内容写到临时文件内然后返回路径
-        String path = context.getCacheDir() + "tmp.pdf";
+        String path = context.getCacheDir() + "tmp" + suffix;
         OutputStream outputStream = new FileOutputStream(path);
         FileUtils.copy(stream, outputStream);
         stream.close();

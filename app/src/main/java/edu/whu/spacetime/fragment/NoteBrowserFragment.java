@@ -43,10 +43,13 @@ import edu.whu.spacetime.widget.ImportDialog;
 
 public class NoteBrowserFragment extends Fragment {
     private static final String ARG_NOTEBOOK = "notebook";
-    public static final String PPT = "application/vnd.ms-powerpoint";
-    public static final String PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-    public static final String PDF = "application/pdf";
-    public static final String AUDIO = "";
+    private static final String PPT = "application/vnd.ms-powerpoint";
+    private static final int PPT_REQUEST_CODE = 0;
+    private static final String PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    private static final String PDF = "application/pdf";
+    private static final int PDF_REQUEST_CODE = 1;
+    private static final String AUDIO = "";
+    private static final int AUDIO_REQUEST_CODE = 2;
 
     /**
      * 文件转文字
@@ -261,38 +264,52 @@ public class NoteBrowserFragment extends Fragment {
 
         if (str.equals("pdf")) {
             intent.setType(PDF);
+            startActivityForResult(intent, PDF_REQUEST_CODE);
         }
         else if (str.equals("ppt")) {
             intent.setType(PPT);
+            startActivityForResult(intent, PPT_REQUEST_CODE);
         }
         else if (str.equals("audio")) {
             intent.setType("*/*");
+            startActivityForResult(intent, AUDIO_REQUEST_CODE);
         }
 
-        startActivityForResult(intent, 0);
+
     }
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
                 Uri import_file_uri = resultData.getData();
-                pdf2text(import_file_uri);
+                convert2TextAndShow(import_file_uri, requestCode);
             }
         }
     }
 
+    /**
+     * 将PPT、PDF、音频转换为文字然后打开编辑器
+     * @param uri 文件Uri
+     */
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    private void pdf2text(Uri uri) {
+    private void convert2TextAndShow(Uri uri, int requestCode) {
         fragmentView.findViewById(R.id.progress_importing).setVisibility(View.VISIBLE);
         // 耗时操作使用子线程
         new Thread(() -> {
             try {
-
-                String path = PickUtils.getPDFPath(getContext(), uri);
-                File file = new File(path);
-                String result = convertService.pdf2Text(file);
-                file.delete();
+                String path, result = null;
+                if (requestCode == PDF_REQUEST_CODE) {
+                    path = PickUtils.getTMPPath(getContext(), uri, ".pdf");
+                    File file = new File(path);
+                    result = convertService.pdf2Text(file);
+                    file.delete();
+                } else if (requestCode == PPT_REQUEST_CODE) {
+                    path = PickUtils.getTMPPath(getContext(), uri, ".ppt");
+                    File file = new File(path);
+                    result = convertService.ppt2Text(file);
+                    file.delete();
+                }
                 fragmentView.findViewById(R.id.progress_importing).setVisibility(View.INVISIBLE);
                 jump2Editor(null, result);
             } catch (IOException e) {
