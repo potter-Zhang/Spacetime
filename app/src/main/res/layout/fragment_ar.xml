@@ -17,7 +17,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.whu.spacetime.activity.MainActivity">
+    tools:context="edu.whu.spacetime.activity.MainActivity"
+    android:id="@+id/fragment_ar_main">
 
     <android.opengl.GLSurfaceView
         android:id="@+id/surfaceview"
