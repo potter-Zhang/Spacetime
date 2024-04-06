@@ -18,7 +18,7 @@ import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.adapter.MyFragmentPagerAdapter;
 import edu.whu.spacetime.dao.NotebookDao;
 import edu.whu.spacetime.domain.Notebook;
-import edu.whu.spacetime.fragment.HelloArFragment;
+
 import edu.whu.spacetime.fragment.NoteBrowserFragment;
 import edu.whu.spacetime.fragment.TodoBrowserFragment;
 import edu.whu.spacetime.fragment.UserFragment;
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         fragments.add(initNoteFragment());
         fragments.add(new TodoBrowserFragment());
         fragments.add(UserFragment.newInstance());
-        fragments.add(new HelloArFragment());
+        //f/ragments.add(new HelloArFragment());
         MyFragmentPagerAdapter myFragmentPagerAdapter = new MyFragmentPagerAdapter(
                 getSupportFragmentManager(), getLifecycle(), fragments);
         viewpager.setAdapter(myFragmentPagerAdapter);
