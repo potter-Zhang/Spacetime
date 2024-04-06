@@ -58,11 +58,12 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
         TextView tvAddr = view.findViewById(R.id.tv_todo_addr);
         TextView tvTime = view.findViewById(R.id.tv_todo_time);
         tvTitle.setText(todo.getTitle());
-        if(!todo.getAddr().isEmpty()){
-            tvAddr.setText("地点：".concat(todo.getAddr()));
-        }else{
-            tvAddr.setText("");
-        }
+        tvAddr.setText(todo.getAddr());
+//        if(!todo.getAddr().isEmpty()){
+//            tvAddr.setText("地点：".concat(todo.getAddr()));
+//        }else{
+//            tvAddr.setText("");
+//        }
         tvTime.setText(todo.getCreateTime().format(df));
 
         //勾选改变位置

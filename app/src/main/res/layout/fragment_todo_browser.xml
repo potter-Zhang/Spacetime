@@ -90,7 +90,7 @@
                     android:id="@+id/list_todo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:dividerHeight="1dp"
+                    android:dividerHeight="0dp"
                     android:paddingLeft="10dp"
                     android:paddingTop="10dp"/>
 
@@ -106,7 +106,7 @@
                     android:id="@+id/list_todo_ok"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:dividerHeight="1dp"
+                    android:dividerHeight="0dp"
                     android:paddingLeft="10dp"
                     android:paddingTop="10dp"/>
 
