@@ -21,7 +21,6 @@ import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.adapter.MyFragmentPagerAdapter;
 import edu.whu.spacetime.dao.NotebookDao;
 import edu.whu.spacetime.domain.Notebook;
-import edu.whu.spacetime.fragment.HelloArFragment;
 import edu.whu.spacetime.fragment.NoteBrowserFragment;
 import edu.whu.spacetime.fragment.StartARFragment;
 import edu.whu.spacetime.fragment.TodoBrowserFragment;

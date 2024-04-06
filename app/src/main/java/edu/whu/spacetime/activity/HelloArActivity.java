@@ -77,6 +77,9 @@ import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
 import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
+import com.lxj.xpopup.XPopup;
+import com.xuexiang.xui.widget.toast.XToast;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -85,6 +88,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.widget.InputDialog;
 
 /**
  * This is a simple example that shows how to create an augmented reality (AR) application using the
@@ -177,6 +181,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
     private final float[] projectionMatrix = new float[16];
     private final float[] modelViewMatrix = new float[16]; // view x model
     private final float[] modelViewProjectionMatrix = new float[16]; // projection x view x model
+
+    private final float[] ViewProjectionMatrix = new float[16];
     private final float[] sphericalHarmonicsCoefficients = new float[9 * 3];
     private final float[] viewInverseMatrix = new float[16];
     private final float[] worldLightDirection = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -611,6 +617,9 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
             Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
             Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
 
+            // viewproj for label
+            Matrix.multiplyMM(ViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+
             // Update shader properties and draw
             virtualObjectShader.setMat4("u_ModelView", modelViewMatrix);
             virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
@@ -624,8 +633,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                 virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture);
             }
 
-            render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
-            labelRender.draw(render, modelViewProjectionMatrix, anchor.getPose(), camera.getPose(), "AR");
+            //render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
+            labelRender.draw(render, ViewProjectionMatrix, anchor.getPose(), camera.getPose(), wrappedAnchor.getText());
         }
 
         // Compose the virtual scene with the background.
@@ -666,10 +675,17 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                     // Adding an Anchor tells ARCore that it should track this position in
                     // space. This anchor is created on the Plane to place the 3D model
                     // in the correct position relative both to the world and to the plane.
-                    wrappedAnchors.add(new WrappedAnchor(hit.createAnchor(), trackable));
+                    WrappedAnchor anchor = new WrappedAnchor(hit.createAnchor(), trackable);
+                    wrappedAnchors.add(anchor);
                     // For devices that support the Depth API, shows a dialog to suggest enabling
                     // depth-based occlusion. This dialog needs to be spawned on the UI thread.
                     this.runOnUiThread(this::showOcclusionDialogIfNeeded);
+                    this.runOnUiThread(()->{
+                        InputDialog dialog = new InputDialog(this, "");
+                        dialog.setOnInputConfirmListener(text -> anchor.setText(text));
+                        new XPopup.Builder(this).asCustom(dialog).show();
+
+                    });
 
                     // Hits are sorted by depth. Consider only closest hit on a plane, Oriented Point, or
                     // Instant Placement Point.
@@ -868,9 +884,19 @@ class WrappedAnchor {
     private Anchor anchor;
     private Trackable trackable;
 
+    private String text;
+
     public WrappedAnchor(Anchor anchor, Trackable trackable) {
         this.anchor = anchor;
         this.trackable = trackable;
+    }
+
+    public String getText() {
+        return text == null ? "" : text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public Anchor getAnchor() {

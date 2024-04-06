@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.activity.HelloArActivity;
 import edu.whu.spacetime.activity.MainActivity;
 
 public class StartARFragment extends Fragment {
@@ -26,7 +27,7 @@ public class StartARFragment extends Fragment {
         view.findViewById(R.id.btn_ar_start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MainActivity.class);
+                Intent intent = new Intent(getActivity(), HelloArActivity.class);
                 startActivity(intent);
                 //getActivity().finish();
             }

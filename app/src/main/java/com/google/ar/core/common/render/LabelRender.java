@@ -41,10 +41,10 @@ public class LabelRender {
             .order(ByteOrder.nativeOrder())
             .asFloatBuffer()
             .put(new float[]{
-                    /*0:*/ -1.5f, -1.5f,
-                    /*1:*/ 1.5f, -1.5f,
-                    /*2:*/ -1.5f, 1.5f,
-                    /*3:*/ 1.5f, 1.5f,
+                    /*0:*/ -10.0f, -10.0f,
+                    /*1:*/ 10.0f, -10.0f,
+                    /*2:*/ -10.0f, 10.0f,
+                    /*3:*/ 10.0f, 10.0f,
             });
 
     /**
