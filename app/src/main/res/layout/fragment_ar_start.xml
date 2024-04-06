@@ -14,7 +14,7 @@
             <GridLayout
                 android:id="@+id/browse_action_bar"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="60dp"
                 android:background="@color/main_theme"
                 android:columnCount="4"
                 android:rowCount="1"
@@ -23,8 +23,8 @@
                 <ImageButton
                     android:layout_column="0"
                     android:layout_gravity="center"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:scaleType="fitCenter"
                     android:layout_marginEnd="15dp"
                     android:layout_marginStart="5dp"
@@ -44,15 +44,16 @@
                         android:text="AR笔记"
                         android:textStyle="bold"
                         android:textColor="@color/black"
-                        android:textSize="20sp"/>
+                        android:textSize="16sp"/>
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="3dp"
+                        android:layout_height="2dp"
                         android:background="#333"/>
                     <TextView
                         android:id="@+id/tv_notebookNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textSize="13dp"
                         android:text="SpaceTime，让文字穿越时空" />
                 </LinearLayout>
             </GridLayout>

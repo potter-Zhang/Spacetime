@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         states[1] = new int[] {-android.R.attr.state_checked};
 
         //状态对应颜色值（按下，默认）
-        int[] colors = new int[] {Color.parseColor("#09bb07"),Color.GRAY};
+        int[] colors = new int[] {Color.parseColor("#8ACF19"),Color.GRAY};
         ColorStateList colorList = new ColorStateList(states, colors);
         nav.setItemTextColor(colorList);
         viewpager.setUserInputEnabled(false);
