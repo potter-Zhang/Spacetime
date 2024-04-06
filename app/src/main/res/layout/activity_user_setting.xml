@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".activity.UserSettingActivity">
 
-    <Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -24,6 +24,320 @@
             android:text="设置"
             android:textSize="20sp"/>
 
-    </Toolbar>
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/user_account_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/user_linearlayout_background"
+        android:elevation="1dp">
+
+
+        <RelativeLayout
+            android:id="@+id/user_name_rl"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/user_profile"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:src="@drawable/default_profile"/>
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/user_profile"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="12dp"
+                android:textSize="16sp"
+                android:text="我的昵称"/>
+
+            <TextView
+                android:id="@+id/user_signature_of_individual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/user_profile"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="39dp"
+                android:textSize="14sp"
+                android:text="不以物喜，不以己悲"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/user_gender_rl"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="自动同步"
+                android:textSize="18sp"
+                android:layout_marginStart="30dp"
+                android:layout_centerVertical="true" />
+
+
+            <Switch
+                android:id="@+id/user_automatic_syncing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/user_tele_rl"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="主题设置"
+                android:textSize="18sp"
+                android:layout_marginStart="30dp"
+                android:layout_centerVertical="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:layout_toStartOf="@+id/user_tele_entry"
+                android:text="默认"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/user_tele_entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/user_arrow_right"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/user_region_rl"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="文字大小"
+                android:textSize="18sp"
+                android:layout_marginStart="30dp"
+                android:layout_centerVertical="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:layout_toStartOf="@+id/user_region_entry"
+                android:text="默认"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/user_region_entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/user_arrow_right"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/user_change_account_rl"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择排序方式"
+                android:textSize="18sp"
+                android:layout_marginStart="30dp"
+                android:layout_centerVertical="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:layout_toStartOf="@+id/user_change_account_entry"
+                android:text="按编辑日期"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/user_change_account_entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/user_arrow_right"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/user_auxiliary_rl"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="笔记排列布局"
+                android:textSize="18sp"
+                android:layout_marginStart="30dp"
+                android:layout_centerVertical="true" />
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:layout_toStartOf="@+id/user_auxiliary_entry"
+                android:text="列表模式"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/user_auxiliary_entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/user_arrow_right"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/user_account_ll2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/user_linearlayout_background"
+        android:elevation="1dp">
+
+        <RelativeLayout
+            android:id="@+id/user_privacy_rl"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="隐私政策"
+                android:textSize="18sp"
+                android:layout_marginStart="30dp"
+                android:layout_centerVertical="true" />
+
+            <ImageView
+                android:id="@+id/user_privacy_entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/user_arrow_right"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/user_data_shared_rl"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="第三方数据共享说明"
+                android:textSize="18sp"
+                android:layout_marginStart="30dp"
+                android:layout_centerVertical="true" />
+
+            <ImageView
+                android:id="@+id/user_data_shared_entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/user_arrow_right"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/user_power_rl"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="权限说明"
+                android:textSize="18sp"
+                android:layout_marginStart="30dp"
+                android:layout_centerVertical="true" />
+
+
+            <ImageView
+                android:id="@+id/user_power_entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/user_arrow_right"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

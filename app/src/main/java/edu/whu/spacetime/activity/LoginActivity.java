@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
         // 创建新用户
-        User newUser = new User(inputUsername, inputPassword, "");
+        User newUser = new User(inputUsername, inputPassword, null);
         Long userId = userDao.insertUser(newUser);
         // 读取一次user获取数据库自动生成的userId
         newUser.setUserId(userId.intValue());

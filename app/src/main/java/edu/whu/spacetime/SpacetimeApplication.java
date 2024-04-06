@@ -45,6 +45,7 @@ public class SpacetimeApplication  extends Application {
             @Override
             public void migrate(@NonNull SupportSQLiteDatabase supportSQLiteDatabase) {
                 supportSQLiteDatabase.execSQL("ALTER TABLE Note ADD plainText TEXT");
+                // supportSQLiteDatabase.execSQL("ALTER TABLE User ADD profile BLOB");
             }
         };
 

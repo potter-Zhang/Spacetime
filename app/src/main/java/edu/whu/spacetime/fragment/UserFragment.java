@@ -1,19 +1,15 @@
 package edu.whu.spacetime.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +19,7 @@ import android.widget.Toast;
 
 import com.xuexiang.xui.widget.imageview.IconImageView;
 
-import java.util.List;
+import java.sql.SQLException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.whu.spacetime.R;
@@ -31,11 +27,7 @@ import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.activity.UserAccountActivity;
 import edu.whu.spacetime.activity.UserCalendarActivity;
 import edu.whu.spacetime.activity.UserSettingActivity;
-import edu.whu.spacetime.dao.UserDao;
 import edu.whu.spacetime.domain.User;
-import edu.whu.spacetime.util.PickUtils;
-import edu.whu.spacetime.util.ResultContract;
-import edu.whu.spacetime.widget.ImportDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,7 +41,8 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private IconImageView setting_button;
     private AlertDialog import_popUp;
     private View importWindow;
-    private Uri uri;
+    private TextView user_name, user_id;
+    private User user;
 
 
     public UserFragment() {
@@ -88,7 +81,15 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
-    private void initView() {
+    private void initView(){
+        // 初始化user以及个人信息
+        user = SpacetimeApplication.getInstance().getCurrentUser();
+        user_name = rootView.findViewById(R.id.user_name);
+        user_id = rootView.findViewById(R.id.uid);
+        user_name.setText(user.getUsername());
+        String userid = String.valueOf(user.getUserId());
+        user_id.setText(userid);
+
         user_profile = rootView.findViewById(R.id.user_profile);
         account_btn = rootView.findViewById(R.id.user_account_btn);
         setting_button = rootView.findViewById(R.id.user_setting);

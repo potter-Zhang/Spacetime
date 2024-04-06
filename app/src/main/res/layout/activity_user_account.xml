@@ -62,6 +62,7 @@
                 android:layout_centerVertical="true" />
 
             <TextView
+                android:id="@+id/user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -140,7 +141,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
                 android:layout_toStartOf="@+id/user_tele_entry"
-                android:text="xxxxxxxxx"
+                android:text="13828485016"
                 android:textSize="18sp" />
 
             <ImageView
@@ -212,7 +213,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
                 android:layout_toStartOf="@+id/user_change_account_entry"
-                android:text="无"
+                android:text=""
                 android:textSize="18sp" />
 
             <ImageView
