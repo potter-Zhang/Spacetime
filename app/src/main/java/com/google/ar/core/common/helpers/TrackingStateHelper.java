@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.ar.core.examples.java.common.helpers;
+package com.google.ar.core.common.helpers;
 
 import android.app.Activity;
 import android.view.WindowManager;
@@ -37,11 +37,16 @@ public final class TrackingStateHelper {
       "Another app is using the camera. Tap on this app or try closing the other one.";
   private static final int ANDROID_S_SDK_VERSION = 31;
 
-  private final Activity activity;
+  private Activity activity;
 
   private TrackingState previousTrackingState;
 
   public TrackingStateHelper(Activity activity) {
+    this.activity = activity;
+
+  }
+
+  public void setActivity(Activity activity) {
     this.activity = activity;
   }
 
