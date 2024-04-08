@@ -3,6 +3,8 @@ package edu.whu.spacetime.activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -43,6 +45,11 @@ public class EditorActivity extends AppCompatActivity {
     private NoteDao noteDao;
 
     private Note note;
+
+    /**
+     * 当前笔记是否该有更改，若未更改，退出时不弹出保存提示
+     */
+    private boolean changed = false;
 
     /**
      * 当前笔记所处的笔记本，用于将笔记保存到指定的笔记本
@@ -96,7 +103,11 @@ public class EditorActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        saveNote();
+        if (changed) {
+            saveNote();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
@@ -109,6 +120,22 @@ public class EditorActivity extends AppCompatActivity {
         editNoteTitle = findViewById(R.id.edit_note_title);
         mPreview = (TextView) findViewById(R.id.preview);
         wordCount = findViewById(R.id.tv_word_count);
+        editNoteTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                changed = true;
+            }
+        });
 
         mEditor = (RichEditor) findViewById(R.id.editor);
         mEditor.setEditorHeight(200);
@@ -117,6 +144,7 @@ public class EditorActivity extends AppCompatActivity {
         mEditor.setPadding(10, 10, 10, 10);
         mEditor.setPlaceholder("请输入文本...");
         mEditor.setOnTextChangeListener(text -> {
+            changed = true;
             mPreview.setText(text);
             Matcher matcher = htmlPattern.matcher(text);
             String plainText = matcher.replaceAll("");
@@ -143,6 +171,7 @@ public class EditorActivity extends AppCompatActivity {
                 wordCount.setText(content.length() + "字");
             }
         }
+        changed = false;
         bindBtnFunction();
     }
 
