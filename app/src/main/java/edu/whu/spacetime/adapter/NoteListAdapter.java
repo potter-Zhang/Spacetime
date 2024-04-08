@@ -66,6 +66,8 @@ public class NoteListAdapter extends ArrayAdapter<Note> {
         viewHolder.tvTime.setText(note.getCreateTime().toLocalDate().toString());
         if (isAtEditMode()) {
             viewHolder.checkNote.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.checkNote.setVisibility(View.GONE);
         }
         viewHolder.checkNote.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
