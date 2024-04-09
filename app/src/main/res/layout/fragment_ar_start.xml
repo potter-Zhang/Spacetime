@@ -28,7 +28,7 @@
                     android:scaleType="fitCenter"
                     android:layout_marginEnd="15dp"
                     android:layout_marginStart="5dp"
-                    android:src="@drawable/virtual_reality_glasses"/>
+                    android:src="@drawable/icon_ar_glasses"/>
                 <LinearLayout
                     android:layout_column="1"
                     android:layout_width="wrap_content"
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 fab:fab_colorNormal="@color/white"
                 fab:fab_colorPressed="@color/pressed_gray"
-                fab:fab_icon="@drawable/virtual_reality_glasses"
+                fab:fab_icon="@drawable/icon_ar_glasses"
                 fab:fab_title="label"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton

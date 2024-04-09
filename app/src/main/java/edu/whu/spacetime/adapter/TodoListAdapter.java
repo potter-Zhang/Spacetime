@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -114,7 +116,10 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
             }
         });
 
-
+        // 添加出现动画
+        Animation anim = new AlphaAnimation(0F, 1F);
+        anim.setDuration(500);
+        view.setAnimation(anim);
         return view;
     }
 }

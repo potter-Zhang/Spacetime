@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -59,9 +61,11 @@ public class NoteListAdapter extends ArrayAdapter<Note> {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
         Note note = getItem(position);
         viewHolder.tvTitle.setText(note.getTitle());
-        int maxLength = Math.min(note.getPlainText().length(), 100);
+        // 摘要最长为50，否则setText会导致卡顿
+        int maxLength = Math.min(note.getPlainText().length(), 50);
         viewHolder.tvAbstract.setText(note.getPlainText().substring(0, maxLength));
         viewHolder.tvTime.setText(note.getCreateTime().toLocalDate().toString());
         if (isAtEditMode()) {
