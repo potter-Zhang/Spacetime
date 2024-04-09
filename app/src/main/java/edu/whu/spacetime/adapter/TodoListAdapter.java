@@ -33,17 +33,42 @@ import edu.whu.spacetime.widget.SwipeListLayout;
 import edu.whu.spacetime.widget.TodoSetPopup;
 
 public class TodoListAdapter extends ArrayAdapter<Todo> {
+    /**
+     * todo项check状态改变监听器
+     */
+    public interface OnItemCheckedChangeListener {
+        void onItemCheckedChange(Todo todo);
+    }
+
+    /**
+     * todo项被删除事件监听器
+     */
+    public interface OnItemDeleteListener {
+        void onItemDelete(Todo todo);
+    }
+
     private final int resourceId;
     private final TodoBrowserFragment Todo_view;
     private final TodoDao todoDao = SpacetimeApplication.getInstance().getDatabase().getTodoDao();
     private final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd   HH:mm");
+
+    private OnItemCheckedChangeListener itemCheckedChangeListener;
+
+    private OnItemDeleteListener itemDeleteListener;
+
+    public void setOnItemCheckedChangeListener(OnItemCheckedChangeListener itemCheckedChangeListener) {
+        this.itemCheckedChangeListener = itemCheckedChangeListener;
+    }
+
+    public void setOnItemDeleteListener(OnItemDeleteListener itemDeleteListener) {
+        this.itemDeleteListener = itemDeleteListener;
+    }
 
     public TodoListAdapter(@NonNull Context context, int resource, @NonNull List<Todo> objects, TodoBrowserFragment view) {
         super(context, resource, objects);
         this.resourceId = resource;
         this.Todo_view = view;
     }
-
 
     @NonNull
     @Override
@@ -68,19 +93,12 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
 //        }
         tvTime.setText(todo.getCreateTime().format(df));
 
-        //勾选改变位置
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(todo.getChecked()){
-                    Toast.makeText(getContext(),"已取消勾选",Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Toast.makeText(getContext(),"已勾选",Toast.LENGTH_SHORT).show();
-                }
-                todo.setChecked(!todo.getChecked());
-                todoDao.updateTodo(todo);
-                Todo_view.refresh();
+        // 勾选后触发监听器
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            todo.setChecked(!todo.getChecked());
+            todoDao.updateTodo(todo);
+            if (this.itemCheckedChangeListener != null) {
+                this.itemCheckedChangeListener.onItemCheckedChange(todo);
             }
         });
 
@@ -97,11 +115,10 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
 
         //左滑添加删除事件
         View btn_dele = view.findViewById(R.id.btn_todo_deleteItem);
-        btn_dele.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                todoDao.deleteTodo(todo);
-                Todo_view.refresh();
+        btn_dele.setOnClickListener(v -> {
+            todoDao.deleteTodo(todo);
+            if (this.itemDeleteListener != null) {
+                itemDeleteListener.onItemDelete(todo);
             }
         });
 

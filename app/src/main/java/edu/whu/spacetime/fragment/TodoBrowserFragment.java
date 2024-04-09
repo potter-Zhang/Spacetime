@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -75,8 +76,29 @@ public class TodoBrowserFragment extends Fragment {
         todoListAdapter_Checked= new TodoListAdapter(getContext(), R.layout.item_todo_list, todoList_Checked, this);
         todoListView.setAdapter(todoListAdapter_unChecked);
         todoListView_ok.setAdapter(todoListAdapter_Checked);
+
+        // unchecked中的todo被check后添加到另一个adapter中
+        todoListAdapter_unChecked.setOnItemCheckedChangeListener((todo) -> {
+            todoListAdapter_unChecked.remove(todo);
+            todoListAdapter_Checked.add(todo);
+        });
+        todoListAdapter_Checked.setOnItemCheckedChangeListener((todo) -> {
+            todoListAdapter_Checked.remove(todo);
+            todoListAdapter_unChecked.add(todo);
+        });
+
+        // todo被删除时从adapter中remove
+        todoListAdapter_unChecked.setOnItemDeleteListener((todo -> {
+            todoListAdapter_unChecked.remove(todo);
+            showEmptyImg();
+        }));
+        todoListAdapter_Checked.setOnItemDeleteListener((todo -> {
+            todoListAdapter_Checked.remove(todo);
+            showEmptyImg();
+        }));
         showEmptyImg();
     }
+
     public void refresh(){
         int userId = SpacetimeApplication.getInstance().getCurrentUser().getUserId();
         todoList_unChecked = SpacetimeApplication.getInstance().getDatabase().getTodoDao().getUnCheckedTodo(userId);
@@ -94,7 +116,7 @@ public class TodoBrowserFragment extends Fragment {
      * 待办列表为空时显示提示图片
      */
     private void showEmptyImg() {
-        if (todoListAdapter_unChecked.isEmpty() && todoList_Checked.isEmpty()) {
+        if (todoListAdapter_unChecked.isEmpty() && todoListAdapter_Checked.isEmpty()) {
             fragView.findViewById(R.id.img_todo_list_empty).setVisibility(View.VISIBLE);
             fragView.findViewById(R.id.tv_completed).setVisibility(View.GONE);
         } else {

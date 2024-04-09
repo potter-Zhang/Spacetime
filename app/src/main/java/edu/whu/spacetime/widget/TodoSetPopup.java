@@ -111,19 +111,19 @@ public class TodoSetPopup extends CenterPopupView {
                 TextView tv_time = findViewById(R.id.tv_todo_set_time);
                 if(edt_title.getText().toString().isEmpty()){
                     Toast.makeText(getContext(),"请输入事件名",Toast.LENGTH_SHORT).show();
-                }else{
-                    Todo todo_t = new Todo(SpacetimeApplication.getInstance().getCurrentUser().getUserId(),edt_title.getText().toString(),edt_addr.getText().toString(),LocalDateTime.parse(tv_time.getText().toString(),df),false);
-                    if(todo!=null){
-                        todo_t.setTodoId(todo.getTodoId());
-                        todo_t.setChecked(todo.getChecked());
-                        todoDao.updateTodo(todo_t);
-                    }
-                    else{
-                        todoDao.insertTodo(todo_t);
-                    }
-                    todoBrowserFragment.refresh();
-                    dismiss();
+                    return;
                 }
+                Todo todo_t = new Todo(SpacetimeApplication.getInstance().getCurrentUser().getUserId(),edt_title.getText().toString(),edt_addr.getText().toString(),LocalDateTime.parse(tv_time.getText().toString(),df),false);
+                if(todo!=null){
+                    todo_t.setTodoId(todo.getTodoId());
+                    todo_t.setChecked(todo.getChecked());
+                    todoDao.updateTodo(todo_t);
+                }
+                else{
+                    todoDao.insertTodo(todo_t);
+                }
+                todoBrowserFragment.refresh();
+                dismiss();
             }
         });
     }

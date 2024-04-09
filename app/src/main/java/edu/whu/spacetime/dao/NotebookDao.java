@@ -15,6 +15,7 @@ public interface NotebookDao {
     @Insert
     List<Long> insertNotebook(Notebook... notebooks);
 
+    // TODO: 删除笔记本时需要级联删除笔记本中的所有笔记
     @Delete
     void deleteNotebook(Notebook... notebooks);
 
