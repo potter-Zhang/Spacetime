@@ -81,22 +81,31 @@ public class TodoBrowserFragment extends Fragment {
         todoListAdapter_unChecked.setOnItemCheckedChangeListener((todo) -> {
             todoListAdapter_unChecked.remove(todo);
             todoListAdapter_Checked.add(todo);
+            refreshSubTitle();
         });
         todoListAdapter_Checked.setOnItemCheckedChangeListener((todo) -> {
             todoListAdapter_Checked.remove(todo);
             todoListAdapter_unChecked.add(todo);
+            refreshSubTitle();
         });
 
         // todo被删除时从adapter中remove
         todoListAdapter_unChecked.setOnItemDeleteListener((todo -> {
             todoListAdapter_unChecked.remove(todo);
+            refreshSubTitle();
             showEmptyImg();
         }));
         todoListAdapter_Checked.setOnItemDeleteListener((todo -> {
             todoListAdapter_Checked.remove(todo);
+            refreshSubTitle();
             showEmptyImg();
         }));
         showEmptyImg();
+    }
+
+    private void refreshSubTitle() {
+        TextView tv_numOfTodo = fragView.findViewById(R.id.tv_todo_numOfTodo);
+        tv_numOfTodo.setText(String.valueOf(todoList_unChecked.size()).concat(" 条待办，").concat(String.valueOf(todoList_Checked.size())).concat(" 条已完成"));
     }
 
     public void refresh(){

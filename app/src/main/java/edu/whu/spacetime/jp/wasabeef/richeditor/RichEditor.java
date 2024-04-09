@@ -162,6 +162,7 @@ public class RichEditor extends WebView {
     private static final int EXPAND = 0;
     private static final int ABSTRACT = 1;
     private static final int TRANSLATE = 2;
+    private static final int SEGMENT = 3;
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -203,6 +204,9 @@ public class RichEditor extends WebView {
           case ABSTRACT:
             service.abstractNote(getContext(), selectionText);
             break;
+          case SEGMENT:
+            service.segment(getContext(), selectionText);
+            break;
         }
         new XPopup.Builder(getContext()).asCustom(dialog).show();
       } catch (NetworkErrorException e) {
@@ -229,6 +233,8 @@ public class RichEditor extends WebView {
           this.aiFunction(EXPAND);
         } else if (itemId == R.id.item_abbreviate) {
           this.aiFunction(ABSTRACT);
+        } else if (itemId == R.id.item_segment) {
+          this.aiFunction(SEGMENT);
         }
       } catch (Exception e) {
        return true;
