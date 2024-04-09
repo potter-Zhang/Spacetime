@@ -217,7 +217,13 @@ public class RichEditor extends WebView {
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
       int itemId = item.getItemId();
       try {
-        if (itemId == R.id.item_translate) {
+        if (itemId == R.id.item_select_all) {
+          selectAll();
+        } else if (itemId == R.id.item_copy) {
+          copySelection();
+        } else if (itemId == R.id.item_cut) {
+          cutSelection();
+        } else if (itemId == R.id.item_translate) {
           this.aiFunction(TRANSLATE);
         } else if (itemId == R.id.item_expand) {
           this.aiFunction(EXPAND);
@@ -425,12 +431,24 @@ public class RichEditor extends WebView {
     return this;
   }
 
+  public void selectAll() {
+    exec("javascript:RE.selectAll();");
+  }
+
   public void replaceSelection(String text) {
     exec("javascript:RE.replaceSelection('" + text + "');");
   }
 
   public void insertAfterSelection(String text) {
     exec("javascript:RE.insertAfterSelection('" + text + "');");
+  }
+
+  public void copySelection() {
+    exec("javascript:RE.copySelection();");
+  }
+
+  public void cutSelection() {
+    exec("javascript:RE.cutSelection();");
   }
   //==================================
 

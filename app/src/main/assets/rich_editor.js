@@ -367,6 +367,12 @@ RE.getSelection = function() {
   injectedObj.resultCallback(selection.toString())
 }
 
+RE.selectAll = function() {
+    var selection = window.getSelection()
+    selection.modify("move", "backward", "documentboundary")
+    selection.modify("extend", "forward", "documentboundary")
+}
+
 RE.setText = function(text) {
     RE.editor.innerText = text
 }
@@ -385,4 +391,12 @@ RE.insertAfterSelection = function(text) {
     const selection = window.getSelection()
     RE.replaceSelection(selection.toString() + text)
     selection.collapseToEnd()
+}
+
+RE.copySelection = function() {
+    document.execCommand("Copy")
+}
+
+RE.cutSelection = function() {
+    document.execCommand("Cut")
 }

@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -251,10 +252,10 @@ public class NoteBrowserFragment extends Fragment {
 
     /**
      * 跳转到编辑器
-     * @param note 被点击选项对应的Note类
+     * @param note 被点击选项对应的Note类，如果是新建则传入null
      * @param content 如果没有Note类，可以设置该字段来展示特定内容
      */
-    private void jump2Editor(Note note, String content) {
+    private void jump2Editor(@Nullable Note note, String content) {
         Intent intent = new Intent(getActivity(), EditorActivity.class);
         Bundle bundle = new Bundle();
 
