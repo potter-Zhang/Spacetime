@@ -159,8 +159,17 @@
                 fab:fab_icon="@drawable/icon_edit"
                 fab:fab_size="normal"
                 fab:fab_colorPressed="@color/pressed_gray"/>
-
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+        <!--笔记列表为空时显示的提示图片-->
+        <ImageView
+            android:id="@+id/img_note_list_empty"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_note_list_empty"
+            android:visibility="visible"
+            android:layout_centerInParent="true"/>
+
     </RelativeLayout>
 
     <!--侧滑页面-->
@@ -169,11 +178,5 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"/>
-<!--    <fragment-->
-<!--        android:id="@+id/fragment_notebook"-->
-<!--        android:name="edu.whu.spacetime.fragment.NotebookBrowserFragment"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_gravity="start" />-->
 
 </androidx.drawerlayout.widget.DrawerLayout>

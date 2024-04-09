@@ -260,7 +260,7 @@ public class EditorActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.return_btn).setOnClickListener(v -> {
-            saveNote();
+            this.onBackPressed();
         });
 
         ImageButton btnAIChat = findViewById(R.id.btn_ai_chat);

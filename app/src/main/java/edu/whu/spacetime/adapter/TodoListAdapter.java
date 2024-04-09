@@ -115,11 +115,6 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
                         .show();
             }
         });
-
-        // 添加出现动画
-        Animation anim = new AlphaAnimation(0F, 1F);
-        anim.setDuration(500);
-        view.setAnimation(anim);
         return view;
     }
 }

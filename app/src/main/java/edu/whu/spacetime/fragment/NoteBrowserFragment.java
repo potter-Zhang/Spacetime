@@ -161,6 +161,11 @@ public class NoteBrowserFragment extends Fragment {
         TextView tvNotebookNumber = fragmentView.findViewById(R.id.tv_notebookNumber);
         tvNotebookNumber.setText(String.format("共%d篇笔记", noteList.size()));
         noteListAdapter.notifyDataSetChanged();
+        if (noteListAdapter.isEmpty()) {
+            fragmentView.findViewById(R.id.img_note_list_empty).setVisibility(View.VISIBLE);
+        } else {
+            fragmentView.findViewById(R.id.img_note_list_empty).setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -279,8 +284,6 @@ public class NoteBrowserFragment extends Fragment {
             intent.setType("*/*");
             startActivityForResult(intent, AUDIO_REQUEST_CODE);
         }
-
-
     }
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override

@@ -75,6 +75,7 @@ public class TodoBrowserFragment extends Fragment {
         todoListAdapter_Checked= new TodoListAdapter(getContext(), R.layout.item_todo_list, todoList_Checked, this);
         todoListView.setAdapter(todoListAdapter_unChecked);
         todoListView_ok.setAdapter(todoListAdapter_Checked);
+        showEmptyImg();
     }
     public void refresh(){
         int userId = SpacetimeApplication.getInstance().getCurrentUser().getUserId();
@@ -86,5 +87,19 @@ public class TodoBrowserFragment extends Fragment {
         todoListAdapter_unChecked.addAll(todoList_unChecked);
         todoListAdapter_Checked.clear();
         todoListAdapter_Checked.addAll(todoList_Checked);
+        showEmptyImg();
+    }
+
+    /**
+     * 待办列表为空时显示提示图片
+     */
+    private void showEmptyImg() {
+        if (todoListAdapter_unChecked.isEmpty() && todoList_Checked.isEmpty()) {
+            fragView.findViewById(R.id.img_todo_list_empty).setVisibility(View.VISIBLE);
+            fragView.findViewById(R.id.tv_completed).setVisibility(View.GONE);
+        } else {
+            fragView.findViewById(R.id.img_todo_list_empty).setVisibility(View.GONE);
+            fragView.findViewById(R.id.tv_completed).setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -79,41 +79,55 @@
                     tools:ignore="RtlHardcoded"/>
             </LinearLayout>
         </GridLayout>
-        <ScrollView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <edu.whu.spacetime.widget.NoScrollListView
-                    android:id="@+id/list_todo"
+            <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:dividerHeight="0dp"
-                    android:paddingLeft="6dp"
-                    android:paddingTop="6dp" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <edu.whu.spacetime.widget.NoScrollListView
+                        android:id="@+id/list_todo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:dividerHeight="0dp"
+                        android:paddingLeft="6dp"
+                        android:paddingTop="6dp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="---已完成---"
-                    android:textSize="15sp"
-                    android:gravity="center_horizontal"
-                    />
+                    <TextView
+                        android:id="@+id/tv_completed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="---已完成---"
+                        android:textSize="15sp"
+                        android:gravity="center_horizontal"
+                        />
 
-                <edu.whu.spacetime.widget.NoScrollListView
-                    android:id="@+id/list_todo_ok"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:dividerHeight="0dp"
-                    android:paddingLeft="6dp"
-                    android:paddingTop="6dp"/>
+                    <edu.whu.spacetime.widget.NoScrollListView
+                        android:id="@+id/list_todo_ok"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:dividerHeight="0dp"
+                        android:paddingLeft="6dp"
+                        android:paddingTop="6dp"/>
 
-            </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
 
-        </ScrollView>
+            <!--没有待办时显示-->
+            <ImageView
+                android:id="@+id/img_todo_list_empty"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_todo_list_empty"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                />
+        </RelativeLayout>
 
     </LinearLayout>
 </FrameLayout>
