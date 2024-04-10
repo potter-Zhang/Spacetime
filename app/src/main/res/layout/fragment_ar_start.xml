@@ -57,7 +57,7 @@
                         android:text="SpaceTime，让文字穿越时空" />
                 </LinearLayout>
             </GridLayout>
-            <edu.whu.spacetime.widget.NoScrollListView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_ar_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

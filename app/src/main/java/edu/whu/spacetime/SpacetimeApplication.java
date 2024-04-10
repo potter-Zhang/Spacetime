@@ -41,16 +41,15 @@ public class SpacetimeApplication  extends Application {
         super.onCreate();
         app = this;
 
-        Migration migration2_3 = new Migration(2, 3) {
+        Migration migration3_4 = new Migration(3, 4) {
             @Override
             public void migrate(@NonNull SupportSQLiteDatabase supportSQLiteDatabase) {
-                supportSQLiteDatabase.execSQL("ALTER TABLE Note ADD plainText TEXT");
-                // supportSQLiteDatabase.execSQL("ALTER TABLE User ADD profile BLOB");
+                supportSQLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS `ARNote` (`arNoteId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `userId` INTEGER NOT NULL, `title` TEXT, `img` BLOB)");
             }
         };
 
         database = Room.databaseBuilder(this, SpacetimeDatabase.class, "spacetime")
-                .addMigrations(migration2_3)
+                .addMigrations(migration3_4)
                 .allowMainThreadQueries()
                 .build();
     }

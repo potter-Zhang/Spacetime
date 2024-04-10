@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,13 +15,25 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.activity.HelloArActivity;
 import edu.whu.spacetime.activity.MainActivity;
+import edu.whu.spacetime.adapter.ARNoteListAdapter;
+import edu.whu.spacetime.dao.ARNoteDao;
+import edu.whu.spacetime.domain.ARNote;
 
 public class StartARFragment extends Fragment {
     private View fragView;
+
+    private RecyclerView arNoteListView;
 
     public StartARFragment(){
     }
@@ -28,6 +41,11 @@ public class StartARFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fragView = inflater.inflate(R.layout.fragment_ar_start,container,false);
         setStartARButtonListener(fragView);
+
+        arNoteListView = fragView.findViewById(R.id.list_ar_note);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        arNoteListView.setLayoutManager(layoutManager);
+        setARNoteList();
         return fragView;
     }
     private void setStartARButtonListener(View view){
@@ -43,6 +61,13 @@ public class StartARFragment extends Fragment {
         view.findViewById(R.id.btn_screenshot).setOnClickListener(v -> {
             getScreenshot();
         });
+    }
+
+    private void setARNoteList() {
+        ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
+        List<ARNote> arNoteList = arNoteDao.queryARNotesByUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
+        ARNoteListAdapter adapter = new ARNoteListAdapter(getContext(), arNoteList);
+        arNoteListView.setAdapter(adapter);
     }
 
 
@@ -71,6 +96,18 @@ public class StartARFragment extends Fragment {
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playSequentially(moveAnimatorSet, animatorDisappearAlpha);
         animatorSet.start();
+        // JPEG压缩
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        byte[] bytes = baos.toByteArray();
+        bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        //保存到数据库
+        ARNote arNote = new ARNote();
+        arNote.setTitle("测试");
+        arNote.setImg(bytes);
+        arNote.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
+        ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
+        arNoteDao.insertARNotes(arNote);
         return bitmap;
     }
 }
