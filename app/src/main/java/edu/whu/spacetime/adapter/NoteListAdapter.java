@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -67,7 +68,15 @@ public class NoteListAdapter extends ArrayAdapter<Note> {
         // 摘要最长为50，否则setText会导致卡顿
         int maxLength = Math.min(note.getPlainText().length(), 50);
         viewHolder.tvAbstract.setText(note.getPlainText().substring(0, maxLength));
-        viewHolder.tvTime.setText(note.getCreateTime().toLocalDate().toString());
+        // 设置显示时间，超过一年时才显示年份
+        LocalDateTime createTime = note.getCreateTime();
+        int year = createTime.getYear();
+        StringBuilder displayTime = new StringBuilder();
+        if (LocalDateTime.now().getYear() - year >= 1) {
+            displayTime.append(year).append("年");
+        }
+        displayTime.append(createTime.getMonthValue()).append("月").append(createTime.getDayOfMonth()).append("日");
+        viewHolder.tvTime.setText(displayTime.toString());
         if (isAtEditMode()) {
             viewHolder.checkNote.setVisibility(View.VISIBLE);
         } else {

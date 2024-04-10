@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import edu.whu.spacetime.R;
@@ -22,10 +23,13 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
         public ImageView mARImg;
         public TextView mTVTitle;
 
+        public TextView mTVTime;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mARImg = itemView.findViewById(R.id.img_arnote);
             mTVTitle = itemView.findViewById(R.id.tv_arnote_title);
+            mTVTime = itemView.findViewById(R.id.tv_arnote_time);
         }
     }
 
@@ -48,13 +52,22 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ARNote arNote = this.arNoteList.get(position);
-        holder.mTVTitle.setText(arNote.getTitle());
         byte[] imgBytes = arNote.getImg();
         Bitmap bitmap = BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
+        holder.mTVTitle.setText(arNote.getTitle());
         holder.mARImg.setImageBitmap(bitmap);
         ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-        layoutParams.height = (int) (450 + Math.random() * 300); // 设置item的高度，可以根据需要自行调整
+        layoutParams.height = (int) (450 + Math.random() * 300); // 设置item的高度不同从而实现瀑布式布局
         holder.itemView.setLayoutParams(layoutParams);
+        LocalDateTime createTime = arNote.getCreateTime();
+        int year = createTime.getYear();
+        StringBuilder timeDisplay = new StringBuilder();
+        if (LocalDateTime.now().getYear() - year >= 1) {
+            // 超过一年才显示年份
+            timeDisplay.append(year).append("年");
+        }
+        timeDisplay.append(createTime.getMonthValue()).append("月").append(createTime.getDayOfMonth()).append("日");
+        holder.mTVTime.setText(timeDisplay.toString());
     }
 
     @Override

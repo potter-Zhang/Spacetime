@@ -2,6 +2,11 @@ package edu.whu.spacetime.domain;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import java.time.LocalDateTime;
+
+import edu.whu.spacetime.domain.typeConverter.MyTypeConverter;
 
 @Entity
 public class ARNote {
@@ -13,6 +18,9 @@ public class ARNote {
     private String title;
 
     private byte[] img;
+
+    @TypeConverters(MyTypeConverter.class)
+    private LocalDateTime createTime;
 
     public long getArNoteId() {
         return arNoteId;
@@ -44,5 +52,13 @@ public class ARNote {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
     }
 }

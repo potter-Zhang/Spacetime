@@ -48,8 +48,15 @@ public class SpacetimeApplication  extends Application {
             }
         };
 
+        Migration migration4_5 = new Migration(4, 5) {
+            @Override
+            public void migrate(@NonNull SupportSQLiteDatabase supportSQLiteDatabase) {
+                supportSQLiteDatabase.execSQL("ALTER TABLE ARNote ADD createTime TEXT");
+            }
+        };
+
         database = Room.databaseBuilder(this, SpacetimeDatabase.class, "spacetime")
-                .addMigrations(migration3_4)
+                .addMigrations(migration3_4, migration4_5)
                 .allowMainThreadQueries()
                 .build();
     }
