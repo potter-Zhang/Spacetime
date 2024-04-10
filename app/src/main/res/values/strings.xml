@@ -38,6 +38,7 @@
     <string name="replace">替换</string>
     <string name="insert">插入</string>
 
+    <string name="editTitle">编辑标题</string>
 
     <string translatable="false" name="depth_use_explanation">When Depth is enabled on supported devices, virtual objects adapt to the environment by blending in with the real world.</string>
     <string translatable="false" name="button_text_enable_depth">Enable</string>

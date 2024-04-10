@@ -1,5 +1,6 @@
 package edu.whu.spacetime.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,17 +15,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.ImageViewerPopupView;
-import com.lxj.xpopup.util.SmartGlideImageLoader;
+import com.lxj.xpopup.enums.PopupPosition;
 import com.xuexiang.xui.widget.imageview.photoview.PhotoView;
 import com.xuexiang.xui.widget.imageview.photoview.PhotoViewAttacher;
-import com.xuexiang.xui.widget.toast.XToast;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.SpacetimeApplication;
+import edu.whu.spacetime.dao.ARNoteDao;
 import edu.whu.spacetime.domain.ARNote;
+import edu.whu.spacetime.widget.ARNotePopup;
 
 public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -44,9 +48,12 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
     private Context context;
     private List<ARNote> arNoteList;
 
+    private ARNoteDao arNoteDao;
+
     public ARNoteListAdapter(Context context, List<ARNote> arNoteList) {
         this.arNoteList = arNoteList;
         this.context = context;
+        this.arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
     }
 
     @NonNull
@@ -65,10 +72,12 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
         Bitmap bitmap = BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
         holder.mARImg.setImageBitmap(bitmap);
         holder.mTVTitle.setText(arNote.getTitle());
+
         // 设置item的高度不同从而实现瀑布式布局
         ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
         layoutParams.height = (int) (450 + Math.random() * 300);
         holder.itemView.setLayoutParams(layoutParams);
+
         // 设置显示时间
         LocalDateTime createTime = arNote.getCreateTime();
         int year = createTime.getYear();
@@ -79,6 +88,28 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
         }
         timeDisplay.append(createTime.getMonthValue()).append("月").append(createTime.getDayOfMonth()).append("日");
         holder.mTVTime.setText(timeDisplay.toString());
+
+        // 长按弹出编辑菜单
+        holder.itemView.setOnLongClickListener(v -> {
+            ARNotePopup popup = new ARNotePopup(v.getContext());
+            // 删除事件
+            popup.setOnDeleteListener(() -> {
+                this.remove(arNote);
+                popup.dismiss();
+            });
+            // 重命名事件
+            popup.setOnEditConfirmListener(text -> {
+                this.rename(arNote, text);
+                popup.dismiss();
+            });
+            new XPopup.Builder(v.getContext())
+                    .isDestroyOnDismiss(true)
+                    .atView(holder.mARImg)
+                    .asCustom(popup)
+                    .show();
+            return true;
+        });
+
         //点击放大图片
         holder.itemView.setOnClickListener(v -> {
             final Dialog dialog = new Dialog(v.getContext());
@@ -106,5 +137,30 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
     @Override
     public int getItemCount() {
         return arNoteList.size();
+    }
+
+    /**
+     * 从Adapter中移除对应的ARNote
+     */
+    public void remove(ARNote arNote) {
+        int position = this.arNoteList.indexOf(arNote);
+        this.arNoteList.remove(position);
+        this.notifyItemRemoved(position);
+        this.arNoteDao.deleteARNotes(arNote);
+    }
+
+    public void rename(ARNote arNote, String newTitle) {
+        int position = this.arNoteList.indexOf(arNote);
+        arNote.setTitle(newTitle);
+        this.notifyItemChanged(position);
+        this.arNoteDao.updateARNotes(arNote);
+    }
+
+    /**
+     * 添加ARNote
+     */
+    public void add(ARNote arNote) {
+        this.arNoteList.add(arNote);
+        this.notifyItemInserted(this.arNoteList.size() - 1);
     }
 }
