@@ -99,7 +99,21 @@
                 fab:fab_size="normal"
                 fab:fab_colorPressed="@color/pressed_gray"/>
 
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_screenshot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/white"
+                fab:fab_size="normal"
+                fab:fab_colorPressed="@color/pressed_gray"/>
+
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+        <ImageView
+            android:id="@+id/img_screenshot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"/>
     </RelativeLayout>
 
 </LinearLayout>
