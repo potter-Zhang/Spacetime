@@ -1,5 +1,6 @@
 package edu.whu.spacetime.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +12,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.ImageViewerPopupView;
+import com.lxj.xpopup.util.SmartGlideImageLoader;
+import com.xuexiang.xui.widget.imageview.photoview.PhotoView;
+import com.xuexiang.xui.widget.imageview.photoview.PhotoViewAttacher;
+import com.xuexiang.xui.widget.toast.XToast;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,13 +60,16 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ARNote arNote = this.arNoteList.get(position);
+        // 将Blob显示到ImageView上
         byte[] imgBytes = arNote.getImg();
         Bitmap bitmap = BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
-        holder.mTVTitle.setText(arNote.getTitle());
         holder.mARImg.setImageBitmap(bitmap);
+        holder.mTVTitle.setText(arNote.getTitle());
+        // 设置item的高度不同从而实现瀑布式布局
         ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-        layoutParams.height = (int) (450 + Math.random() * 300); // 设置item的高度不同从而实现瀑布式布局
+        layoutParams.height = (int) (450 + Math.random() * 300);
         holder.itemView.setLayoutParams(layoutParams);
+        // 设置显示时间
         LocalDateTime createTime = arNote.getCreateTime();
         int year = createTime.getYear();
         StringBuilder timeDisplay = new StringBuilder();
@@ -68,6 +79,28 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
         }
         timeDisplay.append(createTime.getMonthValue()).append("月").append(createTime.getDayOfMonth()).append("日");
         holder.mTVTime.setText(timeDisplay.toString());
+        //点击放大图片
+        holder.itemView.setOnClickListener(v -> {
+            final Dialog dialog = new Dialog(v.getContext());
+            PhotoView photoView = new PhotoView(v.getContext());
+            photoView.setImageBitmap(bitmap);
+            dialog.setContentView(photoView);
+            //将dialog周围的白块设置为透明
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.show();
+            // 单击退出
+            photoView.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+                @Override
+                public void onPhotoTap(View view, float x, float y) {
+                    dialog.cancel();
+                }
+
+                @Override
+                public void onOutsidePhotoTap() {
+                    dialog.cancel();
+                }
+            });
+        });
     }
 
     @Override

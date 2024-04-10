@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,6 +107,7 @@ public class StartARFragment extends Fragment {
         arNote.setTitle("测试");
         arNote.setImg(bytes);
         arNote.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
+        arNote.setCreateTime(LocalDateTime.now());
         ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
         arNoteDao.insertARNotes(arNote);
         return bitmap;
