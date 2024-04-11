@@ -1,5 +1,7 @@
 package edu.whu.spacetime.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -96,8 +99,11 @@ public class StartARFragment extends Fragment {
         Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
-        ImageView img = fragView.findViewById(R.id.img_screenshot);
+        // 添加一个ImageView来展示截屏动画
+        ImageView img = new ImageView(getContext());
         img.setImageBitmap(bitmap);
+        RelativeLayout arFragBody = fragView.findViewById(R.id.layout_ar_body);
+        arFragBody.addView(img, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         // 截图缩放移动到左下角
         ObjectAnimator animatorX = ObjectAnimator.ofFloat(img, "translationX", 0f,-60f,-120f,-180f,-240f);
         ObjectAnimator animatorY = ObjectAnimator.ofFloat(img, "translationY", 0f,120f,240f,360f,480f);
@@ -112,6 +118,14 @@ public class StartARFragment extends Fragment {
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playSequentially(moveAnimatorSet, animatorDisappearAlpha);
         animatorSet.start();
+        // 播放完动画后删除添加的ImageView，避免多次截屏后卡顿
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                arFragBody.removeView(img);
+            }
+        });
         // JPEG压缩
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
