@@ -339,7 +339,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
         super.onRequestPermissionsResult(requestCode, permissions, results);
         if (!CameraPermissionHelper.hasCameraPermission(this)) {
             // Use toast instead of snackbar here since the activity will exit.
-            Toast.makeText(this, "Camera permission is needed to run this application", Toast.LENGTH_LONG)
+            Toast.makeText(this, "需要允许摄像头权限才能使用AR", Toast.LENGTH_LONG)
                     .show();
             if (!CameraPermissionHelper.shouldShowRequestPermissionRationale(this)) {
                 // Permission denied with checking "Do not ask again".
@@ -439,7 +439,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                             Texture.WrapMode.CLAMP_TO_EDGE,
                             Texture.ColorFormat.LINEAR);
 
-            virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj");
+            // virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj");
+            virtualObjectMesh = Mesh.createFromAsset(render, "models/Car.obj");
             virtualObjectShader =
                     Shader.createFromAssets(
                                     render,
@@ -633,8 +634,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                 virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture);
             }
 
-            // render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
-            labelRender.draw(render, ViewProjectionMatrix, anchor.getPose(), camera.getPose(), wrappedAnchor.getText());
+            render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
+            // labelRender.draw(render, ViewProjectionMatrix, anchor.getPose(), camera.getPose(), wrappedAnchor.getText());
         }
 
         // Compose the virtual scene with the background.
