@@ -109,11 +109,19 @@
 
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
+        <!--用于展示截屏动画-->
         <ImageView
             android:id="@+id/img_screenshot"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/img_ar_list_empty"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_ar_list_empty"
+            android:layout_centerInParent="true" />
     </RelativeLayout>
 
 </LinearLayout>

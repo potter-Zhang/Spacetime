@@ -36,6 +36,8 @@ public class StartARFragment extends Fragment {
 
     private RecyclerView arNoteListView;
 
+    private ARNoteListAdapter adapter;
+
     public StartARFragment(){
     }
     @Override
@@ -67,8 +69,21 @@ public class StartARFragment extends Fragment {
     private void setARNoteList() {
         ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
         List<ARNote> arNoteList = arNoteDao.queryARNotesByUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
-        ARNoteListAdapter adapter = new ARNoteListAdapter(getContext(), arNoteList);
+        adapter = new ARNoteListAdapter(getContext(), arNoteList);
         arNoteListView.setAdapter(adapter);
+        ImageView imgEmpty = fragView.findViewById(R.id.img_ar_list_empty);
+        if (adapter.getItemCount() == 0 ) {
+            imgEmpty.setVisibility(View.VISIBLE);
+        } else {
+            imgEmpty.setVisibility(View.GONE);
+        }
+        adapter.setOnSizeChangedListener(size -> {
+            if (size == 0) {
+                imgEmpty.setVisibility(View.VISIBLE);
+            } else {
+                imgEmpty.setVisibility(View.GONE);
+            }
+        });
     }
 
 
@@ -109,7 +124,10 @@ public class StartARFragment extends Fragment {
         arNote.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
         arNote.setCreateTime(LocalDateTime.now());
         ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
-        arNoteDao.insertARNotes(arNote);
+        List<Long> id = arNoteDao.insertARNotes(arNote);
+        // 添加到adapter
+        arNote.setArNoteId(id.get(0));
+        adapter.add(arNote);
         return bitmap;
     }
 }

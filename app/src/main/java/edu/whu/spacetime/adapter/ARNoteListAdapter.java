@@ -1,6 +1,5 @@
 package edu.whu.spacetime.adapter;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,11 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.enums.PopupPosition;
 import com.xuexiang.xui.widget.imageview.photoview.PhotoView;
 import com.xuexiang.xui.widget.imageview.photoview.PhotoViewAttacher;
-
-import org.checkerframework.checker.units.qual.A;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,10 +41,16 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
         }
     }
 
+    public interface OnSizeChangedListener {
+        void onSizeChanged(int size);
+    }
+
     private Context context;
     private List<ARNote> arNoteList;
 
     private ARNoteDao arNoteDao;
+
+    private OnSizeChangedListener onSizeChangedListener;
 
     public ARNoteListAdapter(Context context, List<ARNote> arNoteList) {
         this.arNoteList = arNoteList;
@@ -139,6 +141,10 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
         return arNoteList.size();
     }
 
+    public void setOnSizeChangedListener(OnSizeChangedListener onSizeChangedListener) {
+        this.onSizeChangedListener = onSizeChangedListener;
+    }
+
     /**
      * 从Adapter中移除对应的ARNote
      */
@@ -147,6 +153,9 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
         this.arNoteList.remove(position);
         this.notifyItemRemoved(position);
         this.arNoteDao.deleteARNotes(arNote);
+        if (this.onSizeChangedListener != null) {
+            onSizeChangedListener.onSizeChanged(getItemCount());
+        }
     }
 
     public void rename(ARNote arNote, String newTitle) {
@@ -162,5 +171,8 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
     public void add(ARNote arNote) {
         this.arNoteList.add(arNote);
         this.notifyItemInserted(this.arNoteList.size() - 1);
+        if (this.onSizeChangedListener != null) {
+            onSizeChangedListener.onSizeChanged(getItemCount());
+        }
     }
 }
