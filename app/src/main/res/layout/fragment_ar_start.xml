@@ -91,18 +91,10 @@
                 fab:fab_title="label"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_ar_create_note"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:fab_colorNormal="@color/white"
-                fab:fab_icon="@drawable/icon_edit"
-                fab:fab_size="normal"
-                fab:fab_colorPressed="@color/pressed_gray"/>
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/btn_screenshot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                fab:fab_icon="@drawable/icon_screenshot"
                 fab:fab_colorNormal="@color/white"
                 fab:fab_size="normal"
                 fab:fab_colorPressed="@color/pressed_gray"/>

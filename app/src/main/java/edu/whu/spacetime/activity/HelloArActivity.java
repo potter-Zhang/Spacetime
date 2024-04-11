@@ -278,19 +278,19 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                 session = new Session(/* context= */ this);
             } catch (UnavailableArcoreNotInstalledException
                      | UnavailableUserDeclinedInstallationException e) {
-                message = "Please install ARCore";
+                message = "请先安装ARCore";
                 exception = e;
             } catch (UnavailableApkTooOldException e) {
-                message = "Please update ARCore";
+                message = "请更新ARCore";
                 exception = e;
             } catch (UnavailableSdkTooOldException e) {
                 message = "Please update this app";
                 exception = e;
             } catch (UnavailableDeviceNotCompatibleException e) {
-                message = "This device does not support AR";
+                message = "您的设备不支持AR功能";
                 exception = e;
             } catch (Exception e) {
-                message = "Failed to create AR session";
+                message = "创建AR session失败";
                 exception = e;
             }
 
@@ -633,7 +633,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                 virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture);
             }
 
-            //render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
+            // render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
             labelRender.draw(render, ViewProjectionMatrix, anchor.getPose(), camera.getPose(), wrappedAnchor.getText());
         }
 
