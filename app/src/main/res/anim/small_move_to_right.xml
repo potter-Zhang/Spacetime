@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--从编辑界面退出时笔记浏览界面稍微向右移动，与动画small_move_to_left相对应-->
+<translate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromXDelta="-15%p"
+    android:toXDelta="0"
+    android:duration="300"/>

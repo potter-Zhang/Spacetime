@@ -126,7 +126,7 @@ public class NoteBrowserFragment extends Fragment {
 
         fragmentView.findViewById(R.id.btn_create_note).setOnClickListener(v -> {
             jump2Editor(null, null);
-            getActivity().overridePendingTransition(R.anim.from_bottom, R.anim.from_top);
+            getActivity().overridePendingTransition(R.anim.from_bottom_to_top, R.anim.zoom_out);
         });
 
         return fragmentView;
@@ -266,7 +266,7 @@ public class NoteBrowserFragment extends Fragment {
         intent.putExtras(bundle);
 
         startActivity(intent);
-        getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        getActivity().overridePendingTransition(R.anim.move_in_from_right, R.anim.small_move_to_left);
     }
 
     void openFolder(String str) {

@@ -10,12 +10,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.lxj.xpopup.XPopup;
-import com.xuexiang.xui.widget.toast.XToast;
 
 import java.time.LocalDateTime;
 
@@ -64,6 +62,16 @@ public class EditorActivity extends AppCompatActivity {
     private Pattern htmlPattern;
 
     /**
+     * 编辑器Activity退出时的动画
+     */
+    private int exitAnim;
+
+    /**
+     * 新Activity进入的动画
+     */
+    private int enterAnim;
+
+    /**
      * 保存笔记
      */
     private void saveNote() {
@@ -99,6 +107,13 @@ public class EditorActivity extends AppCompatActivity {
             saveDialog.setCancelListener(() -> finish());
             new XPopup.Builder(this).isDestroyOnDismiss(true).asCustom(saveDialog).show();
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        // 播放切换Activity的动画
+        overridePendingTransition(this.enterAnim, this.exitAnim);
     }
 
     @Override
@@ -151,6 +166,7 @@ public class EditorActivity extends AppCompatActivity {
             wordCount.setText(plainText.length() + "字");
         });
 
+        // 读取其他Activity传递的数据
         Bundle bundle = getIntent().getExtras();
         note = (Note) bundle.getSerializable("note");
         notebookId = bundle.getInt("notebookId");
@@ -163,6 +179,8 @@ public class EditorActivity extends AppCompatActivity {
             mPreview.setText(note.getContent());
             editNoteTitle.setText(note.getTitle());
             wordCount.setText(note.getPlainText().length() + "字");
+            this.exitAnim = R.anim.move_out_to_right;
+            this.enterAnim = R.anim.small_move_to_right;
         } else {
             String content = bundle.getString("content");
             if (content != null) {
@@ -170,6 +188,9 @@ public class EditorActivity extends AppCompatActivity {
                 mPreview.setText(content);
                 wordCount.setText(content.length() + "字");
             }
+
+            this.exitAnim = R.anim.move_out_to_bottom;
+            this.enterAnim = R.anim.zoom_in;
         }
         changed = false;
         bindBtnFunction();
