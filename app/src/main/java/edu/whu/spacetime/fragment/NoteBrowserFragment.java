@@ -1,5 +1,7 @@
 package edu.whu.spacetime.fragment;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -142,11 +145,17 @@ public class NoteBrowserFragment extends Fragment {
         refreshNoteList();
     }
 
+    /**
+     * @return 如果处于编辑模式则退出编辑模式并返回true，或者抽屉尚未关闭时关闭抽屉返回true，否则返回false
+     */
     public boolean onBackPressed() {
         if (noteListAdapter.isAtEditMode()) {
             noteListAdapter.exitEditMode();
             noteListAdapter.notifyDataSetChanged();
             fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.INVISIBLE);
+            return true;
+        } else if (drawer.isOpen()) {
+            drawer.close();
             return true;
         }
         return false;
@@ -223,6 +232,9 @@ public class NoteBrowserFragment extends Fragment {
         });
     }
 
+    /**
+     * 点击左上方按钮弹出抽屉并播放动画
+     */
     public void openDrawer() {
         if (this.drawer != null) {
             this.drawer.open();

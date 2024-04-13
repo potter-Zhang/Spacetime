@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // 先判断是否关闭了编辑模式和抽屉
         boolean exitTrigger = false;
         for (Fragment fragment : fragments) {
             if (fragment instanceof NoteBrowserFragment) {
