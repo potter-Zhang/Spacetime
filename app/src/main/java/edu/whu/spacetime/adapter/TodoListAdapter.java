@@ -5,18 +5,13 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.lxj.xpopup.XPopup;
 
@@ -28,8 +23,6 @@ import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.dao.TodoDao;
 import edu.whu.spacetime.domain.Todo;
 import edu.whu.spacetime.fragment.TodoBrowserFragment;
-import edu.whu.spacetime.widget.NoteBookPopupMenu;
-import edu.whu.spacetime.widget.SwipeListLayout;
 import edu.whu.spacetime.widget.TodoSetPopup;
 
 public class TodoListAdapter extends ArrayAdapter<Todo> {

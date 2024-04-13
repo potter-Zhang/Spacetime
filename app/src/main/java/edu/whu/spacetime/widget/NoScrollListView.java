@@ -28,5 +28,4 @@ public class NoScrollListView extends ListView {
                 Integer.MAX_VALUE >> 2, MeasureSpec.AT_MOST);
         super.onMeasure(widthMeasureSpec, expandSpec);
     }
-
 }
