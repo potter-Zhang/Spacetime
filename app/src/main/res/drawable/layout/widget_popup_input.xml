@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/shape_popup_menu"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="25dp">
+    <TextView
+        android:id="@+id/tv_input_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="20dp"
+        android:text="@string/rename"/>
+    <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
+        android:id="@+id/edit_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        app:met_baseColor="@color/dark_yellow"
+        app:met_clearButton="true"
+        android:textSize="22sp"
+        app:met_underlineColor="@color/dark_yellow" />
+    <TextView
+        android:id="@+id/btn_confirm_input"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/confirm"
+        android:textSize="20sp"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/dark_yellow"
+        android:background="@drawable/shape_yellow_border"/>
+    <TextView
+        android:id="@+id/btn_cancel_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:textSize="20sp"/>
+</LinearLayout>

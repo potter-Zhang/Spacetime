@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText;
 import com.xuexiang.xui.widget.toast.XToast;
@@ -17,7 +18,7 @@ import edu.whu.spacetime.domain.User;
 
 public class LoginActivity extends AppCompatActivity {
     private UserDao userDao;
-
+    private MaterialEditText mEditTextUserName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +32,28 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.btn_register).setOnClickListener(v -> register());
         // 直接进入按钮
         findViewById(R.id.btn_enter).setOnClickListener(v -> direct());
+        // 输入光标消失
+        mEditTextUserName = findViewById(R.id.edit_username);
+        final String getHint = mEditTextUserName.getHint().toString();
+        mEditTextUserName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEditTextUserName.setFocusable(true);
+                mEditTextUserName.setFocusableInTouchMode(true);
+                mEditTextUserName.requestFocus();
+                mEditTextUserName.findFocus();
+            }
+        });
+        mEditTextUserName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+                    mEditTextUserName.setHint("");
+                }else {
+                    mEditTextUserName.setHint(getHint);
+                }
+            }
+        });
     }
 
     private void login() {

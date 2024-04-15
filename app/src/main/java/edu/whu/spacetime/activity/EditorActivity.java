@@ -222,11 +222,11 @@ public class EditorActivity extends AppCompatActivity {
 
         findViewById(R.id.action_heading3).setOnClickListener(v -> mEditor.setHeading(3));
 
-        findViewById(R.id.action_heading4).setOnClickListener(v -> mEditor.setHeading(4));
-
-        findViewById(R.id.action_heading5).setOnClickListener(v -> mEditor.setHeading(5));
-
-        findViewById(R.id.action_heading6).setOnClickListener(v -> mEditor.setHeading(6));
+//        findViewById(R.id.action_heading4).setOnClickListener(v -> mEditor.setHeading(4));
+//
+//        findViewById(R.id.action_heading5).setOnClickListener(v -> mEditor.setHeading(5));
+//
+//        findViewById(R.id.action_heading6).setOnClickListener(v -> mEditor.setHeading(6));
 
         findViewById(R.id.action_txt_color).setOnClickListener(new View.OnClickListener() {
             private boolean isChanged;
