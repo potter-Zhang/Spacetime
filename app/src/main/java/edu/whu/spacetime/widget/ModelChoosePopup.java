@@ -30,8 +30,11 @@ public class ModelChoosePopup extends BottomPopupView {
 
     private RecyclerView modelListView;
 
-    public ModelChoosePopup(@NonNull Context context) {
+    private List<ARModel> modelList;
+
+    public ModelChoosePopup(@NonNull Context context, List<ARModel> modelList) {
         super(context);
+        this.modelList = modelList;
     }
 
     @Override
@@ -60,8 +63,8 @@ public class ModelChoosePopup extends BottomPopupView {
 
     private void setModelList() throws IOException {
         // 从xml文件中读取model信息
-        InputStream xml= this.getClass().getClassLoader().getResourceAsStream("assets/models.xml");
-        List<ARModel> modelList = ModelXmlParserService.getModels(xml);
+//        InputStream xml= this.getClass().getClassLoader().getResourceAsStream("assets/models.xml");
+//        List<ARModel> modelList = ModelXmlParserService.getModels(xml);
         adapter = new ModelListAdapter(getContext(), modelList);
         modelListView.setAdapter(adapter);
 

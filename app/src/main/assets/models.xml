@@ -3,6 +3,8 @@
     <model>
         <name>纯文本</name>
         <preview-path>icon_edit</preview-path>
+        <obj-path>models/pawn.obj</obj-path>
+        <texture-path>models/pawn_albedo.png</texture-path>
     </model>
     <model>
         <name>pawn</name>
@@ -12,15 +14,21 @@
         <texture-path>models/pawn_albedo.png</texture-path>
     </model>
     <model>
-        <name>test1</name>
-        <preview-path>icon_home</preview-path>
-        <obj-path>models/pawn.obj</obj-path>
-        <texture-path>models/pawn_albedo.png</texture-path>
+        <name>Cat</name>
+        <preview-path>pre_cat</preview-path>
+        <obj-path>models/Cat.obj</obj-path>
+        <texture-path>models/Cat_diffuse.jpg</texture-path>
     </model>
     <model>
-        <name>test2</name>
+        <name>cup</name>
         <preview-path>ic_launcher</preview-path>
-        <obj-path>models/pawn.obj</obj-path>
-        <texture-path>models/pawn_albedo.png</texture-path>
+        <obj-path>models/Plastic_Cup-(Wavefront OBJ).obj</obj-path>
+        <texture-path>models/Low-Poly_Plastic cup_color.png</texture-path>
+    </model>
+    <model>
+        <name>basketball</name>
+        <preview-path>ic_launcher</preview-path>
+        <obj-path>models/basket.obj</obj-path>
+        <texture-path>models/10487_basketball_diffuse.jpg</texture-path>
     </model>
 </models>

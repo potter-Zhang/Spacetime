@@ -106,6 +106,7 @@ import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.dao.ARNoteDao;
 import edu.whu.spacetime.domain.ARModel;
 import edu.whu.spacetime.domain.ARNote;
+import edu.whu.spacetime.service.ModelXmlParserService;
 import edu.whu.spacetime.widget.InputDialog;
 import edu.whu.spacetime.widget.ModelChoosePopup;
 
@@ -183,10 +184,16 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
     private long lastPointCloudTimestamp = 0;
 
     // Virtual object (ARCore pawn)
-    private Mesh virtualObjectMesh;
-    private Shader virtualObjectShader;
-    private Texture virtualObjectAlbedoTexture;
-    private Texture virtualObjectAlbedoInstantPlacementTexture;
+     private Mesh virtualObjectMesh;
+     private Shader virtualObjectShader;
+     private Texture virtualObjectAlbedoTexture;
+     private Texture virtualObjectAlbedoInstantPlacementTexture;
+
+    private List<Mesh> meshes;
+
+    private List<Shader> shaders;
+
+    List<ARModel> modelList;
 
     private final List<WrappedAnchor> wrappedAnchors = new ArrayList<>();
 
@@ -236,7 +243,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
             getScreenshot();
         });
         // 弹出模型选择列表
-        choosePopup = new ModelChoosePopup(this);
+        // choosePopup = new ModelChoosePopup(this);
         findViewById(R.id.settings_button).setOnClickListener(v -> {
             new XPopup.Builder(this)
                     .hasNavigationBar(false)
@@ -244,50 +251,86 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                     .asCustom(choosePopup)
                     .show();
         });
-        choosePopup.setOnModelChosenListener(arModel -> {
-            // 更换模型
-            loadModel(arModel);
-        });
+
+        meshes = new ArrayList<>();
+        shaders = new ArrayList<>();
     }
 
     /**
      * 加载AR模型
      */
     private void loadModel(ARModel arModel) {
-        if (arModel.getName().equals("纯文本")) {
-            // 使用LabelRender
-            return;
+        try {
+            virtualObjectMesh = Mesh.createFromAsset(render, arModel.getObjPath());
+            meshes.add(virtualObjectMesh);
+            virtualObjectAlbedoTexture =
+                    Texture.createFromAsset(
+                            render,
+                            arModel.getTexturePath(),
+                            Texture.WrapMode.CLAMP_TO_EDGE,
+                            Texture.ColorFormat.SRGB);
+            virtualObjectAlbedoInstantPlacementTexture =
+                    Texture.createFromAsset(
+                            render,
+                            arModel.getTexturePath(),
+                            Texture.WrapMode.CLAMP_TO_EDGE,
+                            Texture.ColorFormat.SRGB);
+            Texture virtualObjectPbrTexture =
+                    Texture.createFromAsset(
+                            render,
+                            arModel.getTexturePath(),
+                            Texture.WrapMode.CLAMP_TO_EDGE,
+                            Texture.ColorFormat.LINEAR);
+            virtualObjectShader =
+                    Shader.createFromAssets(
+                                    render,
+                                    "shaders/environmental_hdr.vert",
+                                    "shaders/environmental_hdr.frag",
+                                    /* defines= */ new HashMap<String, String>() {
+                                        {
+                                            put(
+                                                    "NUMBER_OF_MIPMAP_LEVELS",
+                                                    Integer.toString(cubemapFilter.getNumberOfMipmapLevels()));
+                                        }
+                                    })
+                            .setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture)
+                            .setTexture("u_RoughnessMetallicAmbientOcclusionTexture", virtualObjectPbrTexture)
+                            .setTexture("u_Cubemap", cubemapFilter.getFilteredCubemapTexture())
+                            .setTexture("u_DfgTexture", dfgTexture);
+            shaders.add(virtualObjectShader);
+        } catch (IOException e) {
+            messageSnackbarHelper.showError(this, "读取模型失败");
         }
-        new Thread(() -> {
-            try {
-                virtualObjectMesh = Mesh.createFromAsset(render, arModel.getObjPath());
-                virtualObjectAlbedoTexture =
-                        Texture.createFromAsset(
-                                render,
-                                arModel.getTexturePath(),
-                                Texture.WrapMode.CLAMP_TO_EDGE,
-                                Texture.ColorFormat.SRGB);
-                virtualObjectAlbedoInstantPlacementTexture =
-                        Texture.createFromAsset(
-                                render,
-                                arModel.getTexturePath(),
-                                Texture.WrapMode.CLAMP_TO_EDGE,
-                                Texture.ColorFormat.SRGB);
-                Texture virtualObjectPbrTexture =
-                        Texture.createFromAsset(
-                                render,
-                                arModel.getTexturePath(),
-                                Texture.WrapMode.CLAMP_TO_EDGE,
-                                Texture.ColorFormat.LINEAR);
-                virtualObjectShader
-                        .setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture)
-                        .setTexture("u_RoughnessMetallicAmbientOcclusionTexture", virtualObjectPbrTexture)
-                        .setTexture("u_Cubemap", cubemapFilter.getFilteredCubemapTexture())
-                        .setTexture("u_DfgTexture", dfgTexture);
-            } catch (IOException e) {
-                messageSnackbarHelper.showError(this, "读取模型失败");
-            }
-        }).start();
+//        new Thread(() -> {
+//            try {
+//                virtualObjectMesh = Mesh.createFromAsset(render, arModel.getObjPath());
+//                virtualObjectAlbedoTexture =
+//                        Texture.createFromAsset(
+//                                render,
+//                                arModel.getTexturePath(),
+//                                Texture.WrapMode.CLAMP_TO_EDGE,
+//                                Texture.ColorFormat.SRGB);
+//                virtualObjectAlbedoInstantPlacementTexture =
+//                        Texture.createFromAsset(
+//                                render,
+//                                arModel.getTexturePath(),
+//                                Texture.WrapMode.CLAMP_TO_EDGE,
+//                                Texture.ColorFormat.SRGB);
+//                Texture virtualObjectPbrTexture =
+//                        Texture.createFromAsset(
+//                                render,
+//                                arModel.getTexturePath(),
+//                                Texture.WrapMode.CLAMP_TO_EDGE,
+//                                Texture.ColorFormat.LINEAR);
+//                virtualObjectShader
+//                        .setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture)
+//                        .setTexture("u_RoughnessMetallicAmbientOcclusionTexture", virtualObjectPbrTexture)
+//                        .setTexture("u_Cubemap", cubemapFilter.getFilteredCubemapTexture())
+//                        .setTexture("u_DfgTexture", dfgTexture);
+//            } catch (IOException e) {
+//                messageSnackbarHelper.showError(this, "读取模型失败");
+//            }
+//        }).start();
     }
 
     /** Menu button to launch feature specific settings. */
@@ -320,76 +363,76 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
     protected void onResume() {
         super.onResume();
 
-//        if (session == null) {
-//            Exception exception = null;
-//            String message = null;
-//            try {
-//                // Always check the latest availability.
-//                Availability availability = ArCoreApk.getInstance().checkAvailability(this);
-//
-//                // In all other cases, try to install ARCore and handle installation failures.
-//                if (availability != Availability.SUPPORTED_INSTALLED) {
-//                    switch (ArCoreApk.getInstance().requestInstall(this, !installRequested)) {
-//                        case INSTALL_REQUESTED:
-//                            installRequested = true;
-//                            return;
-//                        case INSTALLED:
-//                            break;
-//                    }
-//                }
-//
-//                // ARCore requires camera permissions to operate. If we did not yet obtain runtime
-//                // permission on Android M and above, now is a good time to ask the user for it.
-//                if (!CameraPermissionHelper.hasCameraPermission(this)) {
-//                    CameraPermissionHelper.requestCameraPermission(this);
-//                    return;
-//                }
-//
-//                // Create the session.
-//                session = new Session(/* context= */ this);
-//            } catch (UnavailableArcoreNotInstalledException
-//                     | UnavailableUserDeclinedInstallationException e) {
-//                message = "请先安装ARCore";
-//                exception = e;
-//            } catch (UnavailableApkTooOldException e) {
-//                message = "请更新ARCore";
-//                exception = e;
-//            } catch (UnavailableSdkTooOldException e) {
-//                message = "Please update this app";
-//                exception = e;
-//            } catch (UnavailableDeviceNotCompatibleException e) {
-//                message = "您的设备不支持AR功能";
-//                exception = e;
-//            } catch (Exception e) {
-//                message = "创建AR session失败";
-//                exception = e;
-//            }
-//
-//            if (message != null) {
-//                messageSnackbarHelper.showError(this, message);
-//                Log.e(TAG, "Exception creating session", exception);
-//                return;
-//            }
-//        }
-//
-//        // Note that order matters - see the note in onPause(), the reverse applies here.
-//        try {
-//            configureSession();
-//            // To record a live camera session for later playback, call
-//            // `session.startRecording(recordingConfig)` at anytime. To playback a previously recorded AR
-//            // session instead of using the live camera feed, call
-//            // `session.setPlaybackDatasetUri(Uri)` before calling `session.resume()`. To
-//            // learn more about recording and playback, see:
-//            // https://developers.google.com/ar/develop/java/recording-and-playback
-//            session.resume();
-//        } catch (CameraNotAvailableException e) {
-//            messageSnackbarHelper.showError(this, "Camera not available. Try restarting the app.");
-//            session = null;
-//            return;
-//        }
-//
-//        surfaceView.onResume();
-//        displayRotationHelper.onResume();
+        if (session == null) {
+            Exception exception = null;
+            String message = null;
+            try {
+                // Always check the latest availability.
+                Availability availability = ArCoreApk.getInstance().checkAvailability(this);
+
+                // In all other cases, try to install ARCore and handle installation failures.
+                if (availability != Availability.SUPPORTED_INSTALLED) {
+                    switch (ArCoreApk.getInstance().requestInstall(this, !installRequested)) {
+                        case INSTALL_REQUESTED:
+                            installRequested = true;
+                            return;
+                        case INSTALLED:
+                            break;
+                    }
+                }
+
+                // ARCore requires camera permissions to operate. If we did not yet obtain runtime
+                // permission on Android M and above, now is a good time to ask the user for it.
+                if (!CameraPermissionHelper.hasCameraPermission(this)) {
+                    CameraPermissionHelper.requestCameraPermission(this);
+                    return;
+                }
+
+                // Create the session.
+                session = new Session(/* context= */ this);
+            } catch (UnavailableArcoreNotInstalledException
+                     | UnavailableUserDeclinedInstallationException e) {
+                message = "请先安装ARCore";
+                exception = e;
+            } catch (UnavailableApkTooOldException e) {
+                message = "请更新ARCore";
+                exception = e;
+            } catch (UnavailableSdkTooOldException e) {
+                message = "Please update this app";
+                exception = e;
+            } catch (UnavailableDeviceNotCompatibleException e) {
+                message = "您的设备不支持AR功能";
+                exception = e;
+            } catch (Exception e) {
+                message = "创建AR session失败";
+                exception = e;
+            }
+
+            if (message != null) {
+                messageSnackbarHelper.showError(this, message);
+                Log.e(TAG, "Exception creating session", exception);
+                return;
+            }
+        }
+
+        // Note that order matters - see the note in onPause(), the reverse applies here.
+        try {
+            configureSession();
+            // To record a live camera session for later playback, call
+            // `session.startRecording(recordingConfig)` at anytime. To playback a previously recorded AR
+            // session instead of using the live camera feed, call
+            // `session.setPlaybackDatasetUri(Uri)` before calling `session.resume()`. To
+            // learn more about recording and playback, see:
+            // https://developers.google.com/ar/develop/java/recording-and-playback
+            session.resume();
+        } catch (CameraNotAvailableException e) {
+            messageSnackbarHelper.showError(this, "Camera not available. Try restarting the app.");
+            session = null;
+            return;
+        }
+
+        surfaceView.onResume();
+        displayRotationHelper.onResume();
     }
 
     @Override
@@ -486,28 +529,26 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
             final VertexBuffer[] pointCloudVertexBuffers = {pointCloudVertexBuffer};
             pointCloudMesh = new Mesh(render, Mesh.PrimitiveMode.POINTS, /* indexBuffer= */ null, pointCloudVertexBuffers);
 
-            virtualObjectShader =
-                    Shader.createFromAssets(
-                            render,
-                            "shaders/environmental_hdr.vert",
-                            "shaders/environmental_hdr.frag",
-                            /* defines= */ new HashMap<String, String>() {
-                                {
-                                    put(
-                                            "NUMBER_OF_MIPMAP_LEVELS",
-                                            Integer.toString(cubemapFilter.getNumberOfMipmapLevels()));
-                                }
-                            });
+
+            InputStream xml= this.getClass().getClassLoader().getResourceAsStream("assets/models.xml");
+            modelList = ModelXmlParserService.getModels(xml);
+            for (ARModel arModel : modelList) {
+                loadModel(arModel);
+            }
+            choosePopup = new ModelChoosePopup(this, modelList);
+            choosePopup.setOnModelChosenListener(arModel -> {
+                // 更换模型
+                // loadModel(arModel);
+                int position = modelList.indexOf(arModel);
+                virtualObjectMesh = meshes.get(position);
+                virtualObjectShader = shaders.get(position);
+            });
         } catch (IOException e) {
             messageSnackbarHelper.showError(this, "渲染器创建失败");
         }
 
         virtualSceneFramebuffer = new Framebuffer(render, /* width= */ 1, /* height= */ 1);
 
-        // 初始使用LabelRender
-        ARModel initModel = new ARModel();
-        initModel.setName("纯文本");
-        loadModel(initModel);
 
 //        try {
 //            planeRenderer = new PlaneRenderer(render);
@@ -771,21 +812,30 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
             // viewproj for label
             Matrix.multiplyMM(ViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
+            Mesh mesh = meshes.get(wrappedAnchor.getModelIndex());
+            Shader shader = shaders.get(wrappedAnchor.getModelIndex());
             // Update shader properties and draw
-            virtualObjectShader.setMat4("u_ModelView", modelViewMatrix);
-            virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
+//            virtualObjectShader.setMat4("u_ModelView", modelViewMatrix);
+//            virtualObjectShader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
+            shader.setMat4("u_ModelView", modelViewMatrix);
+            shader.setMat4("u_ModelViewProjection", modelViewProjectionMatrix);
 
-            if (trackable instanceof InstantPlacementPoint
-                    && ((InstantPlacementPoint) trackable).getTrackingMethod()
-                    == InstantPlacementPoint.TrackingMethod.SCREENSPACE_WITH_APPROXIMATE_DISTANCE) {
-                virtualObjectShader.setTexture(
-                        "u_AlbedoTexture", virtualObjectAlbedoInstantPlacementTexture);
+//            if (trackable instanceof InstantPlacementPoint
+//                    && ((InstantPlacementPoint) trackable).getTrackingMethod()
+//                    == InstantPlacementPoint.TrackingMethod.SCREENSPACE_WITH_APPROXIMATE_DISTANCE) {
+//                shader.setTexture("u_AlbedoTexture", virtualObjectAlbedoInstantPlacementTexture);
+////                virtualObjectShader.setTexture(
+////                        "u_AlbedoTexture", virtualObjectAlbedoInstantPlacementTexture);
+//            } else {
+//                shader.setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture);
+//                // virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture);
+//            }
+
+            if (wrappedAnchor.getModelIndex() != 0) {
+                render.draw(mesh, shader, virtualSceneFramebuffer);
             } else {
-                virtualObjectShader.setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture);
+                labelRender.draw(render, ViewProjectionMatrix, anchor.getPose(), camera.getPose(), wrappedAnchor.getText());
             }
-
-            render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer);
-            // labelRender.draw(render, ViewProjectionMatrix, anchor.getPose(), camera.getPose(), wrappedAnchor.getText());
         }
 
         // Compose the virtual scene with the background.
@@ -826,17 +876,24 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                     // Adding an Anchor tells ARCore that it should track this position in
                     // space. This anchor is created on the Plane to place the 3D model
                     // in the correct position relative both to the world and to the plane.
+                    int position = meshes.indexOf(virtualObjectMesh);
                     WrappedAnchor anchor = new WrappedAnchor(hit.createAnchor(), trackable);
+                    anchor.setModelIndex(position);
                     wrappedAnchors.add(anchor);
                     // For devices that support the Depth API, shows a dialog to suggest enabling
                     // depth-based occlusion. This dialog needs to be spawned on the UI thread.
                     this.runOnUiThread(this::showOcclusionDialogIfNeeded);
-                    this.runOnUiThread(()->{
-                        InputDialog dialog = new InputDialog(this, "");
-                        dialog.setOnInputConfirmListener(text -> anchor.setText(text));
-                        new XPopup.Builder(this).asCustom(dialog).show();
+                    if (position == 0) {
+                        this.runOnUiThread(()->{
+                            InputDialog dialog = new InputDialog(this, "");
+                            dialog.setOnInputConfirmListener(text -> anchor.setText(text));
+                            new XPopup.Builder(this)
+                                    .isDestroyOnDismiss(true)
+                                    .asCustom(dialog)
+                                    .show();
 
-                    });
+                        });
+                    }
 
                     // Hits are sorted by depth. Consider only closest hit on a plane, Oriented Point, or
                     // Instant Placement Point.
@@ -1031,8 +1088,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
      * @return 截屏图片BitMap
      */
     public Bitmap getScreenshot() {
-        // View view = getWindow().getDecorView();
-        View view = findViewById(R.id.surfaceview);
+        View view = getWindow().getDecorView();
+        // View view = findViewById(R.id.surfaceview);
         Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
@@ -1089,6 +1146,16 @@ class WrappedAnchor {
     private Trackable trackable;
 
     private String text;
+
+    public int getModelIndex() {
+        return modelIndex;
+    }
+
+    public void setModelIndex(int modelIndex) {
+        this.modelIndex = modelIndex;
+    }
+
+    private int modelIndex;
 
     public WrappedAnchor(Anchor anchor, Trackable trackable) {
         this.anchor = anchor;
