@@ -58,6 +58,7 @@
             android:layout_height="25dp"
             android:layout_gravity="center_vertical|left"
             tools:ignore="RtlHardcoded"
+            android:theme="@style/MyCheckboxStyle"
             android:layout_marginEnd="10dp"/>
 
         <LinearLayout

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.adapter.listener.OnRecyclerItemClickListener;
 import edu.whu.spacetime.domain.ARModel;
 
 public class ModelListAdapter extends RecyclerView.Adapter<ModelListAdapter.ViewHolder> {
@@ -30,23 +31,19 @@ public class ModelListAdapter extends RecyclerView.Adapter<ModelListAdapter.View
         }
     }
 
-    public interface OnModelChosenListener {
-        void OnModelChosen(ARModel arModel);
-    }
-
     private Context context;
 
     private List<ARModel> arModelList;
 
-    private OnModelChosenListener onModelChosenListener;
+    private OnRecyclerItemClickListener onRecyclerItemClickListener;
 
     public ModelListAdapter(Context context, List<ARModel> arModelList) {
         this.context = context;
         this.arModelList = arModelList;
     }
 
-    public void setOnModelChosenListener(OnModelChosenListener onModelChosenListener) {
-        this.onModelChosenListener = onModelChosenListener;
+    public void setOnRecyclerItemClickListener(OnRecyclerItemClickListener onRecyclerItemClickListener) {
+        this.onRecyclerItemClickListener = onRecyclerItemClickListener;
     }
 
     @NonNull
@@ -65,8 +62,8 @@ public class ModelListAdapter extends RecyclerView.Adapter<ModelListAdapter.View
         holder.imgModel.setImageResource(resourceId);
         holder.tvModelName.setText(arModel.getName());
         holder.itemView.setOnClickListener(v -> {
-            if (this.onModelChosenListener != null) {
-                onModelChosenListener.OnModelChosen(arModel);
+            if (this.onRecyclerItemClickListener != null) {
+                onRecyclerItemClickListener.OnItemClick(holder.itemView, arModel);
             }
         });
     }

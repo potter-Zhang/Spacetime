@@ -20,7 +20,11 @@ import edu.whu.spacetime.domain.ARModel;
 import edu.whu.spacetime.service.ModelXmlParserService;
 
 public class ModelChoosePopup extends BottomPopupView {
-    private ModelListAdapter.OnModelChosenListener onModelChosenListener;
+    public interface OnModelChosenListener {
+        void onModelChosen(ARModel arModel);
+    }
+
+    private OnModelChosenListener onModelChosenListener;
 
     private ModelListAdapter adapter;
 
@@ -35,7 +39,7 @@ public class ModelChoosePopup extends BottomPopupView {
         return R.layout.widget_choose_model;
     }
 
-    public void setOnModelChosenListener(ModelListAdapter.OnModelChosenListener onModelChosenListener) {
+    public void setOnModelChosenListener(OnModelChosenListener onModelChosenListener) {
         this.onModelChosenListener = onModelChosenListener;
     }
 
@@ -61,9 +65,9 @@ public class ModelChoosePopup extends BottomPopupView {
         adapter = new ModelListAdapter(getContext(), modelList);
         modelListView.setAdapter(adapter);
 
-        adapter.setOnModelChosenListener(arModel -> {
+        adapter.setOnRecyclerItemClickListener((view, arModel) -> {
             if (this.onModelChosenListener != null) {
-                onModelChosenListener.OnModelChosen(arModel);
+                onModelChosenListener.onModelChosen((ARModel) arModel);
             }
         });
     }
