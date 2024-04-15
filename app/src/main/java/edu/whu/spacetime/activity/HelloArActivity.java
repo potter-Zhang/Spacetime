@@ -542,6 +542,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                 int position = modelList.indexOf(arModel);
                 virtualObjectMesh = meshes.get(position);
                 virtualObjectShader = shaders.get(position);
+
+                choosePopup.dismiss();
             });
         } catch (IOException e) {
             messageSnackbarHelper.showError(this, "渲染器创建失败");

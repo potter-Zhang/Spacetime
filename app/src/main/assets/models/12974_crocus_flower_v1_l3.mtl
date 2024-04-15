@@ -1,0 +1,12 @@
+#
+#
+#
+
+newmtl 12974_crocus_flower 网格_12974_crocus_flower
+illum 2
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.135000 0.135000 0.135000
+Ns 35.000000
+map_Kd 12974_crocus_flower_diff.jpg
+
