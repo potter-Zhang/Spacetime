@@ -16,8 +16,15 @@
 
 package edu.whu.spacetime.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.media.Image;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
@@ -27,9 +34,14 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.ar.core.Anchor;
@@ -80,15 +92,22 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
 import com.lxj.xpopup.XPopup;
 import com.xuexiang.xui.widget.toast.XToast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import edu.whu.spacetime.R;
+import edu.whu.spacetime.SpacetimeApplication;
+import edu.whu.spacetime.dao.ARNoteDao;
+import edu.whu.spacetime.domain.ARModel;
+import edu.whu.spacetime.domain.ARNote;
 import edu.whu.spacetime.widget.InputDialog;
+import edu.whu.spacetime.widget.ModelChoosePopup;
 
 /**
  * This is a simple example that shows how to create an augmented reality (AR) application using the
@@ -99,8 +118,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
 
     private static final String TAG = HelloArActivity.class.getSimpleName();
 
-    private static final String SEARCHING_PLANE_MESSAGE = "Searching for surfaces...";
-    private static final String WAITING_FOR_TAP_MESSAGE = "Tap on a surface to place an object.";
+    private static final String SEARCHING_PLANE_MESSAGE = "正在寻找平面...";
+    private static final String WAITING_FOR_TAP_MESSAGE = "点击平面来放置一个模型.";
 
     // See the definition of updateSphericalHarmonicsCoefficients for an explanation of these
     // constants.
@@ -188,6 +207,11 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
     private final float[] worldLightDirection = {0.0f, 0.0f, 0.0f, 0.0f};
     private final float[] viewLightDirection = new float[4]; // view x world light direction
 
+    /**
+     * 模型选择列表弹出菜单
+     */
+    private ModelChoosePopup choosePopup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -206,17 +230,63 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
 
         depthSettings.onCreate(this);
         instantPlacementSettings.onCreate(this);
-        ImageButton settingsButton = findViewById(R.id.settings_button);
-        settingsButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        PopupMenu popup = new PopupMenu(HelloArActivity.this, v);
-                        popup.setOnMenuItemClickListener(HelloArActivity.this::settingsMenuClick);
-                        popup.inflate(R.menu.settings_menu);
-                        popup.show();
-                    }
-                });
+
+        // 截图
+        findViewById(R.id.btn_screenshot).setOnClickListener(v -> {
+            getScreenshot();
+        });
+        // 弹出模型选择列表
+        choosePopup = new ModelChoosePopup(this);
+        findViewById(R.id.settings_button).setOnClickListener(v -> {
+            new XPopup.Builder(this)
+                    .isDestroyOnDismiss(false)
+                    .asCustom(choosePopup)
+                    .show();
+        });
+        choosePopup.setOnModelChosenListener(arModel -> {
+            // 更换模型
+            loadModel(arModel);
+        });
+    }
+
+    /**
+     * 加载AR模型
+     */
+    private void loadModel(ARModel arModel) {
+        if (arModel.getName().equals("纯文本")) {
+            // 使用LabelRender
+            return;
+        }
+        new Thread(() -> {
+            try {
+                virtualObjectMesh = Mesh.createFromAsset(render, arModel.getObjPath());
+                virtualObjectAlbedoTexture =
+                        Texture.createFromAsset(
+                                render,
+                                arModel.getTexturePath(),
+                                Texture.WrapMode.CLAMP_TO_EDGE,
+                                Texture.ColorFormat.SRGB);
+                virtualObjectAlbedoInstantPlacementTexture =
+                        Texture.createFromAsset(
+                                render,
+                                arModel.getTexturePath(),
+                                Texture.WrapMode.CLAMP_TO_EDGE,
+                                Texture.ColorFormat.SRGB);
+                Texture virtualObjectPbrTexture =
+                        Texture.createFromAsset(
+                                render,
+                                arModel.getTexturePath(),
+                                Texture.WrapMode.CLAMP_TO_EDGE,
+                                Texture.ColorFormat.LINEAR);
+                virtualObjectShader
+                        .setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture)
+                        .setTexture("u_RoughnessMetallicAmbientOcclusionTexture", virtualObjectPbrTexture)
+                        .setTexture("u_Cubemap", cubemapFilter.getFilteredCubemapTexture())
+                        .setTexture("u_DfgTexture", dfgTexture);
+            } catch (IOException e) {
+                messageSnackbarHelper.showError(this, "读取模型失败");
+            }
+        }).start();
     }
 
     /** Menu button to launch feature specific settings. */
@@ -249,76 +319,76 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
     protected void onResume() {
         super.onResume();
 
-        if (session == null) {
-            Exception exception = null;
-            String message = null;
-            try {
-                // Always check the latest availability.
-                Availability availability = ArCoreApk.getInstance().checkAvailability(this);
-
-                // In all other cases, try to install ARCore and handle installation failures.
-                if (availability != Availability.SUPPORTED_INSTALLED) {
-                    switch (ArCoreApk.getInstance().requestInstall(this, !installRequested)) {
-                        case INSTALL_REQUESTED:
-                            installRequested = true;
-                            return;
-                        case INSTALLED:
-                            break;
-                    }
-                }
-
-                // ARCore requires camera permissions to operate. If we did not yet obtain runtime
-                // permission on Android M and above, now is a good time to ask the user for it.
-                if (!CameraPermissionHelper.hasCameraPermission(this)) {
-                    CameraPermissionHelper.requestCameraPermission(this);
-                    return;
-                }
-
-                // Create the session.
-                session = new Session(/* context= */ this);
-            } catch (UnavailableArcoreNotInstalledException
-                     | UnavailableUserDeclinedInstallationException e) {
-                message = "请先安装ARCore";
-                exception = e;
-            } catch (UnavailableApkTooOldException e) {
-                message = "请更新ARCore";
-                exception = e;
-            } catch (UnavailableSdkTooOldException e) {
-                message = "Please update this app";
-                exception = e;
-            } catch (UnavailableDeviceNotCompatibleException e) {
-                message = "您的设备不支持AR功能";
-                exception = e;
-            } catch (Exception e) {
-                message = "创建AR session失败";
-                exception = e;
-            }
-
-            if (message != null) {
-                messageSnackbarHelper.showError(this, message);
-                Log.e(TAG, "Exception creating session", exception);
-                return;
-            }
-        }
-
-        // Note that order matters - see the note in onPause(), the reverse applies here.
-        try {
-            configureSession();
-            // To record a live camera session for later playback, call
-            // `session.startRecording(recordingConfig)` at anytime. To playback a previously recorded AR
-            // session instead of using the live camera feed, call
-            // `session.setPlaybackDatasetUri(Uri)` before calling `session.resume()`. To
-            // learn more about recording and playback, see:
-            // https://developers.google.com/ar/develop/java/recording-and-playback
-            session.resume();
-        } catch (CameraNotAvailableException e) {
-            messageSnackbarHelper.showError(this, "Camera not available. Try restarting the app.");
-            session = null;
-            return;
-        }
-
-        surfaceView.onResume();
-        displayRotationHelper.onResume();
+//        if (session == null) {
+//            Exception exception = null;
+//            String message = null;
+//            try {
+//                // Always check the latest availability.
+//                Availability availability = ArCoreApk.getInstance().checkAvailability(this);
+//
+//                // In all other cases, try to install ARCore and handle installation failures.
+//                if (availability != Availability.SUPPORTED_INSTALLED) {
+//                    switch (ArCoreApk.getInstance().requestInstall(this, !installRequested)) {
+//                        case INSTALL_REQUESTED:
+//                            installRequested = true;
+//                            return;
+//                        case INSTALLED:
+//                            break;
+//                    }
+//                }
+//
+//                // ARCore requires camera permissions to operate. If we did not yet obtain runtime
+//                // permission on Android M and above, now is a good time to ask the user for it.
+//                if (!CameraPermissionHelper.hasCameraPermission(this)) {
+//                    CameraPermissionHelper.requestCameraPermission(this);
+//                    return;
+//                }
+//
+//                // Create the session.
+//                session = new Session(/* context= */ this);
+//            } catch (UnavailableArcoreNotInstalledException
+//                     | UnavailableUserDeclinedInstallationException e) {
+//                message = "请先安装ARCore";
+//                exception = e;
+//            } catch (UnavailableApkTooOldException e) {
+//                message = "请更新ARCore";
+//                exception = e;
+//            } catch (UnavailableSdkTooOldException e) {
+//                message = "Please update this app";
+//                exception = e;
+//            } catch (UnavailableDeviceNotCompatibleException e) {
+//                message = "您的设备不支持AR功能";
+//                exception = e;
+//            } catch (Exception e) {
+//                message = "创建AR session失败";
+//                exception = e;
+//            }
+//
+//            if (message != null) {
+//                messageSnackbarHelper.showError(this, message);
+//                Log.e(TAG, "Exception creating session", exception);
+//                return;
+//            }
+//        }
+//
+//        // Note that order matters - see the note in onPause(), the reverse applies here.
+//        try {
+//            configureSession();
+//            // To record a live camera session for later playback, call
+//            // `session.startRecording(recordingConfig)` at anytime. To playback a previously recorded AR
+//            // session instead of using the live camera feed, call
+//            // `session.setPlaybackDatasetUri(Uri)` before calling `session.resume()`. To
+//            // learn more about recording and playback, see:
+//            // https://developers.google.com/ar/develop/java/recording-and-playback
+//            session.resume();
+//        } catch (CameraNotAvailableException e) {
+//            messageSnackbarHelper.showError(this, "Camera not available. Try restarting the app.");
+//            session = null;
+//            return;
+//        }
+//
+//        surfaceView.onResume();
+//        displayRotationHelper.onResume();
     }
 
     @Override
@@ -364,11 +434,9 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
             backgroundRenderer = new BackgroundRenderer(render);
             labelRender = new LabelRender();
             labelRender.onSurfaceCreated(render);
-            virtualSceneFramebuffer = new Framebuffer(render, /* width= */ 1, /* height= */ 1);
-
             cubemapFilter =
                     new SpecularCubemapFilter(
-                            render, CUBEMAP_RESOLUTION, CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES);
+                        render, CUBEMAP_RESOLUTION, CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES);
             // Load DFG lookup table for environmental lighting
             dfgTexture =
                     new Texture(
@@ -411,56 +479,137 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                             .setVec4(
                                     "u_Color", new float[] {31.0f / 255.0f, 188.0f / 255.0f, 210.0f / 255.0f, 1.0f})
                             .setFloat("u_PointSize", 5.0f);
+
             // four entries per vertex: X, Y, Z, confidence
-            pointCloudVertexBuffer =
-                    new VertexBuffer(render, /* numberOfEntriesPerVertex= */ 4, /* entries= */ null);
+            pointCloudVertexBuffer = new VertexBuffer(render, /* numberOfEntriesPerVertex= */ 4, /* entries= */ null);
             final VertexBuffer[] pointCloudVertexBuffers = {pointCloudVertexBuffer};
-            pointCloudMesh =
-                    new Mesh(
-                            render, Mesh.PrimitiveMode.POINTS, /* indexBuffer= */ null, pointCloudVertexBuffers);
+            pointCloudMesh = new Mesh(render, Mesh.PrimitiveMode.POINTS, /* indexBuffer= */ null, pointCloudVertexBuffers);
 
-            // Virtual object to render (ARCore pawn)
-            virtualObjectAlbedoTexture =
-                    Texture.createFromAsset(
-                            render,
-                            "models/pawn_albedo.png",
-                            Texture.WrapMode.CLAMP_TO_EDGE,
-                            Texture.ColorFormat.SRGB);
-            virtualObjectAlbedoInstantPlacementTexture =
-                    Texture.createFromAsset(
-                            render,
-                            "models/pawn_albedo_instant_placement.png",
-                            Texture.WrapMode.CLAMP_TO_EDGE,
-                            Texture.ColorFormat.SRGB);
-            Texture virtualObjectPbrTexture =
-                    Texture.createFromAsset(
-                            render,
-                            "models/pawn_roughness_metallic_ao.png",
-                            Texture.WrapMode.CLAMP_TO_EDGE,
-                            Texture.ColorFormat.LINEAR);
-
-            // virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj");
-            virtualObjectMesh = Mesh.createFromAsset(render, "models/Car.obj");
             virtualObjectShader =
                     Shader.createFromAssets(
-                                    render,
-                                    "shaders/environmental_hdr.vert",
-                                    "shaders/environmental_hdr.frag",
-                                    /* defines= */ new HashMap<String, String>() {
-                                        {
-                                            put(
-                                                    "NUMBER_OF_MIPMAP_LEVELS",
-                                                    Integer.toString(cubemapFilter.getNumberOfMipmapLevels()));
-                                        }
-                                    })
-                            .setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture)
-                            .setTexture("u_RoughnessMetallicAmbientOcclusionTexture", virtualObjectPbrTexture)
-                            .setTexture("u_Cubemap", cubemapFilter.getFilteredCubemapTexture())
-                            .setTexture("u_DfgTexture", dfgTexture);
+                            render,
+                            "shaders/environmental_hdr.vert",
+                            "shaders/environmental_hdr.frag",
+                            /* defines= */ new HashMap<String, String>() {
+                                {
+                                    put(
+                                            "NUMBER_OF_MIPMAP_LEVELS",
+                                            Integer.toString(cubemapFilter.getNumberOfMipmapLevels()));
+                                }
+                            });
         } catch (IOException e) {
-            Log.e(TAG, "Failed to read a required asset file", e);
-            messageSnackbarHelper.showError(this, "Failed to read a required asset file: " + e);
+            messageSnackbarHelper.showError(this, "渲染器创建失败");
         }
+
+        virtualSceneFramebuffer = new Framebuffer(render, /* width= */ 1, /* height= */ 1);
+
+        // 初始使用LabelRender
+        ARModel initModel = new ARModel();
+        initModel.setName("纯文本");
+        loadModel(initModel);
+
+//        try {
+//            planeRenderer = new PlaneRenderer(render);
+//            backgroundRenderer = new BackgroundRenderer(render);
+//            labelRender = new LabelRender();
+//            labelRender.onSurfaceCreated(render);
+//            virtualSceneFramebuffer = new Framebuffer(render, /* width= */ 1, /* height= */ 1);
+//
+//            cubemapFilter =
+//                    new SpecularCubemapFilter(
+//                            render, CUBEMAP_RESOLUTION, CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES);
+//            // Load DFG lookup table for environmental lighting
+//            dfgTexture =
+//                    new Texture(
+//                            render,
+//                            Texture.Target.TEXTURE_2D,
+//                            Texture.WrapMode.CLAMP_TO_EDGE,
+//                            /* useMipmaps= */ false);
+//            // The dfg.raw file is a raw half-float texture with two channels.
+//            final int dfgResolution = 64;
+//            final int dfgChannels = 2;
+//            final int halfFloatSize = 2;
+//
+//            ByteBuffer buffer =
+//                    ByteBuffer.allocateDirect(dfgResolution * dfgResolution * dfgChannels * halfFloatSize);
+//            try (InputStream is = getAssets().open("models/dfg.raw")) {
+//                is.read(buffer.array());
+//            }
+//            // SampleRender abstraction leaks here.
+//            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, dfgTexture.getTextureId());
+//            GLError.maybeThrowGLException("Failed to bind DFG texture", "glBindTexture");
+//            GLES30.glTexImage2D(
+//                    GLES30.GL_TEXTURE_2D,
+//                    /* level= */ 0,
+//                    GLES30.GL_RG16F,
+//                    /* width= */ dfgResolution,
+//                    /* height= */ dfgResolution,
+//                    /* border= */ 0,
+//                    GLES30.GL_RG,
+//                    GLES30.GL_HALF_FLOAT,
+//                    buffer);
+//            GLError.maybeThrowGLException("Failed to populate DFG texture", "glTexImage2D");
+//
+//            // Point cloud
+//            pointCloudShader =
+//                    Shader.createFromAssets(
+//                                    render,
+//                                    "shaders/point_cloud.vert",
+//                                    "shaders/point_cloud.frag",
+//                                    /* defines= */ null)
+//                            .setVec4(
+//                                    "u_Color", new float[] {31.0f / 255.0f, 188.0f / 255.0f, 210.0f / 255.0f, 1.0f})
+//                            .setFloat("u_PointSize", 5.0f);
+//            // four entries per vertex: X, Y, Z, confidence
+//            pointCloudVertexBuffer =
+//                    new VertexBuffer(render, /* numberOfEntriesPerVertex= */ 4, /* entries= */ null);
+//            final VertexBuffer[] pointCloudVertexBuffers = {pointCloudVertexBuffer};
+//            pointCloudMesh =
+//                    new Mesh(
+//                            render, Mesh.PrimitiveMode.POINTS, /* indexBuffer= */ null, pointCloudVertexBuffers);
+//
+//            // Virtual object to render (ARCore pawn)
+//            virtualObjectAlbedoTexture =
+//                    Texture.createFromAsset(
+//                            render,
+//                            "models/pawn_albedo.png",
+//                            Texture.WrapMode.CLAMP_TO_EDGE,
+//                            Texture.ColorFormat.SRGB);
+//            virtualObjectAlbedoInstantPlacementTexture =
+//                    Texture.createFromAsset(
+//                            render,
+//                            "models/pawn_albedo_instant_placement.png",
+//                            Texture.WrapMode.CLAMP_TO_EDGE,
+//                            Texture.ColorFormat.SRGB);
+//            Texture virtualObjectPbrTexture =
+//                    Texture.createFromAsset(
+//                            render,
+//                            "models/pawn_roughness_metallic_ao.png",
+//                            Texture.WrapMode.CLAMP_TO_EDGE,
+//                            Texture.ColorFormat.LINEAR);
+//
+//            // virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj");
+//            virtualObjectMesh = Mesh.createFromAsset(render, "models/Car.obj");
+//            virtualObjectShader =
+//                    Shader.createFromAssets(
+//                                    render,
+//                                    "shaders/environmental_hdr.vert",
+//                                    "shaders/environmental_hdr.frag",
+//                                    /* defines= */ new HashMap<String, String>() {
+//                                        {
+//                                            put(
+//                                                    "NUMBER_OF_MIPMAP_LEVELS",
+//                                                    Integer.toString(cubemapFilter.getNumberOfMipmapLevels()));
+//                                        }
+//                                    })
+//                            .setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture)
+//                            .setTexture("u_RoughnessMetallicAmbientOcclusionTexture", virtualObjectPbrTexture)
+//                            .setTexture("u_Cubemap", cubemapFilter.getFilteredCubemapTexture())
+//                            .setTexture("u_DfgTexture", dfgTexture);
+//        } catch (IOException e) {
+//            Log.e(TAG, "Failed to read a required asset file", e);
+//            messageSnackbarHelper.showError(this, "Failed to read a required asset file: " + e);
+//        }
     }
 
     @Override
@@ -874,6 +1023,59 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
             config.setInstantPlacementMode(InstantPlacementMode.DISABLED);
         }
         session.configure(config);
+    }
+
+    /**
+     * 截屏并显示动画
+     * @return 截屏图片BitMap
+     */
+    public Bitmap getScreenshot() {
+        // View view = getWindow().getDecorView();
+        View view = findViewById(R.id.surfaceview);
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        // 添加一个ImageView来展示截屏动画
+        ImageView img = new ImageView(this);
+        img.setImageBitmap(bitmap);
+        RelativeLayout arBody = findViewById(R.id.layout_ar_main);
+        arBody.addView(img, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        // 截图缩放移动到左下角
+        ObjectAnimator animatorX = ObjectAnimator.ofFloat(img, "translationX", 0f,-60f,-120f,-180f,-240f);
+        ObjectAnimator animatorY = ObjectAnimator.ofFloat(img, "translationY", 0f,120f,240f,360f,480f);
+        ObjectAnimator animatorScaleX = ObjectAnimator.ofFloat(img, "scaleX", 1f, 0.4f);
+        ObjectAnimator animatorScaleY = ObjectAnimator.ofFloat(img, "scaleY", 1f, 0.4f);
+        AnimatorSet moveAnimatorSet = new AnimatorSet();
+        moveAnimatorSet.playTogether(animatorX, animatorY, animatorScaleX, animatorScaleY);
+        moveAnimatorSet.setDuration(1000);
+        // 移动到左下角后向左移动并消失
+        ObjectAnimator animatorDisappearAlpha = ObjectAnimator.ofFloat(img, "alpha", 1f, 1f, 1f, 0.5f, 0f);
+        animatorDisappearAlpha.setDuration(1500);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playSequentially(moveAnimatorSet, animatorDisappearAlpha);
+        animatorSet.start();
+        // 播放完动画后删除添加的ImageView，避免多次截屏后卡顿
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                arBody.removeView(img);
+            }
+        });
+        // JPEG压缩
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        byte[] bytes = baos.toByteArray();
+        bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        //保存到数据库
+        ARNote arNote = new ARNote();
+        arNote.setTitle("测试");
+        arNote.setImg(bytes);
+        arNote.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
+        arNote.setCreateTime(LocalDateTime.now());
+        ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
+        arNoteDao.insertARNotes(arNote);
+        return bitmap;
     }
 }
 

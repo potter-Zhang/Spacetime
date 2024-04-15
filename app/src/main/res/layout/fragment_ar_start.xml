@@ -66,41 +66,52 @@
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"/>
         </LinearLayout>
-        <com.getbase.floatingactionbutton.FloatingActionsMenu
-            android:id="@+id/multiple_actions"
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_ar_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_addButtonColorNormal="@color/main_theme"
-            fab:fab_addButtonColorPressed="@color/main_theme_dark"
-            fab:fab_addButtonSize="normal"
-            fab:fab_addButtonStrokeVisible="false"
-            fab:fab_expandDirection="up"
-            android:layout_marginEnd="16dp"
-            android:layout_gravity="right"
-            tools:ignore="RtlHardcoded"
+            fab:fab_icon="@drawable/icon_ar_glasses"
+            fab:fab_colorNormal="@color/main_theme"
+            fab:fab_colorPressed="@color/main_theme_dark"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="30dp">
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="30dp"
+            android:layout_marginEnd="16dp" />
+<!--        <com.getbase.floatingactionbutton.FloatingActionsMenu-->
+<!--            android:id="@+id/multiple_actions"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            fab:fab_addButtonColorNormal="@color/main_theme"-->
+<!--            fab:fab_addButtonColorPressed="@color/main_theme_dark"-->
+<!--            fab:fab_addButtonSize="normal"-->
+<!--            fab:fab_addButtonStrokeVisible="false"-->
+<!--            fab:fab_expandDirection="up"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:layout_gravity="right"-->
+<!--            tools:ignore="RtlHardcoded"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_alignParentRight="true"-->
+<!--            android:layout_marginBottom="30dp">-->
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_ar_start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:fab_colorNormal="@color/white"
-                fab:fab_colorPressed="@color/pressed_gray"
-                fab:fab_icon="@drawable/icon_ar_glasses"
-                fab:fab_title="label"/>
+<!--            <com.getbase.floatingactionbutton.FloatingActionButton-->
+<!--                android:id="@+id/btn_ar_start"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                fab:fab_colorNormal="@color/white"-->
+<!--                fab:fab_colorPressed="@color/pressed_gray"-->
+<!--                fab:fab_icon="@drawable/icon_ar_glasses"-->
+<!--                fab:fab_title="label"/>-->
 
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_screenshot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:fab_icon="@drawable/icon_screenshot"
-                fab:fab_colorNormal="@color/white"
-                fab:fab_size="normal"
-                fab:fab_colorPressed="@color/pressed_gray"/>
+<!--            <com.getbase.floatingactionbutton.FloatingActionButton-->
+<!--                android:id="@+id/btn_screenshot"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                fab:fab_icon="@drawable/icon_screenshot"-->
+<!--                fab:fab_colorNormal="@color/white"-->
+<!--                fab:fab_size="normal"-->
+<!--                fab:fab_colorPressed="@color/pressed_gray"/>-->
 
-        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+<!--        </com.getbase.floatingactionbutton.FloatingActionsMenu>-->
 
         <ImageView
             android:id="@+id/img_ar_list_empty"

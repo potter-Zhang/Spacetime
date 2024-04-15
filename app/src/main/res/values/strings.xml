@@ -40,6 +40,8 @@
 
     <string name="editTitle">编辑标题</string>
 
+    <string name="modelList">模型列表</string>
+
     <string translatable="false" name="depth_use_explanation">When Depth is enabled on supported devices, virtual objects adapt to the environment by blending in with the real world.</string>
     <string translatable="false" name="button_text_enable_depth">Enable</string>
     <string translatable="false" name="button_text_disable_depth">Disable</string>
