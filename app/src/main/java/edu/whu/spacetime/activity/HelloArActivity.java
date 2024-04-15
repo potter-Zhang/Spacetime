@@ -239,6 +239,7 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
         choosePopup = new ModelChoosePopup(this);
         findViewById(R.id.settings_button).setOnClickListener(v -> {
             new XPopup.Builder(this)
+                    .hasNavigationBar(false)
                     .isDestroyOnDismiss(false)
                     .asCustom(choosePopup)
                     .show();
