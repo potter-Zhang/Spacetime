@@ -41,6 +41,9 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
         }
     }
 
+    /**
+     * 笔记数量变化监听器
+     */
     public interface OnSizeChangedListener {
         void onSizeChanged(int size);
     }

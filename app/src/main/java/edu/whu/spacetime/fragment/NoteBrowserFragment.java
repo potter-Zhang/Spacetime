@@ -22,6 +22,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
@@ -33,6 +35,7 @@ import edu.whu.spacetime.R;
 import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.activity.EditorActivity;
 import edu.whu.spacetime.adapter.NoteListAdapter;
+import edu.whu.spacetime.adapter.NoteRecyclerAdapter;
 import edu.whu.spacetime.dao.NoteDao;
 import edu.whu.spacetime.domain.Note;
 import edu.whu.spacetime.domain.Notebook;
@@ -71,7 +74,8 @@ public class NoteBrowserFragment extends Fragment {
     // 当前选中的笔记本
     private Notebook currentNotebook;
 
-    private NoteListAdapter noteListAdapter;
+    // private NoteListAdapter noteListAdapter;
+    private NoteRecyclerAdapter noteListAdapter;
 
     public NoteBrowserFragment() {
         // Required empty public constructor
@@ -182,53 +186,52 @@ public class NoteBrowserFragment extends Fragment {
      * 设置要显示的笔记，绑定ListView中item的点击和长按事件
      */
     private void setNoteList() {
-        ListView noteListView = fragmentView.findViewById(R.id.list_note);
+        RecyclerView noteListView = fragmentView.findViewById(R.id.list_note);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        noteListView.setLayoutManager(linearLayoutManager);
         List<Note> noteList = noteDao.queryAllInNotebook(currentNotebook.getNotebookId());
-        noteListAdapter = new NoteListAdapter(getContext(), R.layout.item_note_list, noteList);
+        noteListAdapter = new NoteRecyclerAdapter(getContext(), noteList);
         noteListView.setAdapter(noteListAdapter);
         TextView tvNotebookNumber = fragmentView.findViewById(R.id.tv_notebookNumber);
         tvNotebookNumber.setText(String.format("共%d篇笔记", noteList.size()));
 
         // 长按进入编辑模式，显示复选框
-        noteListView.setOnItemLongClickListener((parent, view, position, id) -> {
+        noteListAdapter.setOnRecyclerItemLongClickListener((view, note) -> {
             if (!noteListAdapter.isAtEditMode()) {
                 noteListAdapter.editMode();
                 noteListAdapter.notifyDataSetChanged();
+                CheckBox checkBox = view.findViewById(R.id.check_note);
+                checkBox.setChecked(true);
                 fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.VISIBLE);
-                return true;
-            } else {
-                return false;
             }
         });
-        noteListView.setOnItemClickListener((parent, view, position, id) -> {
+        noteListAdapter.setOnRecyclerItemClickListener((view, note) -> {
             // 编辑模式下点击item就选中checkbox，否则进入编辑器
             if (noteListAdapter.isAtEditMode()) {
                 CheckBox checkBox = view.findViewById(R.id.check_note);
                 checkBox.toggle();
                 if (checkBox.isChecked()) {
-                    noteListAdapter.addCheckedNote(noteListAdapter.getItem(position));
+                    noteListAdapter.addCheckedNote((Note) note);
                 } else {
-                    noteListAdapter.removeCheckedNote(noteListAdapter.getItem(position));
+                    noteListAdapter.removeCheckedNote((Note) note);
                 }
             } else {
-                Note note = (Note)parent.getItemAtPosition(position);
-                jump2Editor(note, null);
+                jump2Editor((Note) note, null);
             }
         });
 
         // 取消按钮，退出编辑模式
         fragmentView.findViewById(R.id.btn_cancel_edit).setOnClickListener(v -> {
             noteListAdapter.exitEditMode();
-            noteListAdapter.notifyDataSetChanged();
             fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.INVISIBLE);
         });
         // 删除按钮，确认删除选中的笔记
         fragmentView.findViewById(R.id.btn_del_notes).setOnClickListener(v -> {
             noteListAdapter.removeCheckedNoteInView();
             noteListAdapter.exitEditMode();
-            noteListAdapter.notifyDataSetChanged();
             fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.INVISIBLE);
-            refreshNoteList();
+            tvNotebookNumber.setText(String.format("共%d篇笔记", noteList.size()));
         });
     }
 
@@ -253,6 +256,10 @@ public class NoteBrowserFragment extends Fragment {
 
         TextView tvNotebookName = fragmentView.findViewById(R.id.tv_notebookName);
         notebookFragment.setOnNotebookChangedListener(newNotebook -> {
+            if (this.noteListAdapter.isAtEditMode()) {
+                noteListAdapter.exitEditMode();
+                fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.INVISIBLE);
+            }
             // 显示该笔记本中的笔记
             this.currentNotebook = newNotebook;
             tvNotebookName.setText(newNotebook.getName());

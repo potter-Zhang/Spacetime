@@ -115,12 +115,19 @@
             </GridLayout>
 
             <!--ListView显示笔记-->
-            <ListView
+<!--            <ListView-->
+<!--                android:id="@+id/list_note"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:dividerHeight="0dp"-->
+<!--                android:divider="@color/light_gray"-->
+<!--                android:paddingStart="6dp"-->
+<!--                android:paddingTop="6dp"-->
+<!--                android:paddingEnd="6dp"/>-->
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:dividerHeight="0dp"
-                android:divider="@color/light_gray"
                 android:paddingStart="6dp"
                 android:paddingTop="6dp"
                 android:paddingEnd="6dp"/>
