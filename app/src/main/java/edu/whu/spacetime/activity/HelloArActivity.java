@@ -16,15 +16,9 @@
 
 package edu.whu.spacetime.activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.media.Image;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
@@ -33,17 +27,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.ArCoreApk.Availability;
@@ -90,12 +78,12 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 import com.lxj.xpopup.XPopup;
-import com.xuexiang.xui.widget.toast.XToast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -301,36 +289,6 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
         } catch (IOException e) {
             messageSnackbarHelper.showError(this, "读取模型失败");
         }
-//        new Thread(() -> {
-//            try {
-//                virtualObjectMesh = Mesh.createFromAsset(render, arModel.getObjPath());
-//                virtualObjectAlbedoTexture =
-//                        Texture.createFromAsset(
-//                                render,
-//                                arModel.getTexturePath(),
-//                                Texture.WrapMode.CLAMP_TO_EDGE,
-//                                Texture.ColorFormat.SRGB);
-//                virtualObjectAlbedoInstantPlacementTexture =
-//                        Texture.createFromAsset(
-//                                render,
-//                                arModel.getTexturePath(),
-//                                Texture.WrapMode.CLAMP_TO_EDGE,
-//                                Texture.ColorFormat.SRGB);
-//                Texture virtualObjectPbrTexture =
-//                        Texture.createFromAsset(
-//                                render,
-//                                arModel.getTexturePath(),
-//                                Texture.WrapMode.CLAMP_TO_EDGE,
-//                                Texture.ColorFormat.LINEAR);
-//                virtualObjectShader
-//                        .setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture)
-//                        .setTexture("u_RoughnessMetallicAmbientOcclusionTexture", virtualObjectPbrTexture)
-//                        .setTexture("u_Cubemap", cubemapFilter.getFilteredCubemapTexture())
-//                        .setTexture("u_DfgTexture", dfgTexture);
-//            } catch (IOException e) {
-//                messageSnackbarHelper.showError(this, "读取模型失败");
-//            }
-//        }).start();
     }
 
     /** Menu button to launch feature specific settings. */
@@ -549,109 +507,6 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
 
         virtualSceneFramebuffer = new Framebuffer(render, /* width= */ 1, /* height= */ 1);
 
-
-//        try {
-//            planeRenderer = new PlaneRenderer(render);
-//            backgroundRenderer = new BackgroundRenderer(render);
-//            labelRender = new LabelRender();
-//            labelRender.onSurfaceCreated(render);
-//            virtualSceneFramebuffer = new Framebuffer(render, /* width= */ 1, /* height= */ 1);
-//
-//            cubemapFilter =
-//                    new SpecularCubemapFilter(
-//                            render, CUBEMAP_RESOLUTION, CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES);
-//            // Load DFG lookup table for environmental lighting
-//            dfgTexture =
-//                    new Texture(
-//                            render,
-//                            Texture.Target.TEXTURE_2D,
-//                            Texture.WrapMode.CLAMP_TO_EDGE,
-//                            /* useMipmaps= */ false);
-//            // The dfg.raw file is a raw half-float texture with two channels.
-//            final int dfgResolution = 64;
-//            final int dfgChannels = 2;
-//            final int halfFloatSize = 2;
-//
-//            ByteBuffer buffer =
-//                    ByteBuffer.allocateDirect(dfgResolution * dfgResolution * dfgChannels * halfFloatSize);
-//            try (InputStream is = getAssets().open("models/dfg.raw")) {
-//                is.read(buffer.array());
-//            }
-//            // SampleRender abstraction leaks here.
-//            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, dfgTexture.getTextureId());
-//            GLError.maybeThrowGLException("Failed to bind DFG texture", "glBindTexture");
-//            GLES30.glTexImage2D(
-//                    GLES30.GL_TEXTURE_2D,
-//                    /* level= */ 0,
-//                    GLES30.GL_RG16F,
-//                    /* width= */ dfgResolution,
-//                    /* height= */ dfgResolution,
-//                    /* border= */ 0,
-//                    GLES30.GL_RG,
-//                    GLES30.GL_HALF_FLOAT,
-//                    buffer);
-//            GLError.maybeThrowGLException("Failed to populate DFG texture", "glTexImage2D");
-//
-//            // Point cloud
-//            pointCloudShader =
-//                    Shader.createFromAssets(
-//                                    render,
-//                                    "shaders/point_cloud.vert",
-//                                    "shaders/point_cloud.frag",
-//                                    /* defines= */ null)
-//                            .setVec4(
-//                                    "u_Color", new float[] {31.0f / 255.0f, 188.0f / 255.0f, 210.0f / 255.0f, 1.0f})
-//                            .setFloat("u_PointSize", 5.0f);
-//            // four entries per vertex: X, Y, Z, confidence
-//            pointCloudVertexBuffer =
-//                    new VertexBuffer(render, /* numberOfEntriesPerVertex= */ 4, /* entries= */ null);
-//            final VertexBuffer[] pointCloudVertexBuffers = {pointCloudVertexBuffer};
-//            pointCloudMesh =
-//                    new Mesh(
-//                            render, Mesh.PrimitiveMode.POINTS, /* indexBuffer= */ null, pointCloudVertexBuffers);
-//
-//            // Virtual object to render (ARCore pawn)
-//            virtualObjectAlbedoTexture =
-//                    Texture.createFromAsset(
-//                            render,
-//                            "models/pawn_albedo.png",
-//                            Texture.WrapMode.CLAMP_TO_EDGE,
-//                            Texture.ColorFormat.SRGB);
-//            virtualObjectAlbedoInstantPlacementTexture =
-//                    Texture.createFromAsset(
-//                            render,
-//                            "models/pawn_albedo_instant_placement.png",
-//                            Texture.WrapMode.CLAMP_TO_EDGE,
-//                            Texture.ColorFormat.SRGB);
-//            Texture virtualObjectPbrTexture =
-//                    Texture.createFromAsset(
-//                            render,
-//                            "models/pawn_roughness_metallic_ao.png",
-//                            Texture.WrapMode.CLAMP_TO_EDGE,
-//                            Texture.ColorFormat.LINEAR);
-//
-//            // virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj");
-//            virtualObjectMesh = Mesh.createFromAsset(render, "models/Car.obj");
-//            virtualObjectShader =
-//                    Shader.createFromAssets(
-//                                    render,
-//                                    "shaders/environmental_hdr.vert",
-//                                    "shaders/environmental_hdr.frag",
-//                                    /* defines= */ new HashMap<String, String>() {
-//                                        {
-//                                            put(
-//                                                    "NUMBER_OF_MIPMAP_LEVELS",
-//                                                    Integer.toString(cubemapFilter.getNumberOfMipmapLevels()));
-//                                        }
-//                                    })
-//                            .setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture)
-//                            .setTexture("u_RoughnessMetallicAmbientOcclusionTexture", virtualObjectPbrTexture)
-//                            .setTexture("u_Cubemap", cubemapFilter.getFilteredCubemapTexture())
-//                            .setTexture("u_DfgTexture", dfgTexture);
-//        } catch (IOException e) {
-//            Log.e(TAG, "Failed to read a required asset file", e);
-//            messageSnackbarHelper.showError(this, "Failed to read a required asset file: " + e);
-//        }
     }
 
     @Override
@@ -1087,54 +942,95 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
      * 截屏并显示动画
      * @return 截屏图片BitMap
      */
-    public Bitmap getScreenshot() {
-        View view = getWindow().getDecorView();
-        // View view = findViewById(R.id.surfaceview);
-        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-        // 添加一个ImageView来展示截屏动画
-        ImageView img = new ImageView(this);
-        img.setImageBitmap(bitmap);
-        RelativeLayout arBody = findViewById(R.id.layout_ar_main);
-        arBody.addView(img, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        // 截图缩放移动到左下角
-        ObjectAnimator animatorX = ObjectAnimator.ofFloat(img, "translationX", 0f,-60f,-120f,-180f,-240f);
-        ObjectAnimator animatorY = ObjectAnimator.ofFloat(img, "translationY", 0f,120f,240f,360f,480f);
-        ObjectAnimator animatorScaleX = ObjectAnimator.ofFloat(img, "scaleX", 1f, 0.4f);
-        ObjectAnimator animatorScaleY = ObjectAnimator.ofFloat(img, "scaleY", 1f, 0.4f);
-        AnimatorSet moveAnimatorSet = new AnimatorSet();
-        moveAnimatorSet.playTogether(animatorX, animatorY, animatorScaleX, animatorScaleY);
-        moveAnimatorSet.setDuration(1000);
-        // 移动到左下角后向左移动并消失
-        ObjectAnimator animatorDisappearAlpha = ObjectAnimator.ofFloat(img, "alpha", 1f, 1f, 1f, 0.5f, 0f);
-        animatorDisappearAlpha.setDuration(1500);
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playSequentially(moveAnimatorSet, animatorDisappearAlpha);
-        animatorSet.start();
-        // 播放完动画后删除添加的ImageView，避免多次截屏后卡顿
-        animatorSet.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                arBody.removeView(img);
-            }
+    public void getScreenshot() {
+        int height = surfaceView.getHeight();
+        int width = surfaceView.getWidth();
+        int bt[] = new int[width * height];
+        // Bitmap bitmap = Bitmap.createBitmap(surfaceView.getWidth(), surfaceView.getHeight(), Bitmap.Config.ARGB_8888);
+        int pixelCount = surfaceView.getHeight() * surfaceView.getWidth();
+        int[] pixels = new int[pixelCount];
+        surfaceView.queueEvent(() -> {
+            GLES30.glReadPixels(0 , 0, surfaceView.getWidth(), surfaceView.getHeight(),GLES30.GL_RGBA,GLES30.GL_UNSIGNED_BYTE, IntBuffer.wrap(pixels));
         });
-        // JPEG压缩
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-        byte[] bytes = baos.toByteArray();
-        bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        //保存到数据库
-        ARNote arNote = new ARNote();
-        arNote.setTitle("测试");
-        arNote.setImg(bytes);
-        arNote.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
-        arNote.setCreateTime(LocalDateTime.now());
-        ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
-        arNoteDao.insertARNotes(arNote);
-        return bitmap;
+        // surfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        // surfaceView.requestRender();
+        surfaceView.post(() -> {
+            for (int i = 0, k = 0; i < surfaceView.getHeight(); i++, k++) {
+                for (int j = 0; j < surfaceView.getWidth(); j++) {
+                    int pix = pixels[i * width + j];
+                    int pb = (pix >> 16) & 0xff;
+                    int pr = (pix << 16) & 0x00ff0000;
+                    int pix1 = (pix & 0xff00ff00) | pr | pb;
+                    bt[(height - k - 1) * width + j] = pix1;
+                }
+            }
+
+            Bitmap bitmap = Bitmap.createBitmap(bt, width, height, Bitmap.Config.ARGB_8888);
+            // bitmap.copyPixelsFromBuffer(IntBuffer.wrap(pixels));
+            // 在这里可以使用截图结果进行后续处理或保存操作
+            // JPEG压缩
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            byte[] bytes = baos.toByteArray();
+            //保存到数据库
+            ARNote arNote = new ARNote();
+            arNote.setTitle("测试");
+            arNote.setImg(bytes);
+            arNote.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
+            arNote.setCreateTime(LocalDateTime.now());
+            ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
+            arNoteDao.insertARNotes(arNote);
+        });
     }
+
+//        public Bitmap getScreenshot() {
+//        View view = getWindow().getDecorView();
+//        // View view = findViewById(R.id.surfaceview);
+//        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(bitmap);
+//        view.draw(canvas);
+//        // 添加一个ImageView来展示截屏动画
+//        ImageView img = new ImageView(this);
+//        img.setImageBitmap(bitmap);
+//        RelativeLayout arBody = findViewById(R.id.layout_ar_main);
+//        arBody.addView(img, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//        // 截图缩放移动到左下角
+//        ObjectAnimator animatorX = ObjectAnimator.ofFloat(img, "translationX", 0f,-60f,-120f,-180f,-240f);
+//        ObjectAnimator animatorY = ObjectAnimator.ofFloat(img, "translationY", 0f,120f,240f,360f,480f);
+//        ObjectAnimator animatorScaleX = ObjectAnimator.ofFloat(img, "scaleX", 1f, 0.4f);
+//        ObjectAnimator animatorScaleY = ObjectAnimator.ofFloat(img, "scaleY", 1f, 0.4f);
+//        AnimatorSet moveAnimatorSet = new AnimatorSet();
+//        moveAnimatorSet.playTogether(animatorX, animatorY, animatorScaleX, animatorScaleY);
+//        moveAnimatorSet.setDuration(1000);
+//        // 移动到左下角后向左移动并消失
+//        ObjectAnimator animatorDisappearAlpha = ObjectAnimator.ofFloat(img, "alpha", 1f, 1f, 1f, 0.5f, 0f);
+//        animatorDisappearAlpha.setDuration(1500);
+//        AnimatorSet animatorSet = new AnimatorSet();
+//        animatorSet.playSequentially(moveAnimatorSet, animatorDisappearAlpha);
+//        animatorSet.start();
+//        // 播放完动画后删除添加的ImageView，避免多次截屏后卡顿
+//        animatorSet.addListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                super.onAnimationEnd(animation);
+//                arBody.removeView(img);
+//            }
+//        });
+//        // JPEG压缩
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+//        byte[] bytes = baos.toByteArray();
+//        bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//        //保存到数据库
+//        ARNote arNote = new ARNote();
+//        arNote.setTitle("测试");
+//        arNote.setImg(bytes);
+//        arNote.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
+//        arNote.setCreateTime(LocalDateTime.now());
+//        ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
+//        arNoteDao.insertARNotes(arNote);
+//        return bitmap;
+//    }
 }
 
 /**

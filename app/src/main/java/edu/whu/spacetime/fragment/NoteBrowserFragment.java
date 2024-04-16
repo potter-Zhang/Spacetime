@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -74,8 +75,8 @@ public class NoteBrowserFragment extends Fragment {
     // 当前选中的笔记本
     private Notebook currentNotebook;
 
-    // private NoteListAdapter noteListAdapter;
-    private NoteRecyclerAdapter noteListAdapter;
+    private NoteListAdapter noteListAdapter;
+    // private NoteRecyclerAdapter noteListAdapter;
 
     public NoteBrowserFragment() {
         // Required empty public constructor
@@ -186,39 +187,37 @@ public class NoteBrowserFragment extends Fragment {
      * 设置要显示的笔记，绑定ListView中item的点击和长按事件
      */
     private void setNoteList() {
-        RecyclerView noteListView = fragmentView.findViewById(R.id.list_note);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        noteListView.setLayoutManager(linearLayoutManager);
+        // RecyclerView noteListView = fragmentView.findViewById(R.id.list_note);
+        ListView noteListView = fragmentView.findViewById(R.id.list_note);
         List<Note> noteList = noteDao.queryAllInNotebook(currentNotebook.getNotebookId());
-        noteListAdapter = new NoteRecyclerAdapter(getContext(), noteList);
+        noteListAdapter = new NoteListAdapter(getContext(), R.layout.item_note_list, noteList);
         noteListView.setAdapter(noteListAdapter);
         TextView tvNotebookNumber = fragmentView.findViewById(R.id.tv_notebookNumber);
         tvNotebookNumber.setText(String.format("共%d篇笔记", noteList.size()));
 
-        // 长按进入编辑模式，显示复选框
-        noteListAdapter.setOnRecyclerItemLongClickListener((view, note) -> {
-            if (!noteListAdapter.isAtEditMode()) {
-                noteListAdapter.editMode();
-                noteListAdapter.notifyDataSetChanged();
-                CheckBox checkBox = view.findViewById(R.id.check_note);
-                checkBox.setChecked(true);
-                fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.VISIBLE);
-            }
-        });
-        noteListAdapter.setOnRecyclerItemClickListener((view, note) -> {
+        noteListView.setOnItemClickListener((parent, view, position, id) -> {
+            Note note = noteListAdapter.getItem(position);
             // 编辑模式下点击item就选中checkbox，否则进入编辑器
             if (noteListAdapter.isAtEditMode()) {
                 CheckBox checkBox = view.findViewById(R.id.check_note);
                 checkBox.toggle();
                 if (checkBox.isChecked()) {
-                    noteListAdapter.addCheckedNote((Note) note);
+                    noteListAdapter.addCheckedNote(note);
                 } else {
-                    noteListAdapter.removeCheckedNote((Note) note);
+                    noteListAdapter.removeCheckedNote(note);
                 }
             } else {
-                jump2Editor((Note) note, null);
+                jump2Editor(note, null);
             }
+        });
+
+        noteListView.setOnItemLongClickListener((parent, view, position, id) -> {
+            if (!noteListAdapter.isAtEditMode()) {
+                noteListAdapter.editMode();
+                noteListAdapter.notifyDataSetChanged();
+                fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.VISIBLE);
+            }
+            return true;
         });
 
         // 取消按钮，退出编辑模式
