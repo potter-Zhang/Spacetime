@@ -51,6 +51,7 @@ dependencies {
     implementation("androidx.room:room-common:2.6.1")
     implementation("androidx.room:room-runtime:2.6.1")
     implementation(files("libs/poishadow-all.jar"))
+    implementation("androidx.activity:activity:1.8.0")
     testImplementation("junit:junit:4.13.2")
     implementation("androidx.databinding:databinding-runtime:8.3.0")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))

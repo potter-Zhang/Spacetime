@@ -105,6 +105,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
                 android:layout_alignParentEnd="true"
+                android:entries="@array/gender"
                 android:spinnerMode="dropdown" />
 
         </RelativeLayout>
@@ -125,13 +126,14 @@
                 android:layout_centerVertical="true" />
 
             <TextView
+                android:id="@+id/user_tele"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
                 android:layout_toStartOf="@+id/user_tele_entry"
-                android:text="13828485016"
+                android:text="15116760419"
                 android:textSize="18sp" />
 
             <ImageView
@@ -161,6 +163,7 @@
                 android:layout_centerVertical="true" />
 
             <TextView
+                android:id="@+id/user_region"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -172,78 +175,6 @@
 
             <ImageView
                 android:id="@+id/user_region_entry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/user_arrow_right"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="20dp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/user_change_account_rl"
-            android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true">
-
-            <TextView
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="切换账号"
-                android:textSize="18sp"
-                android:layout_marginStart="30dp"
-                android:layout_centerVertical="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="30dp"
-                android:layout_toStartOf="@+id/user_change_account_entry"
-                android:text=""
-                android:textSize="18sp" />
-
-            <ImageView
-                android:id="@+id/user_change_account_entry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/user_arrow_right"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="20dp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/user_auxiliary_rl"
-            android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true">
-
-            <TextView
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="辅助功能"
-                android:textSize="18sp"
-                android:layout_marginStart="30dp"
-                android:layout_centerVertical="true" />
-
-            <TextView
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="30dp"
-                android:layout_toStartOf="@+id/user_auxiliary_entry"
-                android:text=""
-                android:textSize="18sp" />
-
-            <ImageView
-                android:id="@+id/user_auxiliary_entry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/user_arrow_right"
