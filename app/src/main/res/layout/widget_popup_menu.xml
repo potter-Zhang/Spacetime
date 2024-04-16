@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.xuexiang.xui.widget.layout.XUILinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/shape_popup_menu_small"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+    app:xui_radius="10dp">
     <TextView
         android:id="@+id/tv_rename"
         android:layout_width="wrap_content"
@@ -31,4 +32,4 @@
         android:padding="10dp"
         android:background="@drawable/selector_list_item"
         android:textColor="@color/xui_config_color_red"/>
-</LinearLayout>
+</com.xuexiang.xui.widget.layout.XUILinearLayout>
