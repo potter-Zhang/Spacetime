@@ -16,9 +16,14 @@
 
 package edu.whu.spacetime.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.media.Image;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
@@ -27,6 +32,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -78,6 +85,7 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 import com.lxj.xpopup.XPopup;
+import com.xuexiang.xui.widget.imageview.RadiusImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -946,17 +954,16 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
         int height = surfaceView.getHeight();
         int width = surfaceView.getWidth();
         int bt[] = new int[width * height];
-        // Bitmap bitmap = Bitmap.createBitmap(surfaceView.getWidth(), surfaceView.getHeight(), Bitmap.Config.ARGB_8888);
         int pixelCount = surfaceView.getHeight() * surfaceView.getWidth();
         int[] pixels = new int[pixelCount];
         surfaceView.queueEvent(() -> {
             GLES30.glReadPixels(0 , 0, surfaceView.getWidth(), surfaceView.getHeight(),GLES30.GL_RGBA,GLES30.GL_UNSIGNED_BYTE, IntBuffer.wrap(pixels));
         });
-        // surfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        // surfaceView.requestRender();
+
         surfaceView.post(() -> {
-            for (int i = 0, k = 0; i < surfaceView.getHeight(); i++, k++) {
-                for (int j = 0; j < surfaceView.getWidth(); j++) {
+            // OpenGl的Bitmap和android的Bitmap不适配，需要转换
+            for (int i = 0, k = 0; i < height; i++, k++) {
+                for (int j = 0; j < width; j++) {
                     int pix = pixels[i * width + j];
                     int pb = (pix >> 16) & 0xff;
                     int pr = (pix << 16) & 0x00ff0000;
@@ -964,73 +971,57 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                     bt[(height - k - 1) * width + j] = pix1;
                 }
             }
-
             Bitmap bitmap = Bitmap.createBitmap(bt, width, height, Bitmap.Config.ARGB_8888);
-            // bitmap.copyPixelsFromBuffer(IntBuffer.wrap(pixels));
-            // 在这里可以使用截图结果进行后续处理或保存操作
             // JPEG压缩
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             byte[] bytes = baos.toByteArray();
-            //保存到数据库
-            ARNote arNote = new ARNote();
-            arNote.setTitle("测试");
-            arNote.setImg(bytes);
-            arNote.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
-            arNote.setCreateTime(LocalDateTime.now());
-            ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
-            arNoteDao.insertARNotes(arNote);
+
+            // 展示动画
+            RadiusImageView imageView = new RadiusImageView(this);
+            imageView.setBorderColor(Color.WHITE);
+            imageView.setBorderWidth(20);
+            imageView.setImageBitmap(bitmap);
+            imageView.setCornerRadius(40);
+            RelativeLayout arBody = findViewById(R.id.layout_ar_main);
+            arBody.addView(imageView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            // 截图缩放移动到左下角
+            ObjectAnimator animatorX = ObjectAnimator.ofFloat(imageView, "translationX", 0f,-60f,-120f,-180f,-240f, -300f);
+            ObjectAnimator animatorY = ObjectAnimator.ofFloat(imageView, "translationY", 0f,120f,240f,360f,480f);
+            ObjectAnimator animatorScaleX = ObjectAnimator.ofFloat(imageView, "scaleX", 1f, 0.3f);
+            ObjectAnimator animatorScaleY = ObjectAnimator.ofFloat(imageView, "scaleY", 1f, 0.3f);
+            AnimatorSet moveAnimatorSet = new AnimatorSet();
+            moveAnimatorSet.playTogether(animatorX, animatorY, animatorScaleX, animatorScaleY);
+            moveAnimatorSet.setDuration(1000);
+            // 消失
+            ObjectAnimator animatorDisappearAlpha = ObjectAnimator.ofFloat(imageView, "alpha", 1f, 1f, 1f, 0.5f, 0f);
+            animatorDisappearAlpha.setDuration(1000);
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playSequentially(moveAnimatorSet, animatorDisappearAlpha);
+            animatorSet.start();
+            InputDialog inputDialog = new InputDialog(this, "AR笔记标题");
+            XPopup.Builder builder = new XPopup.Builder(this).isDestroyOnDismiss(true).autoFocusEditText(false);
+            animatorSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    // 播放完动画后删除添加的ImageView，避免多次截屏后卡顿
+                    super.onAnimationEnd(animation);
+                    arBody.removeView(imageView);
+                    //保存到数据库
+                    ARNote arNote = new ARNote();
+                    builder.asCustom(inputDialog).show();
+                    inputDialog.setOnInputConfirmListener(text -> {
+                        arNote.setTitle(text);
+                        arNote.setImg(bytes);
+                        arNote.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
+                        arNote.setCreateTime(LocalDateTime.now());
+                        ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
+                        arNoteDao.insertARNotes(arNote);
+                    });
+                }
+            });
         });
     }
-
-//        public Bitmap getScreenshot() {
-//        View view = getWindow().getDecorView();
-//        // View view = findViewById(R.id.surfaceview);
-//        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
-//        Canvas canvas = new Canvas(bitmap);
-//        view.draw(canvas);
-//        // 添加一个ImageView来展示截屏动画
-//        ImageView img = new ImageView(this);
-//        img.setImageBitmap(bitmap);
-//        RelativeLayout arBody = findViewById(R.id.layout_ar_main);
-//        arBody.addView(img, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-//        // 截图缩放移动到左下角
-//        ObjectAnimator animatorX = ObjectAnimator.ofFloat(img, "translationX", 0f,-60f,-120f,-180f,-240f);
-//        ObjectAnimator animatorY = ObjectAnimator.ofFloat(img, "translationY", 0f,120f,240f,360f,480f);
-//        ObjectAnimator animatorScaleX = ObjectAnimator.ofFloat(img, "scaleX", 1f, 0.4f);
-//        ObjectAnimator animatorScaleY = ObjectAnimator.ofFloat(img, "scaleY", 1f, 0.4f);
-//        AnimatorSet moveAnimatorSet = new AnimatorSet();
-//        moveAnimatorSet.playTogether(animatorX, animatorY, animatorScaleX, animatorScaleY);
-//        moveAnimatorSet.setDuration(1000);
-//        // 移动到左下角后向左移动并消失
-//        ObjectAnimator animatorDisappearAlpha = ObjectAnimator.ofFloat(img, "alpha", 1f, 1f, 1f, 0.5f, 0f);
-//        animatorDisappearAlpha.setDuration(1500);
-//        AnimatorSet animatorSet = new AnimatorSet();
-//        animatorSet.playSequentially(moveAnimatorSet, animatorDisappearAlpha);
-//        animatorSet.start();
-//        // 播放完动画后删除添加的ImageView，避免多次截屏后卡顿
-//        animatorSet.addListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                super.onAnimationEnd(animation);
-//                arBody.removeView(img);
-//            }
-//        });
-//        // JPEG压缩
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-//        byte[] bytes = baos.toByteArray();
-//        bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//        //保存到数据库
-//        ARNote arNote = new ARNote();
-//        arNote.setTitle("测试");
-//        arNote.setImg(bytes);
-//        arNote.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
-//        arNote.setCreateTime(LocalDateTime.now());
-//        ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
-//        arNoteDao.insertARNotes(arNote);
-//        return bitmap;
-//    }
 }
 
 /**
