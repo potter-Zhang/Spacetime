@@ -15,6 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.lxj.xpopup.XPopup;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 
 import edu.whu.spacetime.R;
@@ -22,6 +28,7 @@ import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.dao.NoteDao;
 import edu.whu.spacetime.domain.Note;
 import edu.whu.spacetime.jp.wasabeef.richeditor.RichEditor;
+import edu.whu.spacetime.util.PickUtils;
 import edu.whu.spacetime.widget.AIChatPopup;
 import edu.whu.spacetime.widget.ConfirmDialog;
 
@@ -173,26 +180,34 @@ public class EditorActivity extends AppCompatActivity {
         String notebookName = bundle.getString("notebookName");
         TextView tvCurrentNotebook = findViewById(R.id.tv_current_notebook);
         tvCurrentNotebook.setText(notebookName);
-        // 打开笔记时传入的Note不为空，新建笔记时则传入null
+        // 打开笔记时传入的Note不为空，新建笔记时则传入null，展示特定内容时传入tmpPath
         if (note != null) {
             mEditor.setHtml(note.getContent());
             mPreview.setText(note.getContent());
             editNoteTitle.setText(note.getTitle());
             wordCount.setText(note.getPlainText().length() + "字");
+            // 设置退出动画
             this.exitAnim = R.anim.move_out_to_right;
             this.enterAnim = R.anim.small_move_to_right;
+            changed = false;
         } else {
-            String content = bundle.getString("content");
-            if (content != null) {
+            String tmpPath = bundle.getString("tmpPath");
+            if (tmpPath != null) {
+                String content;
+                try {
+                    content = PickUtils.readFromTXT(tmpPath);
+                } catch (IOException e) {
+                    content = "读取失败！";
+                }
                 mEditor.setHtml(content);
                 mPreview.setText(content);
                 wordCount.setText(content.length() + "字");
+                changed = true;
             }
-
+            // 设置退出动画
             this.exitAnim = R.anim.move_out_to_bottom;
             this.enterAnim = R.anim.zoom_in;
         }
-        changed = false;
         bindBtnFunction();
     }
 

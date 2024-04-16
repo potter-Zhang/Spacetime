@@ -29,6 +29,13 @@ public class AIChatPopup extends BottomPopupView {
     private AIChatService chatService;
 
     /**
+     * 用户是否已经联网
+     */
+    private boolean online;
+
+    private String noteContent;
+
+    /**
      * 创建用于AI问答的弹出对话框
      * @param context 上下文
      * @param noteContent 传给AI的笔记内容
@@ -36,9 +43,12 @@ public class AIChatPopup extends BottomPopupView {
     public AIChatPopup(@NonNull Context context, String noteContent) {
         super(context);
         chatService = new AIChatService();
+        this.noteContent = noteContent;
         try {
             chatService.initChat(context, noteContent);
+            online = true;
         } catch (NetworkErrorException e) {
+            online = false;
             XToast.error(context, "网络未连接！").show();
         }
     }
@@ -54,6 +64,16 @@ public class AIChatPopup extends BottomPopupView {
         setMsgList();
         EditText editSend = findViewById(R.id.edit_send_msg);
         findViewById(R.id.btn_send_msg).setOnClickListener(v -> {
+            // 未联网时重试
+            if (!online) {
+                try {
+                    chatService.initChat(getContext(), noteContent);
+                    online = true;
+                } catch (NetworkErrorException e) {
+                    XToast.error(getContext(), "网络未连接！").show();
+                    return;
+                }
+            }
             String msg = editSend.getText().toString();
             // 添加用户消息
             ChatMessage userMsg = new ChatMessage(ChatMessage.USER, msg);
