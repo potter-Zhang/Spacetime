@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -271,16 +272,16 @@ public class NoteBrowserFragment extends Fragment {
     /**
      * 跳转到编辑器
      * @param note 被点击选项对应的Note类，如果是新建则传入null
-     * @param content 如果没有Note类，可以设置该字段来展示特定内容
+     * @param tmpPath 如果没有Note类，可以设置该字段来展示临时文件内的内容
      */
-    private void jump2Editor(@Nullable Note note, String content) {
+    private void jump2Editor(@Nullable Note note, String tmpPath) {
         Intent intent = new Intent(getActivity(), EditorActivity.class);
         Bundle bundle = new Bundle();
 
         bundle.putSerializable("note", note);
         bundle.putInt("notebookId", currentNotebook.getNotebookId());
         bundle.putString("notebookName", currentNotebook.getName());
-        bundle.putString("content", content);
+        bundle.putString("tmpPath", tmpPath);
         intent.putExtras(bundle);
 
         startActivity(intent);
@@ -337,8 +338,10 @@ public class NoteBrowserFragment extends Fragment {
                     result = convertService.ppt2Text(file);
                     file.delete();
                 }
+                // result可能很大，导致跳转activity失败，因此写入临时文件，新activity也从临时文件内读取
+                String tmpText = PickUtils.getTMPPath(getContext(), result);
                 fragmentView.findViewById(R.id.progress_importing).setVisibility(View.INVISIBLE);
-                jump2Editor(null, result);
+                jump2Editor(null, tmpText);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

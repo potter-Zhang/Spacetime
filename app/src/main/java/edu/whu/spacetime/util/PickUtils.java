@@ -18,11 +18,16 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.file.Files;
 
 public class PickUtils {
     public static final String DOCUMENTS_DIR = "documents";
@@ -290,5 +295,31 @@ public class PickUtils {
         stream.close();
         outputStream.close();
         return path;
+    }
+
+    /**
+     * 创建txt临时文件来存储content
+     * @param context 上下文
+     * @param content 要写入的内容
+     * @return 临时文件的路径
+     */
+    public static String getTMPPath(Context context, String content) throws IOException {
+        String path = context.getCacheDir() + "tmp.txt";
+        OutputStream outputStream = new FileOutputStream(path);
+        outputStream.write(content.getBytes());
+        outputStream.close();
+        return path;
+    }
+
+    public static String readFromTXT(String path) throws IOException {
+        File file = new File(path);
+        InputStream in = Files.newInputStream(file.toPath());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            stringBuilder.append(line);
+        }
+        return stringBuilder.toString();
     }
 }
