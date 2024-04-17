@@ -4,8 +4,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -14,7 +16,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopupext.listener.CityPickerListener;
+import com.lxj.xpopupext.listener.TimePickerListener;
+import com.lxj.xpopupext.popup.CityPickerPopup;
+import com.lxj.xpopupext.popup.TimePickerPopup;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -62,12 +71,27 @@ public class UserAccountActivity extends AppCompatActivity implements View.OnCli
         }
         else if (id == R.id.user_region_rl)
         {
-            Intent intent = new Intent(this, UpdateUserInfoActivity.class);
-            Bundle bundle = new Bundle();
-            // 传递修改的属性类型
-            bundle.putString("info", "地区");
-            intent.putExtras(bundle);
-            startActivity(intent);
+            CityPickerPopup popup = new CityPickerPopup(UserAccountActivity.this);
+            popup.setCityPickerListener(new CityPickerListener() {
+                @Override
+                public void onCityConfirm(String province, String city, String area, View v) {
+                    Log.e("tag", province +" - " +city+" - " +area);
+                    Toast.makeText(UserAccountActivity.this, province +" - " +city+" - " +area, Toast.LENGTH_SHORT).show();
+                    region = province +" - " +city+" - " +area;
+                }
+                @Override
+                public void onCityChange(String province, String city, String area) {
+
+                }
+
+                @Override
+                public void onCancel() {
+
+                }
+            });
+            new XPopup.Builder(UserAccountActivity.this)
+                    .asCustom(popup)
+                    .show();
         }
         else if (id == R.id.user_exit_ll)
         {

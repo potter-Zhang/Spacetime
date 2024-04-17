@@ -1,0 +1,12 @@
+#
+#
+#
+
+newmtl 12973_anemone_flower 网格_12973_anemone_flower
+illum 2
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.090000 0.090000 0.090000
+Ns 26.000000
+map_Kd 12973_anemone_flower_diff.jpg
+

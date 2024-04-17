@@ -1,0 +1,19 @@
+#
+#
+#
+
+newmtl toy_dog_body 网格_toy_dog_body
+illum 2
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.034900 0.034900 0.034900
+Ns 10.000000
+map_Kd 11706_toy_dog_diffuse_v2.jpg
+
+newmtl toy_dog_parts 网格_toy_dog_parts
+illum 2
+Ka 0.019600 0.019600 0.019600
+Kd 0.019600 0.019600 0.019600
+Ks 0.828000 0.828000 0.828000
+Ns 49.000000
+

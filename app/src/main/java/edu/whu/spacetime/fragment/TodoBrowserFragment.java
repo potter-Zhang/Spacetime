@@ -128,8 +128,8 @@ public class TodoBrowserFragment extends Fragment {
     private void removeItemWithAnimation(NoScrollListView listView, TodoListAdapter adapter, Todo todo) {
         int position = adapter.getPosition(todo);
         View view = listView.getChildAt(position);
-        Animator anim = ObjectAnimator.ofFloat(view, "translationX", 0, -1500);
-        anim.setDuration(500);
+        Animator anim = ObjectAnimator.ofFloat(view, "translationX", 0,-50, -100, -250, -500,-750, -1000, -1500);
+        anim.setDuration(1000);
         anim.start();
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
