@@ -105,7 +105,12 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
                 android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
                 android:entries="@array/gender"
+                android:theme="@style/gender_spinner_style"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:dropDownVerticalOffset="30dp"
                 android:spinnerMode="dropdown" />
 
         </RelativeLayout>

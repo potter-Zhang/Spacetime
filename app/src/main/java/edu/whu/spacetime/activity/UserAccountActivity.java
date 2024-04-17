@@ -78,6 +78,7 @@ public class UserAccountActivity extends AppCompatActivity implements View.OnCli
                     Log.e("tag", province +" - " +city+" - " +area);
                     Toast.makeText(UserAccountActivity.this, province +" - " +city+" - " +area, Toast.LENGTH_SHORT).show();
                     region = province +" - " +city+" - " +area;
+                    user_region_tv.setText(region);
                 }
                 @Override
                 public void onCityChange(String province, String city, String area) {

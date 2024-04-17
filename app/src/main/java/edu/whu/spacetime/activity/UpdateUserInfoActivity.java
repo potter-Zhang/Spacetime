@@ -23,7 +23,6 @@ import edu.whu.spacetime.domain.User;
 
 public class UpdateUserInfoActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static String UPDATE_TYPE;
     ImageButton back_btn;
     private String property;
     TextView title;
@@ -65,11 +64,6 @@ public class UpdateUserInfoActivity extends AppCompatActivity implements View.On
                     Toast.makeText(getBaseContext(), "请输入正确的手机号", Toast.LENGTH_LONG).show();
                 }
             }
-            else if (Objects.equals(property, "地区") && !newValue.equals(UserAccountActivity.region))
-            {
-                UserAccountActivity.region = newValue;
-                finish();
-            }
         }
     }
 
@@ -91,10 +85,6 @@ public class UpdateUserInfoActivity extends AppCompatActivity implements View.On
         else if (Objects.equals(property, "手机"))
         {
             user_property.setText(UserAccountActivity.tele);
-        }
-        else if (Objects.equals(property, "地区"))
-        {
-            user_property.setText(UserAccountActivity.region);
         }
     }
 
