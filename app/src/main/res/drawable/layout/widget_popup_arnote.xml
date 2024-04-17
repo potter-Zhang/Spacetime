@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="15dp">
+
+    <com.xuexiang.xui.widget.button.ButtonView
+        android:id="@+id/btn_arnote_del"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="@string/delete"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:letterSpacing="0.1"
+        app:textSolidColor="@color/pressed_gray"
+        app:textSelectedSolidColor="@color/light_gray"
+        android:padding="7dp"
+        android:gravity="center"
+        app:textRadius="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_arnote_edit"/>
+
+    <com.xuexiang.xui.widget.button.ButtonView
+        android:id="@+id/btn_arnote_edit"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="@string/editTitle"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:letterSpacing="0.1"
+        app:textSolidColor="@color/pressed_gray"
+        app:textSelectedSolidColor="@color/light_gray"
+        android:padding="7dp"
+        android:gravity="center"
+        app:textRadius="5dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_arnote_del"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

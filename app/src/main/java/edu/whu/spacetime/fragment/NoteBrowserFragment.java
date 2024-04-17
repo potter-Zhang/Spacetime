@@ -5,11 +5,13 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -74,8 +76,8 @@ public class NoteBrowserFragment extends Fragment {
     // 当前选中的笔记本
     private Notebook currentNotebook;
 
-    // private NoteListAdapter noteListAdapter;
-    private NoteRecyclerAdapter noteListAdapter;
+    private NoteListAdapter noteListAdapter;
+    // private NoteRecyclerAdapter noteListAdapter;
 
     public NoteBrowserFragment() {
         // Required empty public constructor
@@ -186,39 +188,37 @@ public class NoteBrowserFragment extends Fragment {
      * 设置要显示的笔记，绑定ListView中item的点击和长按事件
      */
     private void setNoteList() {
-        RecyclerView noteListView = fragmentView.findViewById(R.id.list_note);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        noteListView.setLayoutManager(linearLayoutManager);
+        // RecyclerView noteListView = fragmentView.findViewById(R.id.list_note);
+        ListView noteListView = fragmentView.findViewById(R.id.list_note);
         List<Note> noteList = noteDao.queryAllInNotebook(currentNotebook.getNotebookId());
-        noteListAdapter = new NoteRecyclerAdapter(getContext(), noteList);
+        noteListAdapter = new NoteListAdapter(getContext(), R.layout.item_note_list, noteList);
         noteListView.setAdapter(noteListAdapter);
         TextView tvNotebookNumber = fragmentView.findViewById(R.id.tv_notebookNumber);
         tvNotebookNumber.setText(String.format("共%d篇笔记", noteList.size()));
 
-        // 长按进入编辑模式，显示复选框
-        noteListAdapter.setOnRecyclerItemLongClickListener((view, note) -> {
-            if (!noteListAdapter.isAtEditMode()) {
-                noteListAdapter.editMode();
-                noteListAdapter.notifyDataSetChanged();
-                CheckBox checkBox = view.findViewById(R.id.check_note);
-                checkBox.setChecked(true);
-                fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.VISIBLE);
-            }
-        });
-        noteListAdapter.setOnRecyclerItemClickListener((view, note) -> {
+        noteListView.setOnItemClickListener((parent, view, position, id) -> {
+            Note note = noteListAdapter.getItem(position);
             // 编辑模式下点击item就选中checkbox，否则进入编辑器
             if (noteListAdapter.isAtEditMode()) {
                 CheckBox checkBox = view.findViewById(R.id.check_note);
                 checkBox.toggle();
                 if (checkBox.isChecked()) {
-                    noteListAdapter.addCheckedNote((Note) note);
+                    noteListAdapter.addCheckedNote(note);
                 } else {
-                    noteListAdapter.removeCheckedNote((Note) note);
+                    noteListAdapter.removeCheckedNote(note);
                 }
             } else {
-                jump2Editor((Note) note, null);
+                jump2Editor(note, null);
             }
+        });
+
+        noteListView.setOnItemLongClickListener((parent, view, position, id) -> {
+            if (!noteListAdapter.isAtEditMode()) {
+                noteListAdapter.editMode();
+                noteListAdapter.notifyDataSetChanged();
+                fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.VISIBLE);
+            }
+            return true;
         });
 
         // 取消按钮，退出编辑模式
@@ -272,16 +272,16 @@ public class NoteBrowserFragment extends Fragment {
     /**
      * 跳转到编辑器
      * @param note 被点击选项对应的Note类，如果是新建则传入null
-     * @param content 如果没有Note类，可以设置该字段来展示特定内容
+     * @param tmpPath 如果没有Note类，可以设置该字段来展示临时文件内的内容
      */
-    private void jump2Editor(@Nullable Note note, String content) {
+    private void jump2Editor(@Nullable Note note, String tmpPath) {
         Intent intent = new Intent(getActivity(), EditorActivity.class);
         Bundle bundle = new Bundle();
 
         bundle.putSerializable("note", note);
         bundle.putInt("notebookId", currentNotebook.getNotebookId());
         bundle.putString("notebookName", currentNotebook.getName());
-        bundle.putString("content", content);
+        bundle.putString("tmpPath", tmpPath);
         intent.putExtras(bundle);
 
         startActivity(intent);
@@ -338,8 +338,10 @@ public class NoteBrowserFragment extends Fragment {
                     result = convertService.ppt2Text(file);
                     file.delete();
                 }
+                // result可能很大，导致跳转activity失败，因此写入临时文件，新activity也从临时文件内读取
+                String tmpText = PickUtils.getTMPPath(getContext(), result);
                 fragmentView.findViewById(R.id.progress_importing).setVisibility(View.INVISIBLE);
-                jump2Editor(null, result);
+                jump2Editor(null, tmpText);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

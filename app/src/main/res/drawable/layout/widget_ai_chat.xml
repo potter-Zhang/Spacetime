@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="400dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/shape_ai_result_background">
+
+    <ListView
+        android:id="@+id/list_chat_msg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:divider="@null"
+        android:dividerHeight="10dp"
+        android:layout_margin="15dp"
+         />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+        <EditText
+            android:id="@+id/edit_send_msg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:focusedByDefault="false"
+            android:theme="@style/MyEditTextStyle"
+            android:background="@drawable/shape_edittext_with_border"/>
+
+        <com.xuexiang.xui.widget.button.ButtonView
+            android:id="@+id/btn_send_msg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            app:textSolidColor="@color/main_theme"
+            app:textSelectedSolidColor="@color/main_theme_dark"
+            app:textRadius="10dp"
+            android:text="发送"
+            android:textColor="@color/white"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+</LinearLayout>

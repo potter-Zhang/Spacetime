@@ -81,6 +81,7 @@ public class NoteListAdapter extends ArrayAdapter<Note> {
             viewHolder.checkNote.setVisibility(View.VISIBLE);
         } else {
             viewHolder.checkNote.setVisibility(View.GONE);
+            viewHolder.checkNote.setChecked(false);
         }
         viewHolder.checkNote.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -103,6 +104,7 @@ public class NoteListAdapter extends ArrayAdapter<Note> {
     public void exitEditMode() {
         atEditMode = false;
         checkedNote.clear();
+        notifyDataSetChanged();
     }
 
     public void addCheckedNote(Note note) {

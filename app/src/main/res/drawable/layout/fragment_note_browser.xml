@@ -119,18 +119,11 @@
                 android:id="@+id/list_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:dividerHeight="6dp"
-                android:divider="@color/transparent"
+                android:dividerHeight="0dp"
+                android:divider="@color/light_gray"
                 android:paddingStart="6dp"
                 android:paddingTop="6dp"
                 android:paddingEnd="6dp"/>
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:id="@+id/list_note"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:paddingStart="6dp"-->
-<!--                android:paddingTop="6dp"-->
-<!--                android:paddingEnd="6dp"/>-->
         </LinearLayout>
 
         <com.getbase.floatingactionbutton.FloatingActionsMenu
