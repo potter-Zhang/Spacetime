@@ -24,12 +24,12 @@
 
         <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
             android:id="@+id/edit_username"
-            android:layout_width="match_parent"
+            android:layout_width="260dp"
             android:layout_height="46dp"
             android:layout_gravity="center"
             android:textAlignment="center"
             app:met_hideUnderline="true"
-            app:met_floatingLabel="normal"
+            app:met_floatingLabel="none"
             android:textSize="20sp"
             android:hint="用户名" />
 
@@ -43,14 +43,21 @@
 
         <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
             android:id="@+id/edit_password"
-            android:layout_width="match_parent"
+            android:layout_width="260dp"
             android:layout_height="46dp"
             android:layout_gravity="center"
             android:textAlignment="center"
             app:met_hideUnderline="true"
-            app:met_floatingLabel="normal"
+            app:met_floatingLabel="none"
             android:textSize="20sp"
             android:hint="密码" />
+
+        <ImageButton
+            android:id="@+id/preview"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end|center"
+            android:src="@drawable/preview_open"/>
 
     </androidx.cardview.widget.CardView>
 
@@ -94,5 +101,6 @@
         android:layout_marginStart="10dp"
         android:text="调试"
         android:textSize="24sp"
+        android:visibility="gone"
         android:background="@drawable/selector_main_theme_btn"/>
 </LinearLayout>

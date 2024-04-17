@@ -170,14 +170,14 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/user_ll_collection_count"
+                        android:id="@+id/user_ll_todo_count"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/user_collection_count"
+                            android:id="@+id/user_todo_count"
                             android:layout_width="wrap_content"
                             android:layout_height="40dp"
                             android:layout_gravity="center_horizontal"
@@ -187,12 +187,12 @@
                             android:textSize="20sp" />
 
                         <TextView
-                            android:id="@+id/user_tv_collection"
+                            android:id="@+id/user_todo_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="20dp"
                             android:layout_gravity="center_horizontal"
                             android:gravity="center"
-                            android:text="收藏"
+                            android:text="代办"
                             android:textColor="#333333"
                             android:textSize="16sp" />
 
@@ -411,38 +411,6 @@
 <!--                </RelativeLayout>-->
 
                 <RelativeLayout
-                    android:id="@+id/user_setting_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:clickable="true">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_user_setting"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp" />
-
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:text="设置"
-                        android:textSize="16sp"
-                        android:layout_marginStart="60dp"
-                        android:layout_centerVertical="true" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/user_arrow_right"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="20dp" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
                     android:id="@+id/user_checkUpdate_btn"
                     android:layout_width="match_parent"
                     android:layout_height="46dp"
@@ -492,6 +460,38 @@
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
                         android:text="关于"
+                        android:textSize="16sp"
+                        android:layout_marginStart="60dp"
+                        android:layout_centerVertical="true" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/user_arrow_right"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="20dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/user_setting_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_user_setting"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp" />
+
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="设置"
                         android:textSize="16sp"
                         android:layout_marginStart="60dp"
                         android:layout_centerVertical="true" />

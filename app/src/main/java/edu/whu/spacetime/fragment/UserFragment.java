@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.xuexiang.xui.widget.imageview.IconImageView;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.whu.spacetime.R;
@@ -27,6 +29,8 @@ import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.activity.UserAccountActivity;
 import edu.whu.spacetime.activity.UserCalendarActivity;
 import edu.whu.spacetime.activity.UserSettingActivity;
+import edu.whu.spacetime.dao.NoteDao;
+import edu.whu.spacetime.dao.TodoDao;
 import edu.whu.spacetime.domain.User;
 
 /**
@@ -40,9 +44,10 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout account_btn, user_setting_btn, user_update_btn, user_calendar_btn;
     private IconImageView setting_button;
     private View importWindow;
-    private TextView user_name, user_id;
+    private TextView user_name, user_id, user_using_days, user_note_count, user_todo_count;
     private User user;
-
+    private NoteDao noteDao;
+    private TodoDao todoDao;
 
     public UserFragment() {
         // Required empty public constructor
@@ -81,6 +86,8 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initView(){
+        noteDao = SpacetimeApplication.getInstance().getDatabase().getNoteDao();
+        todoDao = SpacetimeApplication.getInstance().getDatabase().getTodoDao();
         // 初始化user以及个人信息
         user = SpacetimeApplication.getInstance().getCurrentUser();
         user_name = rootView.findViewById(R.id.user_name);
@@ -95,7 +102,13 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         user_setting_btn = rootView.findViewById(R.id.user_setting_btn);
         user_update_btn = rootView.findViewById(R.id.user_checkUpdate_btn);
         user_calendar_btn = rootView.findViewById(R.id.user_calendar_btn);
+        user_using_days = rootView.findViewById(R.id.user_using_days);
+        user_note_count = rootView.findViewById(R.id.user_note_count);
+        user_todo_count = rootView.findViewById(R.id.user_todo_count);
 
+        user_using_days.setText(String.valueOf(getTimeGap(LocalDateTime.now() ,user.getCreateTime())));
+        user_note_count.setText(String.valueOf(noteDao.queryAll().size()));
+        user_todo_count.setText(String.valueOf(todoDao.getAllTodo(user.getUserId()).size()));
         user_profile.setOnClickListener(this);
         account_btn.setOnClickListener(this);
         setting_button.setOnClickListener(this);
@@ -119,5 +132,57 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             Intent intent2 = new Intent(getContext(), UserCalendarActivity.class);
             startActivity(intent2);
         }
+    }
+
+    public int getTimeGap(LocalDateTime now, LocalDateTime createDay)
+    {
+        int[] d = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        int now_year = now.getYear();
+        int now_month = now.getMonth().getValue();
+        int now_day = now.getDayOfMonth();
+        int createDay_year = createDay.getYear();
+        int createDay_month = createDay.getMonth().getValue();
+        int createDay_day = createDay.getDayOfMonth();
+
+        // 得到两个日期相对于0000.0.0的日期差
+        long now_count = now_day, createDay_count = createDay_day;
+        for (int i = 0; i <= now_year; i ++ )
+        {
+            if ((i % 4 == 0 && i % 100 != 0) || i % 400 == 0)
+            {
+                now_count += 366;
+                if (i == now_year) d[2] = 29;
+            }
+            else
+            {
+                now_count += 365;
+                if (i == now_year) d[2] = 28;
+            }
+        }
+        for (int i = 1; i <= now_month; i ++ )
+            now_day += d[i];
+        for (int i = 0; i <= createDay_year; i ++ )
+        {
+            if ((i % 4 == 0 && i % 100 != 0) || i % 400 == 0)
+            {
+                createDay_count += 366;
+                if (i == createDay_year) d[2] = 29;
+            }
+            else
+            {
+                createDay_count += 365;
+                if (i == createDay_year) d[2] = 28;
+            }
+        }
+        for (int i = 1; i <= createDay_month; i ++ )
+            createDay_day += d[i];
+        return (int) (now_count - createDay_count + 1);
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        user_using_days.setText(String.valueOf(getTimeGap(LocalDateTime.now() ,user.getCreateTime())));
+        user_note_count.setText(String.valueOf(noteDao.queryAll().size()));
+        user_todo_count.setText(String.valueOf(todoDao.getAllTodo(user.getUserId()).size()));
     }
 }

@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.SpacetimeApplication;
+import edu.whu.spacetime.dao.UserDao;
 import edu.whu.spacetime.domain.User;
 
 public class UpdateUserInfoActivity extends AppCompatActivity implements View.OnClickListener {
@@ -29,6 +30,7 @@ public class UpdateUserInfoActivity extends AppCompatActivity implements View.On
     MaterialEditText user_property;
     Button save_btn;
     User user;
+    UserDao userDao;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,13 +52,15 @@ public class UpdateUserInfoActivity extends AppCompatActivity implements View.On
             if (Objects.equals(property, "我的昵称") && !newValue.equals(user.getUsername()))
             {
                 user.setUsername(newValue);
+                userDao.updateUser(user);
                 finish();
             }
-            else if (Objects.equals(property, "手机") && !newValue.equals(UserAccountActivity.tele))
+            else if (Objects.equals(property, "手机") && !newValue.equals(user.getPhone()))
             {
                 if (isValidPhoneNumber(newValue))
                 {
-                    UserAccountActivity.tele = newValue;
+                    user.setPhone(newValue);
+                    userDao.updateUser(user);
                     finish();
                 }
                 else
@@ -70,6 +74,7 @@ public class UpdateUserInfoActivity extends AppCompatActivity implements View.On
     private void initView()
     {
         user = SpacetimeApplication.getInstance().getCurrentUser();
+        userDao = SpacetimeApplication.getInstance().getDatabase().getUserDao();
         back_btn = findViewById(R.id.back_btn);
         title = findViewById(R.id.title);
         title.setText(property);
@@ -81,10 +86,15 @@ public class UpdateUserInfoActivity extends AppCompatActivity implements View.On
         if (Objects.equals(property, "我的昵称"))
         {
             user_property.setText(user.getUsername());
+            user_property.setHint("用户名");
+            user_property.setFloatingLabelText("用户名");
+
         }
         else if (Objects.equals(property, "手机"))
         {
-            user_property.setText(UserAccountActivity.tele);
+            user_property.setText(user.getPhone());
+            user_property.setHint("手机号");
+            user_property.setFloatingLabelText("手机号");
         }
     }
 

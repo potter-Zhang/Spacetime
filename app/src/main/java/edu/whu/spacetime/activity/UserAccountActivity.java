@@ -29,6 +29,7 @@ import java.util.Objects;
 
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.SpacetimeApplication;
+import edu.whu.spacetime.dao.UserDao;
 import edu.whu.spacetime.domain.User;
 import edu.whu.spacetime.widget.ImportDialog;
 
@@ -39,7 +40,7 @@ public class UserAccountActivity extends AppCompatActivity implements View.OnCli
     LinearLayout user_exit_btn;
     TextView user_name_tv, user_tele_tv, user_region_tv;
     User user;
-    static String tele, region;
+    UserDao userDao;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +78,9 @@ public class UserAccountActivity extends AppCompatActivity implements View.OnCli
                 public void onCityConfirm(String province, String city, String area, View v) {
                     Log.e("tag", province +" - " +city+" - " +area);
                     Toast.makeText(UserAccountActivity.this, province +" - " +city+" - " +area, Toast.LENGTH_SHORT).show();
-                    region = province +" - " +city+" - " +area;
+                    String region = province +" - " +city+" - " +area;
+                    user.setRegion(region);
+                    userDao.updateUser(user);
                     user_region_tv.setText(region);
                 }
                 @Override
@@ -104,6 +107,7 @@ public class UserAccountActivity extends AppCompatActivity implements View.OnCli
 
     void initView() {
         user = SpacetimeApplication.getInstance().getCurrentUser();
+        userDao = SpacetimeApplication.getInstance().getDatabase().getUserDao();
         back_btn = findViewById(R.id.back_btn);
         user_tele_tv = findViewById(R.id.user_tele);
         user_name_btn = findViewById(R.id.user_name_rl);
@@ -114,8 +118,8 @@ public class UserAccountActivity extends AppCompatActivity implements View.OnCli
         user_region_tv = findViewById(R.id.user_region);
         user_exit_btn = findViewById(R.id.user_exit_ll);
         user_name_tv.setText(user.getUsername());
-        tele = (String) user_tele_tv.getText();
-        region = (String) user_region_tv.getText();
+        user_region_tv.setText(user.getRegion());
+        user_tele_tv.setText(user.getPhone());
         back_btn.setOnClickListener(this);
         user_name_btn.setOnClickListener(this);
         user_gender_btn.setOnClickListener(this);
@@ -128,8 +132,7 @@ public class UserAccountActivity extends AppCompatActivity implements View.OnCli
     protected void onResume() {
         super.onResume();
         user = SpacetimeApplication.getInstance().getCurrentUser();
-        user_tele_tv.setText(tele);
+        user_tele_tv.setText(user.getPhone());
         user_name_tv.setText(user.getUsername());
-        user_region_tv.setText(region);
     }
 }

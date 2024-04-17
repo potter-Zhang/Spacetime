@@ -4,7 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
+import android.text.method.TransformationMethod;
 import android.view.View;
+import android.widget.ImageButton;
 
 import com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText;
 import com.xuexiang.xui.widget.toast.XToast;
@@ -19,12 +23,16 @@ import edu.whu.spacetime.domain.Notebook;
 import edu.whu.spacetime.domain.User;
 
 public class LoginActivity extends AppCompatActivity {
+    private boolean isHide = false;  //输入框密码是否是隐藏，默认为false
     private UserDao userDao;
     private MaterialEditText mEditTextUserName;
+    private ImageButton preview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        preview = findViewById(R.id.preview);
 
         userDao = SpacetimeApplication.getInstance().getDatabase().getUserDao();
 
@@ -54,6 +62,13 @@ public class LoginActivity extends AppCompatActivity {
                 }else {
                     mEditTextUserName.setHint(getHint);
                 }
+            }
+        });
+
+        preview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isShowPassword();
             }
         });
     }
@@ -117,5 +132,28 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void isShowPassword() {
+        MaterialEditText editPassword = findViewById(R.id.edit_password);
+        if(isHide == false) {
+            //表示显示密码的“眼睛”图标
+            preview.setImageResource(R.drawable.preview_open);
+            //密文
+            HideReturnsTransformationMethod method1 = HideReturnsTransformationMethod.getInstance();
+
+            editPassword.setTransformationMethod(method1);
+            isHide = true;
+        } else {
+            //表示隐藏密码的“闭眼”图标
+            preview.setImageResource(R.drawable.preview_close);
+            //密文
+            TransformationMethod method2 = PasswordTransformationMethod.getInstance();
+            editPassword.setTransformationMethod(method2);
+            isHide = false;
+        }
+        //重置光标位置
+        int index = editPassword.getText().toString().length();
+        editPassword.setSelection(index) ;
     }
 }
