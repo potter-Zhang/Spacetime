@@ -7,11 +7,47 @@
         <texture-path>models/pawn_albedo.png</texture-path>
     </model>
     <model>
-        <name>pawn</name>
+        <name>Pawn</name>
         <!-- 写在drawable中的文件名，不带后缀 -->
         <preview-path>logo</preview-path>
         <obj-path>models/pawn.obj</obj-path>
         <texture-path>models/pawn_albedo.png</texture-path>
+    </model>
+    <model>
+        <name>Anemone</name>
+        <preview-path>pre_anemone</preview-path>
+        <obj-path>models/12973_anemone_flower_v1_l2.obj</obj-path>
+        <texture-path>models/12973_anemone_flower_diff.jpg</texture-path>
+    </model>
+    <model>
+        <name>Purple Flower</name>
+        <preview-path>pre_flower_purple</preview-path>
+        <obj-path>models/12974_crocus_flower_v1_l3.obj</obj-path>
+        <texture-path>models/12974_crocus_flower_diff.jpg</texture-path>
+    </model>
+    <model>
+        <name>Palm Tree</name>
+        <preview-path>pre_palm_tree</preview-path>
+        <obj-path>models/10446_Palm_Tree_v1_max2010_iteration-2.obj</obj-path>
+        <texture-path>models/10446_Palm_Tree_v1_Diffuse.jpg</texture-path>
+    </model>
+    <model>
+        <name>Cup</name>
+        <preview-path>pre_cup</preview-path>
+        <obj-path>models/Plastic_Cup-(Wavefront OBJ).obj</obj-path>
+        <texture-path>models/Low-Poly_Plastic cup_color.png</texture-path>
+    </model>
+    <model>
+        <name>Basketball</name>
+        <preview-path>pre_basketball</preview-path>
+        <obj-path>models/basket.obj</obj-path>
+        <texture-path>models/10487_basketball_diffuse.jpg</texture-path>
+    </model>
+    <model>
+        <name>Cola</name>
+        <preview-path>pre_cola</preview-path>
+        <obj-path>models/10876_Softdrink_v1_L3.obj</obj-path>
+        <texture-path>models/softdrink.jpg</texture-path>
     </model>
     <model>
         <name>Cat</name>
@@ -20,15 +56,15 @@
         <texture-path>models/Cat_diffuse.jpg</texture-path>
     </model>
     <model>
-        <name>cup</name>
-        <preview-path>ic_launcher</preview-path>
-        <obj-path>models/Plastic_Cup-(Wavefront OBJ).obj</obj-path>
-        <texture-path>models/Low-Poly_Plastic cup_color.png</texture-path>
+        <name>Garfield</name>
+        <preview-path>pre_garfield</preview-path>
+        <obj-path>models/Garfield.obj</obj-path>
+        <texture-path>models/Garfield.jpg</texture-path>
     </model>
     <model>
-        <name>basketball</name>
-        <preview-path>ic_launcher</preview-path>
-        <obj-path>models/basket.obj</obj-path>
-        <texture-path>models/10487_basketball_diffuse.jpg</texture-path>
+        <name>Bear</name>
+        <preview-path>pre_bear</preview-path>
+        <obj-path>models/11706_stuffed_animal_L2.obj</obj-path>
+        <texture-path>models/11706_toy_dog_diffuse_v2.jpg</texture-path>
     </model>
 </models>
