@@ -19,8 +19,8 @@
                 android:rowCount="1"
                 android:columnCount="3"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@drawable/user_header_selector"
+                android:layout_height="250dp"
+                android:background="@drawable/shape_user_header"
                 android:orientation="horizontal">
 
                 <com.xuexiang.xui.widget.imageview.IconImageView

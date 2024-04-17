@@ -8,6 +8,7 @@
     <style name="Theme.Spacetime" parent="XUITheme.Phone">
         <item name="xui_actionbar_color">@color/main_theme</item>
         <item name="colorPrimaryDark">@color/main_theme</item>
+        <item name="android:windowBackground">@color/main_theme_background</item>
     </style>
 
     <!--输入光标的颜色为主题色-->
