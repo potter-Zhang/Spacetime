@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
+    android:layout_width="250dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/shape_popup_menu"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="25dp">
+    android:paddingTop="25dp"
+    android:paddingEnd="25dp"
+    android:paddingStart="25dp"
+    android:paddingBottom="15dp">
     <TextView
         android:id="@+id/tv_input_title"
         android:layout_width="wrap_content"
@@ -20,9 +23,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        app:met_baseColor="@color/dark_yellow"
+        app:met_baseColor="@color/main_theme"
         app:met_clearButton="true"
-        android:textSize="22sp"
+        android:textSize="18sp"
         app:met_underlineColor="@color/dark_yellow" />
     <TextView
         android:id="@+id/btn_confirm_input"
@@ -31,14 +34,15 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/confirm"
-        android:textSize="20sp"
-        android:layout_marginBottom="20dp"
-        android:textColor="@color/dark_yellow"
-        android:background="@drawable/shape_yellow_border"/>
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/sub_theme_dark"
+        android:background="@drawable/shape_border_sub_theme"
+        android:backgroundTint="@color/sub_theme_dark"/>
     <TextView
         android:id="@+id/btn_cancel_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/cancel"
-        android:textSize="20sp"/>
+        android:textSize="18sp"/>
 </LinearLayout>

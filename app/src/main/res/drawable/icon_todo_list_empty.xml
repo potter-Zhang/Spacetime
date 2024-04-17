@@ -19,7 +19,7 @@
       android:fillColor="#fff"/>
   <path
       android:pathData="m272.2,135.92 l-25.21,-5.64 -4.92,22.03 25.21,5.64 4.92,-22.03Z"
-      android:fillColor="@color/dark_yellow"/>
+      android:fillColor="@color/sub_theme_dark"/>
   <path
       android:pathData="m263.05,176.88 l-25.21,-5.64 -4.92,22.03 25.21,5.64 4.92,-22.03Z"
       android:fillColor="#fff"/>

@@ -95,8 +95,8 @@
                         android:paddingStart="15dp"
                         android:paddingEnd="15dp"
                         fab:textRadius="6dp"
-                        fab:textSolidColor="@color/dark_yellow"
-                        fab:textSelectedSolidColor="@color/dark_yellow_pressed"/>
+                        fab:textSolidColor="@color/sub_theme_dark"
+                        fab:textSelectedSolidColor="@color/sub_theme"/>
                     <com.xuexiang.xui.widget.button.ButtonView
                         android:id="@+id/btn_del_notes"
                         android:layout_width="wrap_content"
@@ -109,7 +109,9 @@
                         android:paddingEnd="15dp"
                         fab:textRadius="6dp"
                         fab:textSolidColor="@color/red"
-                        fab:textSelectedSolidColor="@color/red_pressed"/>
+                        fab:textSelectedSolidColor="@color/red_pressed"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="15dp"/>
                 </LinearLayout>
 
             </GridLayout>
@@ -137,8 +139,8 @@
             android:id="@+id/multiple_actions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_addButtonColorNormal="@color/main_theme"
-            fab:fab_addButtonColorPressed="@color/main_theme_dark"
+            fab:fab_addButtonColorNormal="@color/sub_theme"
+            fab:fab_addButtonColorPressed="@color/sub_theme_dark"
             fab:fab_addButtonSize="normal"
             fab:fab_addButtonStrokeVisible="false"
             fab:fab_expandDirection="up"

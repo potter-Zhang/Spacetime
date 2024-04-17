@@ -101,6 +101,8 @@
         android:layout_marginStart="10dp"
         android:text="调试"
         android:textSize="24sp"
+        android:background="@drawable/selector_main_theme_btn"
         android:visibility="gone"
-        android:background="@drawable/selector_main_theme_btn"/>
+        />
+
 </LinearLayout>

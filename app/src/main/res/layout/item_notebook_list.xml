@@ -15,7 +15,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/notebook_name_color"
-        android:textSize="20sp"
+        android:textSize="17sp"
         />
     <ImageView
         android:id="@+id/btn_more"

@@ -41,8 +41,6 @@ public class EditorActivity extends AppCompatActivity {
 
     private AIChatPopup chatPopup;
 
-    private TextView mPreview;
-
     private TextView wordCount;
 
     private EditText editNoteTitle;
@@ -96,7 +94,7 @@ public class EditorActivity extends AppCompatActivity {
             note.setCreateTime(LocalDateTime.now());
             note.setEditTime(LocalDateTime.now());
             note.setNotebookId(notebookId);
-            saveDialog = new ConfirmDialog(this, getColor(R.color.dark_yellow), "新建笔记", "新建");
+            saveDialog = new ConfirmDialog(this, getColor(R.color.sub_theme_dark), "新建笔记", "新建");
             saveDialog.setOnConfirmListener(() -> {
                 noteDao.insertNote(note);
                 finish();
@@ -108,7 +106,7 @@ public class EditorActivity extends AppCompatActivity {
             note.setPlainText(plainText);
             note.setTitle(title);
             note.setEditTime(LocalDateTime.now());
-            saveDialog = new ConfirmDialog(this, getColor(R.color.dark_yellow), "保存笔记", "保存");
+            saveDialog = new ConfirmDialog(this, getColor(R.color.sub_theme_dark), "保存笔记", "保存");
             saveDialog.setOnConfirmListener(() -> {
                 noteDao.updateNote(note);
                 finish();
@@ -142,7 +140,6 @@ public class EditorActivity extends AppCompatActivity {
         noteDao = SpacetimeApplication.getInstance().getDatabase().getNoteDao();
         htmlPattern = Pattern.compile(HTMLREGEX);
         editNoteTitle = findViewById(R.id.edit_note_title);
-        mPreview = (TextView) findViewById(R.id.preview);
         wordCount = findViewById(R.id.tv_word_count);
         editNoteTitle.addTextChangedListener(new TextWatcher() {
             @Override
@@ -169,7 +166,6 @@ public class EditorActivity extends AppCompatActivity {
         mEditor.setPlaceholder("请输入文本...");
         mEditor.setOnTextChangeListener(text -> {
             changed = true;
-            mPreview.setText(text);
             Matcher matcher = htmlPattern.matcher(text);
             String plainText = matcher.replaceAll("");
             wordCount.setText(plainText.length() + "字");
@@ -185,7 +181,6 @@ public class EditorActivity extends AppCompatActivity {
         // 打开笔记时传入的Note不为空，新建笔记时则传入null，展示特定内容时传入tmpPath
         if (note != null) {
             mEditor.setHtml(note.getContent());
-            mPreview.setText(note.getContent());
             editNoteTitle.setText(note.getTitle());
             wordCount.setText(note.getPlainText().length() + "字");
             // 设置退出动画
@@ -202,7 +197,6 @@ public class EditorActivity extends AppCompatActivity {
                     content = "读取失败！";
                 }
                 mEditor.setHtml(content);
-                mPreview.setText(content);
                 wordCount.setText(content.length() + "字");
                 changed = true;
             }

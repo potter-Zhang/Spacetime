@@ -16,7 +16,7 @@
             android:layout_columnWeight="1"
             android:layout_gravity="center"
             android:text="@string/cancel"
-            android:textColor="@color/dark_yellow"
+            android:textColor="@color/sub_theme_dark"
             android:textSize="20sp"
             android:layout_margin="10dp"/>
         <TextView
@@ -27,7 +27,7 @@
             android:layout_columnWeight="1"
             android:layout_gravity="center"
             android:text="@string/replace"
-            android:textColor="@color/dark_yellow"
+            android:textColor="@color/sub_theme_dark"
             android:textSize="20sp"
             android:layout_margin="10dp"/>
         <TextView
@@ -38,7 +38,7 @@
             android:layout_columnWeight="1"
             android:layout_gravity="center"
             android:text="@string/insert"
-            android:textColor="@color/dark_yellow"
+            android:textColor="@color/sub_theme_dark"
             android:textSize="20sp"
             android:layout_margin="10dp"/>
     </GridLayout>

@@ -24,7 +24,7 @@
         android:text="@string/delete_confirm"
         android:gravity="center"
         android:layout_marginBottom="5dp"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
     <TextView
         android:id="@+id/btn_cancel"
         android:layout_width="wrap_content"
@@ -32,5 +32,5 @@
         android:padding="10dp"
         android:textColor="@color/black"
         android:text="@string/cancel"
-        android:textSize="20sp"/>
+        android:textSize="18sp"/>
 </LinearLayout>
