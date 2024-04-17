@@ -55,8 +55,23 @@ public class SpacetimeApplication  extends Application {
             }
         };
 
+        Migration migration5_6 = new Migration(5, 6) {
+            @Override
+            public void migrate(@NonNull SupportSQLiteDatabase supportSQLiteDatabase) {
+                supportSQLiteDatabase.execSQL("DROP TABLE User;");
+                supportSQLiteDatabase.execSQL("CREATE TABLE User (`password` TEXT, `gender` INTEGER NOT NULL, `phone` TEXT, `createTime` TEXT, `avatar` BLOB, `region` TEXT, `userId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `username` TEXT)");
+            }
+        };
+
+        Migration migration6_7 = new Migration(6, 7) {
+            @Override
+            public void migrate(@NonNull SupportSQLiteDatabase supportSQLiteDatabase) {
+                supportSQLiteDatabase.execSQL("ALTER TABLE Note ADD editTime TEXT;");
+            }
+        };
+
         database = Room.databaseBuilder(this, SpacetimeDatabase.class, "spacetime")
-                .addMigrations(migration3_4, migration4_5)
+                .addMigrations(migration3_4, migration4_5, migration5_6, migration6_7)
                 .allowMainThreadQueries()
                 .build();
     }

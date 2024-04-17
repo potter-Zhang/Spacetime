@@ -9,6 +9,8 @@ import android.view.View;
 import com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText;
 import com.xuexiang.xui.widget.toast.XToast;
 
+import java.time.LocalDateTime;
+
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.dao.NotebookDao;
@@ -87,7 +89,11 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
         // 创建新用户
-        User newUser = new User(inputUsername, inputPassword, null);
+        User newUser = new User();
+        newUser.setUsername(inputUsername);
+        newUser.setPassword(inputPassword);
+        newUser.setGender(true);
+        newUser.setCreateTime(LocalDateTime.now());
         Long userId = userDao.insertUser(newUser);
         // 读取一次user获取数据库自动生成的userId
         newUser.setUserId(userId.intValue());

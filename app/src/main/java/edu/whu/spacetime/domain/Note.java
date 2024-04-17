@@ -35,6 +35,9 @@ public class Note implements Serializable {
     private String plainText;
 
     @TypeConverters(MyTypeConverter.class)
+    private LocalDateTime editTime;
+
+    @TypeConverters(MyTypeConverter.class)
     private LocalDateTime createTime;
 
     @Ignore
@@ -112,5 +115,13 @@ public class Note implements Serializable {
 
     public void setPlainText(String plainText) {
         this.plainText = plainText;
+    }
+
+    public LocalDateTime getEditTime() {
+        return editTime;
+    }
+
+    public void setEditTime(LocalDateTime editTime) {
+        this.editTime = editTime;
     }
 }
