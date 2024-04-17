@@ -37,9 +37,8 @@ import edu.whu.spacetime.domain.User;
 public class UserFragment extends Fragment implements View.OnClickListener {
     private View rootView;
     private CircleImageView user_profile;
-    private RelativeLayout account_btn, user_setting_btn, user_collection_btn, user_update_btn, user_calendar_btn;
+    private RelativeLayout account_btn, user_setting_btn, user_update_btn, user_calendar_btn;
     private IconImageView setting_button;
-    private AlertDialog import_popUp;
     private View importWindow;
     private TextView user_name, user_id;
     private User user;
@@ -94,7 +93,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         account_btn = rootView.findViewById(R.id.user_account_btn);
         setting_button = rootView.findViewById(R.id.user_setting);
         user_setting_btn = rootView.findViewById(R.id.user_setting_btn);
-        user_collection_btn = rootView.findViewById(R.id.user_collection_btn);
         user_update_btn = rootView.findViewById(R.id.user_checkUpdate_btn);
         user_calendar_btn = rootView.findViewById(R.id.user_calendar_btn);
 
@@ -102,7 +100,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         account_btn.setOnClickListener(this);
         setting_button.setOnClickListener(this);
         user_setting_btn.setOnClickListener(this);
-        user_collection_btn.setOnClickListener(this);
         user_update_btn.setOnClickListener(this);
         user_calendar_btn.setOnClickListener(this);
     }
@@ -116,8 +113,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         } else if (vId == R.id.user_setting || vId == R.id.user_setting_btn) {
             Intent intent2 = new Intent(getContext(), UserSettingActivity.class);
             startActivity(intent2);
-        } else if (vId == R.id.user_collection_btn) {
-
         } else if (vId == R.id.user_checkUpdate_btn) {
             Toast.makeText(getContext(), "您已经是最新版本", Toast.LENGTH_SHORT).show();
         } else if (vId == R.id.user_calendar_btn) {

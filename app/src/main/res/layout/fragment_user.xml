@@ -124,7 +124,7 @@
                             android:layout_height="40dp"
                             android:layout_gravity="center_horizontal"
                             android:gravity="center"
-                            android:text="0"
+                            android:text="1"
                             android:textColor="#333333"
                             android:textSize="20sp" />
 
@@ -282,133 +282,133 @@
                 </RelativeLayout>
 
 
-                <RelativeLayout
-                    android:id="@+id/user_tag_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:clickable="true">
+<!--                <RelativeLayout-->
+<!--                    android:id="@+id/user_tag_btn"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="46dp"-->
+<!--                    android:background="?android:attr/selectableItemBackground"-->
+<!--                    android:clickable="true">-->
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_user_tag"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="20dp" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:src="@drawable/icon_user_tag"-->
+<!--                        android:layout_centerVertical="true"-->
+<!--                        android:layout_marginStart="20dp" />-->
 
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:text="我的标签"
-                        android:textSize="16sp"
-                        android:layout_marginStart="60dp"
-                        android:layout_centerVertical="true" />
+<!--                    <TextView-->
+<!--                        android:layout_width="80dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="我的标签"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:layout_marginStart="60dp"-->
+<!--                        android:layout_centerVertical="true" />-->
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/user_arrow_right"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="20dp" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:src="@drawable/user_arrow_right"-->
+<!--                        android:layout_centerVertical="true"-->
+<!--                        android:layout_alignParentEnd="true"-->
+<!--                        android:layout_marginEnd="20dp" />-->
 
-                </RelativeLayout>
+<!--                </RelativeLayout>-->
 
-                <RelativeLayout
-                    android:id="@+id/user_tools_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:clickable="true">
+<!--                <RelativeLayout-->
+<!--                    android:id="@+id/user_tools_btn"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="46dp"-->
+<!--                    android:background="?android:attr/selectableItemBackground"-->
+<!--                    android:clickable="true">-->
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_user_tool"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="20dp" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:src="@drawable/icon_user_tool"-->
+<!--                        android:layout_centerVertical="true"-->
+<!--                        android:layout_marginStart="20dp" />-->
 
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:text="常用工具"
-                        android:textSize="16sp"
-                        android:layout_marginStart="60dp"
-                        android:layout_centerVertical="true" />
+<!--                    <TextView-->
+<!--                        android:layout_width="80dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="常用工具"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:layout_marginStart="60dp"-->
+<!--                        android:layout_centerVertical="true" />-->
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/user_arrow_right"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="20dp" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:src="@drawable/user_arrow_right"-->
+<!--                        android:layout_centerVertical="true"-->
+<!--                        android:layout_alignParentEnd="true"-->
+<!--                        android:layout_marginEnd="20dp" />-->
 
-                </RelativeLayout>
+<!--                </RelativeLayout>-->
 
-                <RelativeLayout
-                    android:id="@+id/user_collection_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:clickable="true">
+<!--                <RelativeLayout-->
+<!--                    android:id="@+id/user_collection_btn"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="46dp"-->
+<!--                    android:background="?android:attr/selectableItemBackground"-->
+<!--                    android:clickable="true">-->
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_user_collection"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="20dp" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:src="@drawable/icon_user_collection"-->
+<!--                        android:layout_centerVertical="true"-->
+<!--                        android:layout_marginStart="20dp" />-->
 
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:text="我的收藏"
-                        android:textSize="16sp"
-                        android:layout_marginStart="60dp"
-                        android:layout_centerVertical="true" />
+<!--                    <TextView-->
+<!--                        android:layout_width="80dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="我的收藏"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:layout_marginStart="60dp"-->
+<!--                        android:layout_centerVertical="true" />-->
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/user_arrow_right"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="20dp" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:src="@drawable/user_arrow_right"-->
+<!--                        android:layout_centerVertical="true"-->
+<!--                        android:layout_alignParentEnd="true"-->
+<!--                        android:layout_marginEnd="20dp" />-->
 
-                </RelativeLayout>
+<!--                </RelativeLayout>-->
 
-                <RelativeLayout
-                    android:id="@+id/user_rubbish_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:clickable="true">
+<!--                <RelativeLayout-->
+<!--                    android:id="@+id/user_rubbish_btn"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="46dp"-->
+<!--                    android:background="?android:attr/selectableItemBackground"-->
+<!--                    android:clickable="true">-->
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_user_rubbish"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="20dp" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:src="@drawable/icon_user_rubbish"-->
+<!--                        android:layout_centerVertical="true"-->
+<!--                        android:layout_marginStart="20dp" />-->
 
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:text="回收站"
-                        android:textSize="16sp"
-                        android:layout_marginStart="60dp"
-                        android:layout_centerVertical="true" />
+<!--                    <TextView-->
+<!--                        android:layout_width="80dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="回收站"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:layout_marginStart="60dp"-->
+<!--                        android:layout_centerVertical="true" />-->
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/user_arrow_right"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="20dp" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:src="@drawable/user_arrow_right"-->
+<!--                        android:layout_centerVertical="true"-->
+<!--                        android:layout_alignParentEnd="true"-->
+<!--                        android:layout_marginEnd="20dp" />-->
 
-                </RelativeLayout>
+<!--                </RelativeLayout>-->
 
                 <RelativeLayout
                     android:id="@+id/user_setting_btn"
@@ -441,21 +441,6 @@
                         android:layout_marginEnd="20dp" />
 
                 </RelativeLayout>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/user_ll_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_below="@id/user_ll_1"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/user_linearlayout_background"
-                android:elevation="1dp">
 
                 <RelativeLayout
                     android:id="@+id/user_checkUpdate_btn"
@@ -521,14 +506,8 @@
 
                 </RelativeLayout>
 
-            </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/occupy_area_ll"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_below="@id/user_ll_2"
-                android:orientation="horizontal" />
+            </LinearLayout>
 
         </RelativeLayout>
 
