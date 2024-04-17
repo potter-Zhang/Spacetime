@@ -39,8 +39,14 @@ public class UserSettingActivity extends AppCompatActivity implements View.OnCli
         user_name = findViewById(R.id.user_name);
         user_profile = findViewById(R.id.user_profile);
         byte[] profile_bytes = user.getAvatar();
-        Bitmap profile_bitmap = BitmapFactory.decodeByteArray(profile_bytes, 0, profile_bytes.length);
-        user_profile.setImageBitmap(profile_bitmap);
+        if (profile_bytes == null) {
+            user_profile.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.default_profile));
+        }
+        else
+        {
+            Bitmap profile_bitmap = BitmapFactory.decodeByteArray(profile_bytes, 0, profile_bytes.length);
+            user_profile.setImageBitmap(profile_bitmap);
+        }
         user_name.setText(user.getUsername());
         back_btn.setOnClickListener(this);
     }

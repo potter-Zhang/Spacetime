@@ -107,8 +107,14 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         user_todo_count = rootView.findViewById(R.id.user_todo_count);
 
         byte[] profile_bytes = user.getAvatar();
-        Bitmap profile_bitmap = BitmapFactory.decodeByteArray(profile_bytes, 0, profile_bytes.length);
-        user_profile.setImageBitmap(profile_bitmap);
+        if (profile_bytes == null) {
+            user_profile.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.default_profile));
+        }
+        else
+        {
+            Bitmap profile_bitmap = BitmapFactory.decodeByteArray(profile_bytes, 0, profile_bytes.length);
+            user_profile.setImageBitmap(profile_bitmap);
+        }
         user_using_days.setText(String.valueOf(getTimeGap(LocalDateTime.now() ,user.getCreateTime())));
         user_note_count.setText(String.valueOf(noteDao.queryAll().size()));
         user_todo_count.setText(String.valueOf(todoDao.getAllTodo(user.getUserId()).size()));
