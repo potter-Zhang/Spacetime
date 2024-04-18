@@ -74,13 +74,13 @@ public class AIResultDialog extends BottomPopupView {
 
         findViewById(R.id.tv_ai_replace).setOnClickListener(v -> {
             if (this.replaceListener != null) {
-                replaceListener.onReplaceBtnClicked(builder.toString());
+                replaceListener.onReplaceBtnClicked(builder.toString().replaceAll("\n", ""));
             }
         });
 
         findViewById(R.id.tv_ai_insert).setOnClickListener(v -> {
             if (this.insertListener != null) {
-                insertListener.onInsertBtnClicked(builder.toString());
+                insertListener.onInsertBtnClicked(builder.toString().replaceAll("\n", ""));
             }
         });
     }
