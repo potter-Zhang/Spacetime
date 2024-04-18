@@ -116,7 +116,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             user_profile.setImageBitmap(profile_bitmap);
         }
         user_using_days.setText(String.valueOf(getTimeGap(LocalDateTime.now() ,user.getCreateTime())));
-        user_note_count.setText(String.valueOf(noteDao.queryAll().size()));
+        user_note_count.setText(String.valueOf(noteDao.queryByUserId(user.getUserId()).size()));
         user_todo_count.setText(String.valueOf(todoDao.getAllTodo(user.getUserId()).size()));
         user_profile.setOnClickListener(this);
         account_btn.setOnClickListener(this);
@@ -190,8 +190,17 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        byte[] profile_bytes = user.getAvatar();
+        if (profile_bytes == null) {
+            user_profile.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.default_profile));
+        }
+        else
+        {
+            Bitmap profile_bitmap = BitmapFactory.decodeByteArray(profile_bytes, 0, profile_bytes.length);
+            user_profile.setImageBitmap(profile_bitmap);
+        }
         user_using_days.setText(String.valueOf(getTimeGap(LocalDateTime.now() ,user.getCreateTime())));
-        user_note_count.setText(String.valueOf(noteDao.queryAll().size()));
+        user_note_count.setText(String.valueOf(noteDao.queryByUserId(user.getUserId()).size()));
         user_todo_count.setText(String.valueOf(todoDao.getAllTodo(user.getUserId()).size()));
     }
 }

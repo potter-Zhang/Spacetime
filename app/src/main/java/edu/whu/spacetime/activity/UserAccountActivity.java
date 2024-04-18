@@ -16,10 +16,12 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +53,7 @@ public class UserAccountActivity extends AppCompatActivity implements View.OnCli
     LinearLayout user_exit_btn;
     TextView user_name_tv, user_tele_tv, user_region_tv;
     CircleImageView user_profile;
+    Spinner user_gender;
     User user;
     UserDao userDao;
     @Override
@@ -143,6 +146,30 @@ public class UserAccountActivity extends AppCompatActivity implements View.OnCli
             Bitmap profile_bitmap = BitmapFactory.decodeByteArray(profile_bytes, 0, profile_bytes.length);
             user_profile.setImageBitmap(profile_bitmap);
         }
+        user_gender = findViewById(R.id.user_gender);
+        if (user.isGender())
+            user_gender.setSelection(1);
+        else
+            user_gender.setSelection(0);
+        user_gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0)
+                {
+                    user.setGender(false);
+                    userDao.updateUser(user);
+                }
+                else {
+                    user.setGender(true);
+                    userDao.updateUser(user);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         user_name_tv.setText(user.getUsername());
         user_region_tv.setText(user.getRegion());
         user_tele_tv.setText(user.getPhone());
