@@ -32,6 +32,8 @@
             app:itemIconSize="28dp"
             android:textSize="20sp"
             app:labelVisibilityMode="labeled"
+            style="@style/Widget.Design.BottomNavigationView"
+            app:itemBackground="@color/transparent"
             android:background="?android:attr/windowBackground"
             app:itemTextAppearanceInactive="@color/design_default_color_background"
             app:menu="@menu/bottom_nav_menu"/>
