@@ -7,12 +7,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.lxj.xpopup.core.BottomPopupView;
+import com.lxj.xpopup.core.CenterPopupView;
 import com.lxj.xpopup.interfaces.OnCancelListener;
 import com.lxj.xpopup.interfaces.OnConfirmListener;
 
 import edu.whu.spacetime.R;
 
-public class ConfirmDialog extends BottomPopupView {
+public class ConfirmDialog extends CenterPopupView {
     private OnConfirmListener confirmListener;
 
     private OnCancelListener cancelListener;

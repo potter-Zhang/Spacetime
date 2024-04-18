@@ -5,7 +5,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.util.Calendar;
@@ -114,6 +116,8 @@ public class UserAccountActivity extends AppCompatActivity implements View.OnCli
         }
         else if (id == R.id.user_exit_ll)
         {
+            SharedPreferences sharedPreferences= getSharedPreferences("loginPrefs", Context.MODE_PRIVATE);;
+            sharedPreferences.edit().remove("autoLogin").apply();
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
