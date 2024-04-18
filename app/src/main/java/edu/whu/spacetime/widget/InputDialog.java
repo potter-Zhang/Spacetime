@@ -6,13 +6,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.lxj.xpopup.core.BottomPopupView;
+import com.lxj.xpopup.core.CenterPopupView;
 import com.lxj.xpopup.interfaces.OnInputConfirmListener;
 import com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText;
 import com.xuexiang.xui.widget.toast.XToast;
 
 import edu.whu.spacetime.R;
 
-public class InputDialog extends BottomPopupView {
+public class InputDialog extends CenterPopupView {
     private String title;
 
     private OnInputConfirmListener confirmListener;

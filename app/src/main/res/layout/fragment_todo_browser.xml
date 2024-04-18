@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.TodoBrowserFragment">
@@ -116,7 +117,17 @@
 
                 </LinearLayout>
             </ScrollView>
-
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_todo_addItem2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_icon="@drawable/icon_add_white"
+                fab:fab_colorNormal="@color/sub_theme"
+                fab:fab_colorPressed="@color/sub_theme_dark"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="30dp"
+                android:layout_marginEnd="16dp" />
             <!--没有待办时显示-->
             <ImageView
                 android:id="@+id/img_todo_list_empty"
@@ -128,6 +139,7 @@
                 android:layout_centerInParent="true"
                 />
         </RelativeLayout>
+
 
     </LinearLayout>
 </FrameLayout>
