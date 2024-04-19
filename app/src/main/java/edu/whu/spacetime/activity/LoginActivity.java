@@ -21,9 +21,13 @@ import java.util.Collections;
 
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.SpacetimeApplication;
+import edu.whu.spacetime.dao.NoteDao;
 import edu.whu.spacetime.dao.NotebookDao;
+import edu.whu.spacetime.dao.TodoDao;
 import edu.whu.spacetime.dao.UserDao;
+import edu.whu.spacetime.domain.Note;
 import edu.whu.spacetime.domain.Notebook;
+import edu.whu.spacetime.domain.Todo;
 import edu.whu.spacetime.domain.User;
 
 public class LoginActivity extends AppCompatActivity {
@@ -155,14 +159,21 @@ public class LoginActivity extends AppCompatActivity {
         newUser.setGender(true);
         newUser.setCreateTime(LocalDateTime.now());
         Long userId = userDao.insertUser(newUser);
-        // 读取一次user获取数据库自动生成的userId
         newUser.setUserId(userId.intValue());
         SpacetimeApplication.getInstance().setCurrentUser(newUser);
 
         // 给新用户创建一个新笔记本
         NotebookDao notebookDao = SpacetimeApplication.getInstance().getDatabase().getNotebookDao();
         Notebook defaultNotebook = new Notebook("默认笔记本", newUser.getUserId());
-        notebookDao.insertNotebook(defaultNotebook);
+        Long notebookId = notebookDao.insertNotebook(defaultNotebook).get(0);
+        // 添加一条引导note
+        NoteDao noteDao = SpacetimeApplication.getInstance().getDatabase().getNoteDao();
+        Note guidanceNote = new Note("长按可删除", newUser.getUserId(), notebookId.intValue(), "", LocalDateTime.now());
+        noteDao.insertNote(guidanceNote);
+        // 添加一条引导todo
+        TodoDao todoDao = SpacetimeApplication.getInstance().getDatabase().getTodoDao();
+        Todo todo = new Todo(newUser.getUserId(), "左划可删除", "", LocalDateTime.now(), false);
+        todoDao.insertTodo(todo);
         jump2Main();
     }
 

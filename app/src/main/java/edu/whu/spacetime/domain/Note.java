@@ -48,7 +48,9 @@ public class Note implements Serializable {
         this.userId = userId;
         this.notebookId = notebookId;
         this.content = content;
+        this.plainText = content;
         this.createTime = createTime;
+        this.editTime = createTime;
     }
 
     @Ignore

@@ -21,6 +21,7 @@ import com.xuexiang.xui.widget.imageview.IconImageView;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -145,47 +146,48 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
     public int getTimeGap(LocalDateTime now, LocalDateTime createDay)
     {
-        int[] d = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-        int now_year = now.getYear();
-        int now_month = now.getMonth().getValue();
-        int now_day = now.getDayOfMonth();
-        int createDay_year = createDay.getYear();
-        int createDay_month = createDay.getMonth().getValue();
-        int createDay_day = createDay.getDayOfMonth();
-
-        // 得到两个日期相对于0000.0.0的日期差
-        long now_count = now_day, createDay_count = createDay_day;
-        for (int i = 0; i <= now_year; i ++ )
-        {
-            if ((i % 4 == 0 && i % 100 != 0) || i % 400 == 0)
-            {
-                now_count += 366;
-                if (i == now_year) d[2] = 29;
-            }
-            else
-            {
-                now_count += 365;
-                if (i == now_year) d[2] = 28;
-            }
-        }
-        for (int i = 1; i <= now_month; i ++ )
-            now_day += d[i];
-        for (int i = 0; i <= createDay_year; i ++ )
-        {
-            if ((i % 4 == 0 && i % 100 != 0) || i % 400 == 0)
-            {
-                createDay_count += 366;
-                if (i == createDay_year) d[2] = 29;
-            }
-            else
-            {
-                createDay_count += 365;
-                if (i == createDay_year) d[2] = 28;
-            }
-        }
-        for (int i = 1; i <= createDay_month; i ++ )
-            createDay_day += d[i];
-        return (int) (now_count - createDay_count + 1);
+        return (int) ChronoUnit.DAYS.between(createDay.toLocalDate(), now.toLocalDate()) + 1;
+//        int[] d = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+//        int now_year = now.getYear();
+//        int now_month = now.getMonth().getValue();
+//        int now_day = now.getDayOfMonth();
+//        int createDay_year = createDay.getYear();
+//        int createDay_month = createDay.getMonth().getValue();
+//        int createDay_day = createDay.getDayOfMonth();
+//
+//        // 得到两个日期相对于0000.0.0的日期差
+//        long now_count = now_day, createDay_count = createDay_day;
+//        for (int i = 0; i <= now_year; i ++ )
+//        {
+//            if ((i % 4 == 0 && i % 100 != 0) || i % 400 == 0)
+//            {
+//                now_count += 366;
+//                if (i == now_year) d[2] = 29;
+//            }
+//            else
+//            {
+//                now_count += 365;
+//                if (i == now_year) d[2] = 28;
+//            }
+//        }
+//        for (int i = 1; i <= now_month; i ++ )
+//            now_day += d[i];
+//        for (int i = 0; i <= createDay_year; i ++ )
+//        {
+//            if ((i % 4 == 0 && i % 100 != 0) || i % 400 == 0)
+//            {
+//                createDay_count += 366;
+//                if (i == createDay_year) d[2] = 29;
+//            }
+//            else
+//            {
+//                createDay_count += 365;
+//                if (i == createDay_year) d[2] = 28;
+//            }
+//        }
+//        for (int i = 1; i <= createDay_month; i ++ )
+//            createDay_day += d[i];
+//        return (int) (now_count - createDay_count + 1);
     }
     @Override
     public void onResume() {
