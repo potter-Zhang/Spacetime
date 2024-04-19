@@ -2,18 +2,22 @@ package edu.whu.spacetime.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.TransformationMethod;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 
 import com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText;
 import com.xuexiang.xui.widget.toast.XToast;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.SpacetimeApplication;
@@ -26,7 +30,11 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isHide = false;  //输入框密码是否是隐藏，默认为false
     private UserDao userDao;
     private MaterialEditText mEditTextUserName;
+    private MaterialEditText mEditTextUserPasswd;
+    private CheckBox checkBox_remember;
+    private CheckBox checkBox_auto;
     private ImageButton preview;
+    private SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +52,27 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.btn_enter).setOnClickListener(v -> direct());
         // 输入光标消失
         mEditTextUserName = findViewById(R.id.edit_username);
+        mEditTextUserPasswd = findViewById(R.id.edit_password);
         final String getHint = mEditTextUserName.getHint().toString();
+
+        //自动登录和记住密码
+        sharedPreferences = getSharedPreferences("loginPrefs", Context.MODE_PRIVATE);
+        checkBox_remember = findViewById(R.id.ckBox_rememberPasswd);
+        checkBox_auto = findViewById(R.id.ckBox_autoLogin);
+        // 检查是否存在保存的用户名和密码
+        if (sharedPreferences.contains("username") && sharedPreferences.contains("password")) {
+            String savedUsername = sharedPreferences.getString("username", "");
+            String savedPassword = sharedPreferences.getString("password", "");
+            mEditTextUserName.setText(savedUsername);
+            mEditTextUserPasswd.setText(savedPassword);
+            checkBox_remember.setChecked(true);
+
+            // 检查是否选择了自动登录
+            if (sharedPreferences.getBoolean("autoLogin", false)) {
+                checkBox_auto.setChecked(true);
+                login();
+            }
+        }
         mEditTextUserName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,10 +107,27 @@ public class LoginActivity extends AppCompatActivity {
         String inputUsername = editUsername.getEditValue();
         String inputPassword = editPassword.getEditValue();
 
+        if(inputUsername.isEmpty()||inputPassword.isEmpty()){
+            XToast.error(this, "用户名或密码不能为空!").show();
+            return;
+        }
         User user = userDao.getUserByName(inputUsername);
         if (user == null || !user.getPassword().equals(inputPassword)) {
             XToast.error(this, "用户名或密码错误!").show();
         } else {
+            if(checkBox_remember.isChecked()){
+                sharedPreferences.edit().putString("username", inputUsername).putString("password",inputPassword).apply();
+                if(checkBox_auto.isChecked()){
+                    sharedPreferences.edit().putBoolean("autoLogin", true).apply();
+                }else{
+                    sharedPreferences.edit().remove("autoLogin").apply();
+                }
+            }else if(checkBox_auto.isChecked()){
+                sharedPreferences.edit().putString("username", inputUsername).putString("password",inputPassword).apply();
+                sharedPreferences.edit().putBoolean("autoLogin", true).apply();
+            }else{
+                sharedPreferences.edit().remove("username").remove("password").apply();
+            }
             SpacetimeApplication.getInstance().setCurrentUser(user);
             jump2Main();
         }

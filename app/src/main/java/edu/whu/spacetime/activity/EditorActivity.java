@@ -94,7 +94,7 @@ public class EditorActivity extends AppCompatActivity {
             note.setCreateTime(LocalDateTime.now());
             note.setEditTime(LocalDateTime.now());
             note.setNotebookId(notebookId);
-            saveDialog = new ConfirmDialog(this, getColor(R.color.sub_theme_dark), "新建笔记", "新建");
+            saveDialog = new ConfirmDialog(this, getColor(R.color.sub_theme_dark), "是否新建笔记？", "新建");
             saveDialog.setOnConfirmListener(() -> {
                 noteDao.insertNote(note);
                 finish();
@@ -106,7 +106,7 @@ public class EditorActivity extends AppCompatActivity {
             note.setPlainText(plainText);
             note.setTitle(title);
             note.setEditTime(LocalDateTime.now());
-            saveDialog = new ConfirmDialog(this, getColor(R.color.sub_theme_dark), "保存笔记", "保存");
+            saveDialog = new ConfirmDialog(this, getColor(R.color.sub_theme_dark), "是否保存笔记？", "保存");
             saveDialog.setOnConfirmListener(() -> {
                 noteDao.updateNote(note);
                 finish();

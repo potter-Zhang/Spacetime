@@ -53,6 +53,7 @@
         <item>Show depth map</item>
     </string-array>
     <string name="options_title_instant_placement" translatable="false">Instant Placement options</string>
+    <string name="forgetPasswd">忘记密码</string>
     <string-array name="instant_placement_options_array" translatable="false">
         <item>Enable Instant Placement</item>
     </string-array>

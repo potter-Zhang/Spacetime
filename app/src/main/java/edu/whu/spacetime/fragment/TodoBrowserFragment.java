@@ -61,6 +61,15 @@ public class TodoBrowserFragment extends Fragment {
                         .show();
             }
         });
+        //下面的add按钮
+        fragView.findViewById(R.id.btn_todo_addItem2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new XPopup.Builder(getContext())
+                        .asCustom(new TodoSetPopup(getContext(),view))
+                        .show();
+            }
+        });
     }
     private void setTodoList() {
         todoListView_unChecked = fragView.findViewById(R.id.list_todo);
