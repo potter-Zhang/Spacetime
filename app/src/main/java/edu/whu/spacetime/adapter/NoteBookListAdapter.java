@@ -17,6 +17,7 @@ import java.util.List;
 
 import edu.whu.spacetime.R;
 import edu.whu.spacetime.SpacetimeApplication;
+import edu.whu.spacetime.dao.NoteDao;
 import edu.whu.spacetime.dao.NotebookDao;
 import edu.whu.spacetime.domain.Notebook;
 import edu.whu.spacetime.widget.NoteBookPopupMenu;
@@ -31,6 +32,8 @@ public class NoteBookListAdapter extends ArrayAdapter<Notebook> {
 
     private NotebookDao notebookDao;
 
+    private NoteDao noteDao;
+
     private OnNotebookDeleteListener onNotebookDeleteListener;
 
     public NoteBookListAdapter(@NonNull Context context, int resource, @NonNull List<Notebook> objects) {
@@ -38,6 +41,7 @@ public class NoteBookListAdapter extends ArrayAdapter<Notebook> {
         this.resourceId = resource;
         this.notebookList = objects;
         this.notebookDao = SpacetimeApplication.getInstance().getDatabase().getNotebookDao();
+        this.noteDao = SpacetimeApplication.getInstance().getDatabase().getNoteDao();
     }
 
     public void setOnNotebookDeleteListener(OnNotebookDeleteListener onNotebookDeleteListener) {
@@ -68,6 +72,7 @@ public class NoteBookListAdapter extends ArrayAdapter<Notebook> {
         // 设置弹出菜单按钮的点击事件
         popup.setDeleteListener(() -> {
             notebookList.remove(noteBook);
+            noteDao.deleteNotesInNotebook(noteBook.getNotebookId());
             notebookDao.deleteNotebook(noteBook);
             notifyDataSetChanged();
 
