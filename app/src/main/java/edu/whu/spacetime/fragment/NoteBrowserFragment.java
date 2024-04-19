@@ -177,11 +177,7 @@ public class NoteBrowserFragment extends Fragment {
         TextView tvNotebookNumber = fragmentView.findViewById(R.id.tv_notebookNumber);
         tvNotebookNumber.setText(String.format("共%d篇笔记", noteList.size()));
         noteListAdapter.notifyDataSetChanged();
-        if (noteListAdapter.isEmpty()) {
-            fragmentView.findViewById(R.id.img_note_list_empty).setVisibility(View.VISIBLE);
-        } else {
-            fragmentView.findViewById(R.id.img_note_list_empty).setVisibility(View.GONE);
-        }
+        showEmptyImg();
     }
 
     /**
@@ -232,6 +228,7 @@ public class NoteBrowserFragment extends Fragment {
             noteListAdapter.exitEditMode();
             fragmentView.findViewById(R.id.bar_edit_btn).setVisibility(View.INVISIBLE);
             tvNotebookNumber.setText(String.format("共%d篇笔记", noteList.size()));
+            showEmptyImg();
         });
     }
 
@@ -241,6 +238,17 @@ public class NoteBrowserFragment extends Fragment {
     public void openDrawer() {
         if (this.drawer != null) {
             this.drawer.open();
+        }
+    }
+
+    /**
+     * adapter为空时显示空状态图片
+     */
+    private void showEmptyImg() {
+        if (noteListAdapter.isEmpty()) {
+            fragmentView.findViewById(R.id.img_note_list_empty).setVisibility(View.VISIBLE);
+        } else {
+            fragmentView.findViewById(R.id.img_note_list_empty).setVisibility(View.GONE);
         }
     }
 
