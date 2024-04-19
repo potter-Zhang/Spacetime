@@ -22,17 +22,26 @@ import edu.whu.spacetime.domain.Notebook;
 import edu.whu.spacetime.widget.NoteBookPopupMenu;
 
 public class NoteBookListAdapter extends ArrayAdapter<Notebook> {
+    public interface OnNotebookDeleteListener {
+        void onNotebookDelete(Notebook notebook);
+    }
     private int resourceId;
 
     private List<Notebook> notebookList;
 
     private NotebookDao notebookDao;
 
+    private OnNotebookDeleteListener onNotebookDeleteListener;
+
     public NoteBookListAdapter(@NonNull Context context, int resource, @NonNull List<Notebook> objects) {
         super(context, resource, objects);
         this.resourceId = resource;
         this.notebookList = objects;
         this.notebookDao = SpacetimeApplication.getInstance().getDatabase().getNotebookDao();
+    }
+
+    public void setOnNotebookDeleteListener(OnNotebookDeleteListener onNotebookDeleteListener) {
+        this.onNotebookDeleteListener = onNotebookDeleteListener;
     }
 
     @NonNull
@@ -61,6 +70,10 @@ public class NoteBookListAdapter extends ArrayAdapter<Notebook> {
             notebookList.remove(noteBook);
             notebookDao.deleteNotebook(noteBook);
             notifyDataSetChanged();
+
+            if (this.onNotebookDeleteListener != null) {
+                onNotebookDeleteListener.onNotebookDelete(noteBook);
+            }
         });
         popup.setRenameListener(t -> {
             noteBook.setName(t);

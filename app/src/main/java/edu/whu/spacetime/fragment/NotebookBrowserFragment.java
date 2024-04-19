@@ -75,6 +75,12 @@ public class NotebookBrowserFragment extends Fragment {
         adapter = new NoteBookListAdapter(getContext(), R.layout.item_notebook_list, notebookList);
         notebookListView.setAdapter(adapter);
 
+        adapter.setOnNotebookDeleteListener(notebook -> {
+            if (this.notebookChangedListener != null) {
+                notebookChangedListener.OnNotebookChanged(adapter.getItem(0));
+            }
+        });
+
         notebookListView.setOnItemClickListener((parent, view, position, id) -> {
             Notebook notebook = (Notebook) parent.getItemAtPosition(position);
             // 触发切换笔记本事件
