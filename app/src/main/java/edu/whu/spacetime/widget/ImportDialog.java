@@ -65,7 +65,7 @@ public class ImportDialog extends Dialog implements View.OnClickListener {
             dismiss();
         }
         else if (id == R.id.btn_import_audio) {
-            onChooseFileListener.OnChooseFileListener("audio");
+            onChooseFileListener.OnChooseFileListener("word");
             dismiss();
         }
     }

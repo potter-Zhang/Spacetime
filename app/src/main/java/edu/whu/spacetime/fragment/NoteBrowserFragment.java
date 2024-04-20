@@ -52,7 +52,7 @@ public class NoteBrowserFragment extends Fragment {
     private static final String PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
     private static final String PDF = "application/pdf";
     private static final int PDF_REQUEST_CODE = 1;
-    private static final String AUDIO = "";
+    private static final String WORD = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
     private static final int AUDIO_REQUEST_CODE = 2;
 
     /**
@@ -308,8 +308,8 @@ public class NoteBrowserFragment extends Fragment {
             intent.setType(PPT);
             startActivityForResult(intent, PPT_REQUEST_CODE);
         }
-        else if (str.equals("audio")) {
-            intent.setType("*/*");
+        else if (str.equals("word")) {
+            intent.setType(WORD);
             startActivityForResult(intent, AUDIO_REQUEST_CODE);
         }
     }
