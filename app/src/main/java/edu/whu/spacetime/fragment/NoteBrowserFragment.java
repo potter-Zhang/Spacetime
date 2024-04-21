@@ -53,7 +53,7 @@ public class NoteBrowserFragment extends Fragment {
     private static final String PDF = "application/pdf";
     private static final int PDF_REQUEST_CODE = 1;
     private static final String WORD = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-    private static final int AUDIO_REQUEST_CODE = 2;
+    private static final int WORD_REQUEST_CODE = 2;
 
     /**
      * 文件转文字
@@ -310,7 +310,7 @@ public class NoteBrowserFragment extends Fragment {
         }
         else if (str.equals("word")) {
             intent.setType(WORD);
-            startActivityForResult(intent, AUDIO_REQUEST_CODE);
+            startActivityForResult(intent, WORD_REQUEST_CODE);
         }
     }
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -344,6 +344,11 @@ public class NoteBrowserFragment extends Fragment {
                     path = PickUtils.getTMPPath(getContext(), uri, ".ppt");
                     File file = new File(path);
                     result = convertService.ppt2Text(file);
+                    file.delete();
+                } else if (requestCode == WORD_REQUEST_CODE) {
+                    path = PickUtils.getTMPPath(getContext(), uri, ".doc");
+                    File file = new File(path);
+                    result = convertService.word2Text(file);
                     file.delete();
                 }
                 // result可能很大，导致跳转activity失败，因此写入临时文件，新activity也从临时文件内读取

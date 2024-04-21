@@ -62,11 +62,6 @@
 
         <meta-data android:name="com.google.ar.core" android:value="required" />
 
-        <service android:name=".service.MediaService"
-            android:enabled="true"
-            android:exported="true"
-            android:foregroundServiceType="mediaProjection"/>
-
     </application>
 
 </manifest>
