@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 新建笔记时编辑界面从下方向上弹出 -->
+<translate
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="300"
+    android:fromYDelta="100%p"
+    android:toYDelta="0" />

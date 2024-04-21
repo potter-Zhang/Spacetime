@@ -2,7 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+
     <application
+        android:name=".SpacetimeApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,7 +28,30 @@
         android:theme="@style/Theme.Spacetime"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.UpdateUserInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.UserCalendarActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.UserSettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.UserAccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.EditorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <activity
+            android:name=".activity.HelloArActivity"
+            android:exported="false"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <activity
+            android:name=".activity.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +59,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data android:name="com.google.ar.core" android:value="required" />
+
     </application>
 
 </manifest>
