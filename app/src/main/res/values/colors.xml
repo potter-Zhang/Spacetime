@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="main_theme">#81D4FA</color>
+    <color name="main_theme_dark">#4FC3F7</color>
+    <color name="main_theme_grey">#E3E2E2</color>
+    <color name="main_theme_background">#FAFAFA</color>
+    <color name="sub_theme">#99D59B</color>
+    <color name="sub_theme_dark">#81C784</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="light_gray">#DDDFE5</color>
+    <!--pdf红-->
+    <color name="pdf_red">#E80013</color>
+    <!--ppt红-->
+    <color name="ppt_red">#B74729</color>
+    <!--音频蓝-->
+    <color name="audio_blue">#00A9ff</color>
+    <!--按下时的背景色-->
+    <color name="pressed_gray">#88DDDFE5</color>
+    <color name="theme_color">#A5D63F</color>
+
+    <!--笔记本侧边栏颜色配置-->
+    <color name="notebook_name_color">#FF000000</color>
+
+    <color name="dark_yellow">#FFCCB416</color>
+    <color name="dark_yellow_pressed">#AACCB416</color>
+
+    <color name="red">#FFFF0000</color>
+    <color name="red_pressed">#AAFF0000</color>
+
+    <!-- 每天1-10篇笔记的渐变色-->
+    <color name="one_note_color">#FFA5D63F</color>
+    <color name="two_notes_color">#93C132</color>
+    <color name="three_notes_color">#88B52A</color>
+    <color name="four_notes_color">#749F1A</color>
+    <color name="five_notes_color">#5C810F</color>
+    <color name="six_notes_color">#587C0E</color>
+    <color name="seven_notes_color">#476706</color>
+    <color name="eight_notes_color">#4B6E03</color>
+    <color name="nine_notes_color">#456503</color>
+    <color name="ten_notes_color">#375100</color>
+
+    <color name="bottom_item_checked">#81D4FA</color>
+
 </resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 打开笔记时编辑界面从右弹出，笔记浏览界面应用该动画向左移动一段小距离 -->
+<translate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromXDelta="0"
+    android:toXDelta="-15%p"
+    android:duration="300"/>
