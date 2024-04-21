@@ -1017,6 +1017,8 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
                             arNote.setCreateTime(LocalDateTime.now());
                             ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
                             arNoteDao.insertARNotes(arNote);
+                            //弹窗提醒
+                            Toast.makeText(getBaseContext(), "保存AR笔记成功", Toast.LENGTH_SHORT).show();
                         });
                     }
                 });

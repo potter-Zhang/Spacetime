@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -97,6 +98,7 @@ public class EditorActivity extends AppCompatActivity {
             saveDialog = new ConfirmDialog(this, getColor(R.color.sub_theme_dark), "是否新建笔记？", "新建");
             saveDialog.setOnConfirmListener(() -> {
                 noteDao.insertNote(note);
+                Toast.makeText(getBaseContext(), "新建笔记成功", Toast.LENGTH_SHORT).show();
                 finish();
             });
             saveDialog.setCancelListener(() -> finish());
@@ -109,6 +111,7 @@ public class EditorActivity extends AppCompatActivity {
             saveDialog = new ConfirmDialog(this, getColor(R.color.sub_theme_dark), "是否保存笔记？", "保存");
             saveDialog.setOnConfirmListener(() -> {
                 noteDao.updateNote(note);
+                Toast.makeText(getBaseContext(), "保存笔记成功", Toast.LENGTH_SHORT).show();
                 finish();
             });
             saveDialog.setCancelListener(() -> finish());

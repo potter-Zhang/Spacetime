@@ -8,6 +8,11 @@ android {
     namespace = "edu.whu.spacetime"
     compileSdk = 34
 
+    //打包APK出现AAPT: error: file failed to compile.解决
+    aaptOptions.cruncherEnabled = false
+    aaptOptions.useNewCruncher = false
+
+
     defaultConfig {
         applicationId = "edu.whu.spacetime"
         minSdk = 28
