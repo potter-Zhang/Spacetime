@@ -83,7 +83,7 @@ public class AIFunctionService {
         // 模型信息参数
         GenerationParam param = GenerationParam.builder()
                 // .model("qwen-max")
-                .model("qwen-turbo")
+                .model("qwen-max")
                 .messages(Arrays.asList(userMsg))
                 .resultFormat(GenerationParam.ResultFormat.MESSAGE)
                 .topP(0.8).enableSearch(true)  // set streaming output

@@ -99,7 +99,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         user_id = rootView.findViewById(R.id.uid);
         user_name.setText(user.getUsername());
         String userid = String.valueOf(user.getUserId());
-        user_id.setText(userid);
+        user_id.setText("UID:".concat(userid));
 
         user_profile = rootView.findViewById(R.id.user_profile);
         account_btn = rootView.findViewById(R.id.user_account_btn);
@@ -221,6 +221,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             Bitmap profile_bitmap = BitmapFactory.decodeByteArray(profile_bytes, 0, profile_bytes.length);
             user_profile.setImageBitmap(profile_bitmap);
         }
+        user_name.setText(user.getUsername());
         user_using_days.setText(String.valueOf(getTimeGap(LocalDateTime.now() ,user.getCreateTime())));
         user_note_count.setText(String.valueOf(noteDao.queryByUserId(user.getUserId()).size()));
         user_todo_count.setText(String.valueOf(todoDao.getAllTodo(user.getUserId()).size()));

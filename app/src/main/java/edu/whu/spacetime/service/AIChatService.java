@@ -74,7 +74,7 @@ public class AIChatService {
         msgManager.add(systemMsg);
         msgManager.add(userMsg);
         param = GenerationParam.builder()
-                .model(Generation.Models.QWEN_TURBO)
+                .model(Generation.Models.QWEN_MAX)
                 .messages(msgManager.get())
                 .resultFormat(GenerationParam.ResultFormat.MESSAGE)
                 .topP(0.8)

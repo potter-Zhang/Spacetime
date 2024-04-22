@@ -192,7 +192,7 @@
                             android:layout_height="20dp"
                             android:layout_gravity="center_horizontal"
                             android:gravity="center"
-                            android:text="代办"
+                            android:text="待办"
                             android:textColor="#333333"
                             android:textSize="16sp" />
 
