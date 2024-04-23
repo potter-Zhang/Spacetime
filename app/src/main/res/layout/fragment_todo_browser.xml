@@ -61,24 +61,6 @@
                     tools:ignore="RtlHardcoded" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_column="1"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_gravity="right"
-                android:gravity="center_vertical"
-                tools:ignore="RtlHardcoded">
-                <ImageButton
-                    android:id="@+id/btn_todo_addItem"
-                    android:layout_gravity="center|right"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:scaleType="fitCenter"
-                    android:layout_marginEnd="15dp"
-                    android:src="@drawable/selector_add"
-                    tools:ignore="RtlHardcoded"/>
-            </LinearLayout>
         </GridLayout>
         <RelativeLayout
             android:layout_width="match_parent"

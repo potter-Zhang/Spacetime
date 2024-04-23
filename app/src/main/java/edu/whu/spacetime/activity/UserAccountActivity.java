@@ -151,10 +151,12 @@ public class UserAccountActivity extends AppCompatActivity implements View.OnCli
             user_profile.setImageBitmap(profile_bitmap);
         }
         user_gender = findViewById(R.id.user_gender);
-        if (user.isGender())
+        if (user.isGender()){
             user_gender.setSelection(1);
-        else
+        }
+        else{
             user_gender.setSelection(0);
+        }
         user_gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -218,6 +220,7 @@ public class UserAccountActivity extends AppCompatActivity implements View.OnCli
                     user.setAvatar(bytes);
                     userDao.updateUser(user);
                     user_profile.setImageBitmap(bitmap);
+                    Toast.makeText(UserAccountActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
