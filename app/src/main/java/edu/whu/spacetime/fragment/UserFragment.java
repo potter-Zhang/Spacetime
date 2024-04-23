@@ -1,5 +1,7 @@
 package edu.whu.spacetime.fragment;
 
+import static com.xuexiang.xui.utils.XToastUtils.toast;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,6 +19,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.interfaces.OnConfirmListener;
 import com.xuexiang.xui.widget.imageview.IconImageView;
 
 import java.sql.SQLException;
@@ -42,7 +46,7 @@ import edu.whu.spacetime.domain.User;
 public class UserFragment extends Fragment implements View.OnClickListener {
     private View rootView;
     private CircleImageView user_profile;
-    private RelativeLayout account_btn, user_setting_btn, user_update_btn, user_calendar_btn;
+    private RelativeLayout account_btn, user_setting_btn, user_update_btn, user_calendar_btn, user_about_btn;
     private IconImageView setting_button;
     private View importWindow;
     private TextView user_name, user_id, user_using_days, user_note_count, user_todo_count;
@@ -95,7 +99,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         user_id = rootView.findViewById(R.id.uid);
         user_name.setText(user.getUsername());
         String userid = String.valueOf(user.getUserId());
-        user_id.setText(userid);
+        user_id.setText("UID:".concat(userid));
 
         user_profile = rootView.findViewById(R.id.user_profile);
         account_btn = rootView.findViewById(R.id.user_account_btn);
@@ -103,6 +107,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         user_setting_btn = rootView.findViewById(R.id.user_setting_btn);
         user_update_btn = rootView.findViewById(R.id.user_checkUpdate_btn);
         user_calendar_btn = rootView.findViewById(R.id.user_calendar_btn);
+        user_about_btn = rootView.findViewById(R.id.user_about_btn);
         user_using_days = rootView.findViewById(R.id.user_using_days);
         user_note_count = rootView.findViewById(R.id.user_note_count);
         user_todo_count = rootView.findViewById(R.id.user_todo_count);
@@ -130,6 +135,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         user_setting_btn.setOnClickListener(this);
         user_update_btn.setOnClickListener(this);
         user_calendar_btn.setOnClickListener(this);
+        user_about_btn.setOnClickListener(this);
     }
 
     @Override
@@ -146,6 +152,15 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         } else if (vId == R.id.user_calendar_btn) {
             Intent intent2 = new Intent(getContext(), UserCalendarActivity.class);
             startActivity(intent2);
+        }else if(vId == R.id.user_about_btn){
+            new XPopup.Builder(getContext()).asConfirm("关于", "SpaceTime团队\r\nGitee链接：https://gitee.com/Eumendies/spacetime",
+                            new OnConfirmListener() {
+                                @Override
+                                public void onConfirm() {
+                                    Toast.makeText(getContext(), "敬请期待", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                    .show();
         }
     }
 
@@ -206,6 +221,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             Bitmap profile_bitmap = BitmapFactory.decodeByteArray(profile_bytes, 0, profile_bytes.length);
             user_profile.setImageBitmap(profile_bitmap);
         }
+        user_name.setText(user.getUsername());
         user_using_days.setText(String.valueOf(getTimeGap(LocalDateTime.now() ,user.getCreateTime())));
         user_note_count.setText(String.valueOf(noteDao.queryByUserId(user.getUserId()).size()));
         user_todo_count.setText(String.valueOf(todoDao.getAllTodo(user.getUserId()).size()));

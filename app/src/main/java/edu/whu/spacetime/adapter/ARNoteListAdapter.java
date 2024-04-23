@@ -80,7 +80,7 @@ public class ARNoteListAdapter extends RecyclerView.Adapter<ARNoteListAdapter.Vi
 
         // 设置item的高度不同从而实现瀑布式布局
         ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-        layoutParams.height = (int) (450 + Math.random() * 300);
+        layoutParams.height = (int) (650 + Math.random() * 100);
         holder.itemView.setLayoutParams(layoutParams);
 
         // 设置显示时间

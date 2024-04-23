@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<edu.whu.spacetime.widget.SwipeListLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<edu.whu.spacetime.widget.SwipeListLayout
+    android:id="@+id/layout_swipe"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -23,24 +25,38 @@
 <!--            android:background="@drawable/shape_red_border_with_white"-->
 <!--            android:drawableLeft="@drawable/icon_delete"/>-->
         <ImageButton
-            android:id="@+id/btn_todo_deleteItem"
+            android:id="@+id/btn_todo_edit"
             android:layout_margin="5dp"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
             android:scaleType="fitCenter"
-            android:background="@drawable/shape_red_round"
-            android:src="@drawable/icon_delete_round"
+            android:background="@drawable/shape_yellow_round"
+            android:backgroundTint="@color/sub_theme"
+            android:src="@drawable/icon_edit_round"
             android:padding="8dp"/>
         <ImageButton
-            android:id="@+id/btn_todo_edit"
+            android:id="@+id/btn_todo_deleteItem"
+            android:layout_marginLeft="5dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitCenter"
+            android:background="@drawable/shape_red_round"
+            android:backgroundTint="#EF5350"
+            android:src="@drawable/icon_delete_round"
+            android:padding="8dp"/>
+
+        <ImageButton
+            android:id="@+id/btn_todo_close"
             android:layout_marginLeft="5dp"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
             android:scaleType="fitCenter"
             android:background="@drawable/shape_yellow_round"
-            android:src="@drawable/icon_edit_round"
+            android:backgroundTint="#FFF176"
+            android:src="@drawable/icon_arrow_right"
             android:padding="8dp"/>
     </LinearLayout>
     <LinearLayout

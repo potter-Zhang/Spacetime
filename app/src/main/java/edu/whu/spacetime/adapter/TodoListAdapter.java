@@ -23,6 +23,7 @@ import edu.whu.spacetime.SpacetimeApplication;
 import edu.whu.spacetime.dao.TodoDao;
 import edu.whu.spacetime.domain.Todo;
 import edu.whu.spacetime.fragment.TodoBrowserFragment;
+import edu.whu.spacetime.widget.SwipeListLayout;
 import edu.whu.spacetime.widget.TodoSetPopup;
 
 public class TodoListAdapter extends ArrayAdapter<Todo> {
@@ -123,6 +124,16 @@ public class TodoListAdapter extends ArrayAdapter<Todo> {
                 new XPopup.Builder(getContext())
                         .asCustom(new TodoSetPopup(getContext(),Todo_view,todo))
                         .show();
+            }
+        });
+
+        //左滑添加关闭事件
+        View btn_close = view.findViewById(R.id.btn_todo_close);
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               SwipeListLayout swipeListLayout =  view.findViewById(R.id.layout_swipe);
+               swipeListLayout.closeView();
             }
         });
         return view;

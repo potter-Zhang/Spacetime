@@ -960,67 +960,68 @@ public class HelloArActivity extends AppCompatActivity implements SampleRender.R
         int[] pixels = new int[pixelCount];
         surfaceView.queueEvent(() -> {
             GLES30.glReadPixels(0 , 0, surfaceView.getWidth(), surfaceView.getHeight(),GLES30.GL_RGBA,GLES30.GL_UNSIGNED_BYTE, IntBuffer.wrap(pixels));
-        });
-
-        surfaceView.post(() -> {
-            // OpenGl的Bitmap和android的Bitmap不适配，需要转换
-            for (int i = 0, k = 0; i < height; i++, k++) {
-                for (int j = 0; j < width; j++) {
-                    int pix = pixels[i * width + j];
-                    int pb = (pix >> 16) & 0xff;
-                    int pr = (pix << 16) & 0x00ff0000;
-                    int pix1 = (pix & 0xff00ff00) | pr | pb;
-                    bt[(height - k - 1) * width + j] = pix1;
+            runOnUiThread(() -> {
+                // OpenGL读取出来的格式和Bitmap不匹配，要进行转化
+                for (int i = 0, k = 0; i < height; i++, k++) {
+                    for (int j = 0; j < width; j++) {
+                        int pix = pixels[i * width + j];
+                        int pb = (pix >> 16) & 0xff;
+                        int pr = (pix << 16) & 0x00ff0000;
+                        int pix1 = (pix & 0xff00ff00) | pr | pb;
+                        bt[(height - k - 1) * width + j] = pix1;
+                    }
                 }
-            }
-            Bitmap bitmap = Bitmap.createBitmap(bt, width, height, Bitmap.Config.ARGB_8888);
-            // JPEG压缩
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-            byte[] bytes = baos.toByteArray();
+                Bitmap bitmap = Bitmap.createBitmap(bt, width, height, Bitmap.Config.ARGB_8888);
+                // JPEG压缩
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                byte[] bytes = baos.toByteArray();
 
-            // 展示动画
-            RadiusImageView imageView = new RadiusImageView(this);
-            imageView.setBorderColor(Color.WHITE);
-            imageView.setBorderWidth(20);
-            imageView.setImageBitmap(bitmap);
-            imageView.setCornerRadius(40);
-            RelativeLayout arBody = findViewById(R.id.layout_ar_main);
-            arBody.addView(imageView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            // 截图缩放移动到左下角
-            ObjectAnimator animatorX = ObjectAnimator.ofFloat(imageView, "translationX", 0f,-60f,-120f,-180f,-240f, -300f);
-            ObjectAnimator animatorY = ObjectAnimator.ofFloat(imageView, "translationY", 0f,120f,240f,360f,480f);
-            ObjectAnimator animatorScaleX = ObjectAnimator.ofFloat(imageView, "scaleX", 1f, 0.3f);
-            ObjectAnimator animatorScaleY = ObjectAnimator.ofFloat(imageView, "scaleY", 1f, 0.3f);
-            AnimatorSet moveAnimatorSet = new AnimatorSet();
-            moveAnimatorSet.playTogether(animatorX, animatorY, animatorScaleX, animatorScaleY);
-            moveAnimatorSet.setDuration(1000);
-            // 消失
-            ObjectAnimator animatorDisappearAlpha = ObjectAnimator.ofFloat(imageView, "alpha", 1f, 1f, 1f, 0.5f, 0f);
-            animatorDisappearAlpha.setDuration(1000);
-            AnimatorSet animatorSet = new AnimatorSet();
-            animatorSet.playSequentially(moveAnimatorSet, animatorDisappearAlpha);
-            animatorSet.start();
-            InputDialog inputDialog = new InputDialog(this, "AR笔记标题");
-            XPopup.Builder builder = new XPopup.Builder(this).isDestroyOnDismiss(true).autoFocusEditText(false);
-            animatorSet.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    // 播放完动画后删除添加的ImageView，避免多次截屏后卡顿
-                    super.onAnimationEnd(animation);
-                    arBody.removeView(imageView);
-                    //保存到数据库
-                    ARNote arNote = new ARNote();
-                    builder.asCustom(inputDialog).show();
-                    inputDialog.setOnInputConfirmListener(text -> {
-                        arNote.setTitle(text);
-                        arNote.setImg(bytes);
-                        arNote.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
-                        arNote.setCreateTime(LocalDateTime.now());
-                        ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
-                        arNoteDao.insertARNotes(arNote);
-                    });
-                }
+                // 展示动画
+                RadiusImageView imageView = new RadiusImageView(this);
+                imageView.setBorderColor(Color.WHITE);
+                imageView.setBorderWidth(20);
+                imageView.setImageBitmap(bitmap);
+                imageView.setCornerRadius(40);
+                RelativeLayout arBody = findViewById(R.id.layout_ar_main);
+                arBody.addView(imageView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                // 截图缩放移动到左下角
+                ObjectAnimator animatorX = ObjectAnimator.ofFloat(imageView, "translationX", 0f,-60f,-120f,-180f,-240f, -300f);
+                ObjectAnimator animatorY = ObjectAnimator.ofFloat(imageView, "translationY", 0f,120f,240f,360f,480f);
+                ObjectAnimator animatorScaleX = ObjectAnimator.ofFloat(imageView, "scaleX", 1f, 0.3f);
+                ObjectAnimator animatorScaleY = ObjectAnimator.ofFloat(imageView, "scaleY", 1f, 0.3f);
+                AnimatorSet moveAnimatorSet = new AnimatorSet();
+                moveAnimatorSet.playTogether(animatorX, animatorY, animatorScaleX, animatorScaleY);
+                moveAnimatorSet.setDuration(1000);
+                // 消失
+                ObjectAnimator animatorDisappearAlpha = ObjectAnimator.ofFloat(imageView, "alpha", 1f, 1f, 1f, 0.5f, 0f);
+                animatorDisappearAlpha.setDuration(1000);
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.playSequentially(moveAnimatorSet, animatorDisappearAlpha);
+                animatorSet.start();
+                InputDialog inputDialog = new InputDialog(this, "AR笔记标题");
+                XPopup.Builder builder = new XPopup.Builder(this).isDestroyOnDismiss(true).autoFocusEditText(false);
+                animatorSet.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        // 播放完动画后删除添加的ImageView，避免多次截屏后卡顿
+                        super.onAnimationEnd(animation);
+                        arBody.removeView(imageView);
+                        //保存到数据库
+                        ARNote arNote = new ARNote();
+                        builder.asCustom(inputDialog).show();
+                        inputDialog.setOnInputConfirmListener(text -> {
+                            arNote.setTitle(text);
+                            arNote.setImg(bytes);
+                            arNote.setUserId(SpacetimeApplication.getInstance().getCurrentUser().getUserId());
+                            arNote.setCreateTime(LocalDateTime.now());
+                            ARNoteDao arNoteDao = SpacetimeApplication.getInstance().getDatabase().getARNoteDao();
+                            arNoteDao.insertARNotes(arNote);
+                            //弹窗提醒
+                            Toast.makeText(getBaseContext(), "保存AR笔记成功", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                });
             });
         });
     }

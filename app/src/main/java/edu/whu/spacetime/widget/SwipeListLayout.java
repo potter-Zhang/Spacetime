@@ -173,6 +173,9 @@ public class SwipeListLayout extends FrameLayout {
         }
     }
 
+    public void closeView(){
+        close(smooth);
+    }
     /**
      *
      * @param status

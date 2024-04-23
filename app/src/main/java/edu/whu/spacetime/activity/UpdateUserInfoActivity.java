@@ -53,6 +53,7 @@ public class UpdateUserInfoActivity extends AppCompatActivity implements View.On
             {
                 user.setUsername(newValue);
                 userDao.updateUser(user);
+                Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
                 finish();
             }
             else if (Objects.equals(property, "手机") && !newValue.equals(user.getPhone()))
@@ -61,12 +62,15 @@ public class UpdateUserInfoActivity extends AppCompatActivity implements View.On
                 {
                     user.setPhone(newValue);
                     userDao.updateUser(user);
+                    Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 else
                 {
                     Toast.makeText(getBaseContext(), "请输入正确的手机号", Toast.LENGTH_LONG).show();
                 }
+            }else{
+                Toast.makeText(this, "请对内容进行修改", Toast.LENGTH_SHORT).show();
             }
         }
     }
